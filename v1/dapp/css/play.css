@@ -1,0 +1,253 @@
+body{
+    padding-bottom: 70px !important;
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa !important;
+}
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+}
+
+#desc-panel >p > a {
+    color: blue;
+}
+.winner-show {
+    flex: auto;
+    position: relative;
+    text-align: center;
+    margin-top: 15px;
+}
+.addr-body{
+  padding: 15px 8px;
+}
+.cp-addr {
+  border-top: 0;
+  padding: 0 5px 5px 0;
+}
+#user-addr-input{
+    width: 100%;
+    font-size: 12px;
+    outline: none;
+    border: 0;
+    text-align: center;
+}
+.sticky-footer{
+    width: 100%;
+    position: fixed; 
+    bottom: 0;
+}
+
+.overlay{
+    top:0;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 1;
+    transition: all 0.5s ease-in-out;
+}
+
+.create-btn,.share-btn{
+    height: 3.5em;
+}
+
+.share-btn a:focus {
+    color: #fff;
+}
+
+#share-link {
+    width: 100%;
+    background: 100%;
+    border: 0;
+    overflow: hidden;
+    resize: none;
+    font-size: 14px;
+    outline: none;
+}
+
+.create-btn{
+    padding-left: 0;
+}
+
+.remove-btn{
+    position: absolute !important;
+    top: 2px;
+    right: 2px;
+    z-index: 100;
+}
+.share-btn{
+    padding-right: 0;
+}
+
+.share-panel{
+  transition: 2s; 
+  position: fixed;
+  width: 100%;
+  background: #fff;
+  bottom: 0;
+  z-index: 999;
+  scroll-behavior: smooth;
+  overflow: scroll;
+  background-color: #bdbdbd;
+  border-radius: 5px;
+  /*max-height: 400px;*/
+}
+
+.share-panel > div{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    
+}
+
+.btn-r, .btn-l{
+    
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 48px;
+    width: 130px;
+    font-size: 0.7em;
+}
+
+.btn-r{
+    margin-right: 20px;
+    margin-left: 10px;
+}
+
+.btn-l{
+    margin-left: 20px;
+    margin-right: 10px;
+
+}
+
+.share-play{
+    background-color: #f8f9fa !important;
+
+}
+.create-btn > button > a,.share-btn > button > a, .share-btn > button > a:active, .create-btn > button > a:active{
+    color: white;
+}
+
+#drawing-creater{
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    font-size: 14px;
+}
+
+iframe {
+    height: 160px;
+    width: 160px;
+    display: block;
+    border: 0;
+    margin: auto;
+    margin-top: 40px;
+}
+
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+    /*font-family: SFProText;*/
+    font-size: 15px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: -0.4px;
+    color: #dadde3;
+}
+
+.failed-show {
+    flex: auto;
+    position: relative;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.end-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+.main-textarea {
+    border-radius: 4px;
+    background-color: #f4f6f8;
+    border: none;
+}
+.main-addr-gray {
+    color: #bdbdbd;
+}
+.main-declare-back {
+    border-radius: 4px;
+    background-color: rgba(31, 144, 255, 0.13);
+    padding: 12px;
+    font-size: 16px;
+}
+.main-reply-back {
+    border-radius: 4px;
+    background-color: rgba(255, 3, 3, 0.18);
+    padding: 12px;
+    font-size: 16px;
+}
+#replies-html {
+    width: 100%;
+}
+#replies-html ul {
+    padding: 0px;
+    margin: 0px;
+}
+#replies-html li {
+    list-style: none;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    font-size: 14px;
+    padding: 16px;
+    margin-bottom: 8px;
+    font-weight: normal;
+    display: flex;
+    justify-content: space-between;
+}
+.main-status-replay-all {
+    font-size: 16px;
+    color: #242424;
+    margin-bottom: 16px;
+}
+.main-reply-pre {
+    color: #242424;
+}
+.main-code-container {
+    display: flex;
+    justify-content: space-between;
+}
+.main-code-container .main-code-down {
+    padding: 0px 0px 0px 15px;
+}
+.main-code-container .main-status {
+    font-size: 14px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: #303030;
+    margin-top: 0px;
+}
+.main-code-container .main-save {
+    border-radius: 6px;
+    background-color: #343a40;
+    height: 40px;
+    text-align: center;
+    width: 100%;
+    line-height: 40px;
+    font-size: 16px;
+    color: white;
+}
+

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.86, shrink-to-fit=no,user-scalable=no">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.css">
+    <title>Buy</title>
+</head>
+
+<body class="main-bg">
+<div class="container" style="display:none" id="info-panel">
+    <div>
+        <p id="image-img"></p>
+        <h3 id="title-div">... ...</h3>
+    </div>
+
+    <div id="desc-panel">
+    </div>
+
+    <dl class="row" style="margin-top: 20px;">
+        <dt class="col-sm-3">Creator</dt>
+        <dd class="col-sm-9" id="creator">... ...</dd>
+        <dt class="col-sm-3">Escrow time (s)</dt>
+        <dd class="col-sm-9" id="escrow">... ...</dd>
+    </dl>
+    <hr/>
+</div>
+
+<div class="container" style="display:none" id="buy-panel">
+    <h3>Buy</h3>
+    <form>
+        <div class="form-row">
+            <input type="text" id="name-field" class="form-control" placeholder="Your name">
+        </div>
+        <div class="form-row">
+            <div class="form-group" style="padding-left: 0px;">
+                How do you pay?
+                <select id="prices-select" class="form-control">
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <label style="margin-top: 4px; margin-bottom: 2px; margin-left: 4px;">How do the seller get in touch to arrange delivery?</label>
+        </div>
+        <div class="form-row">
+            <div class="form-group col" style="padding-left: 0px;">
+                <select id="contact-app-field" class="form-control">
+                    <option data-translate="telegram">Telegram</option>
+                    <option data-translate="twitter">Twitter</option>
+                    <option data-translate="facebook">Facebook</option>
+                    <option data-translate="wechat">WeChat</option>
+                    <option data-translate="phone">Phone</option>
+                    <option data-translate="email" selected>Email</option>
+                </select>
+            </div>
+            <div class="form-group col" style="padding-right: 0px;">
+                <input type="text" id="contact-id-field" class="form-control" data-translate="ur_addr" placeholder="Your Email, Your Facebook ID, etc">
+            </div>
+        </div>
+        <div class="form-row">
+            <textarea class="form-control" id="mesg-field" rows="2" placeholder="Leave a message"></textarea>
+        </div>
+    </form>
+
+    <div>
+        <button id="buy-submit" class="btn btn-primary" onclick="buy()">Buy</button>
+    </div>
+</div>
+
+<div class="container" style="display:none" id="dispute-panel">
+    <div>
+        <button id="close-submit" class="btn btn-primary" onclick="closeByBuyer()">I received it</button>
+        <button id="dispute-submit" class="btn btn-primary" onclick="dispute()">I want to dispute it</button>
+    </div>
+</div>
+
+<div class="container" style="display:none" id="resolve-panel">
+    <div>
+        <button id="resolve-submit" class="btn btn-primary" onclick="resolve()">The dispute is resolved</button>
+    </div>
+</div>
+
+<div class="container" style="display:none" id="escrowed-panel">
+    <div class="alert alert-secondary" role="alert">
+        This product is no longer available
+    </div>
+</div>
+
+<div class="container" style="display:none" id="sold-panel">
+    <div class="alert alert-secondary" role="alert">
+        This product has been sold
+    </div>
+</div>
+    
+
+<div class="container" style="display:none" id="seller-panel">
+    <hr/>
+    <div>
+        <button id="addImage-link" class="btn btn-info" onclick="addImage()">Add product image</button>
+        <button id="setPrice-link" class="btn btn-info" onclick="setPrice()">Add or update price</button>
+        <button id="refund-submit" class="btn btn-primary" onclick="refund()">Refund buyer</button>
+        <button id="close-submit" class="btn btn-primary" onclick="closeBySeller()">Receive fund</button>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="js/listing.js"></script>
+</html>

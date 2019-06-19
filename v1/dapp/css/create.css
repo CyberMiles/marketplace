@@ -1,0 +1,171 @@
+
+body {
+  font-family: 'Poppins', sans-serif;
+  /*font-family: sans-serif;*/
+  background-color: #eeeeee;
+  padding-bottom: 70px !important;
+}
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+p {
+  font-family: 'Poppins', sans-serif;
+}
+
+::placeholder {
+  color: peachpuff;
+  font-size: 13px;
+}
+
+.file-upload {
+  background-color: #ffffff;
+  width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.file-upload-btn {
+  width: 100%;
+  margin: 0;
+  color: #fff;
+  background: #1FB264;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  border-bottom: 4px solid #15824B;
+  transition: all .2s ease;
+  outline: none;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.file-upload-btn:hover {
+  background: #1AA059;
+  color: #ffffff;
+  transition: all .2s ease;
+  cursor: pointer;
+}
+
+.file-upload-btn:active {
+  border: 0;
+  transition: all .2s ease;
+}
+
+.file-upload-content {
+  display: none;
+  text-align: center;
+  position: relative;
+  padding: 10px;
+}
+
+.file-upload-input {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.image-upload-wrap {
+  margin-top: 20px;
+  border: 4px dashed #888888;
+  position: relative;
+}
+
+.image-dropping {
+  background-color: #888888;
+  border: 4px dashed #ffffff;
+}
+
+.image-title-wrap {
+  padding: 0 15px 15px 15px;
+  color: #222;
+}
+
+
+.drag-text, .uploading-text {
+  text-align: center;
+}
+
+.uploading-text h3{
+  font-weight: 100;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  padding: 60px 0;
+}
+.drag-text h3 {
+  font-weight: 100;
+  text-transform: uppercase;
+  color: #888888;
+  padding: 60px 0;
+}
+
+.file-upload-image {
+    margin: auto;
+}
+
+.remove-btn{
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    z-index: 100;
+}
+
+#url-input{
+  margin-top: 20px;
+}
+
+.input-inline{
+    white-space: nowrap;
+}
+
+.winner-number-input{
+    display: inline-block;
+    width: 80%;
+    border-right-width: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    white-space: normal;
+}
+
+.winner-unit{
+    display: inline-block;
+    width: 20%;
+    border-left-width: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    white-space: normal;
+}
+
+.purchase-link-panel{
+  top: 30%;
+  transform: translate(0, 40%);
+}
+
+.pt-3-half {
+  padding-top: 1.4rem;
+}
+
+#table > tbody{
+  width: 100%;
+  display: table;
+}
+
+#purchase_table table{
+  width: 100%;
+  word-break: break-word;
+}
+
+.modal-footer {
+  border: 0;
+  
+}

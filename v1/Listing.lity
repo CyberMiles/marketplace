@@ -1,0 +1,306 @@
+pragma lity >=1.2.6;
+
+interface ICRC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
+contract Listing {
+
+    address public owner;
+
+    struct Buyer {
+        address addr;
+        uint ts_escrow;
+        uint ts_sold;
+        bool dispute;
+        string dispute_reason;
+        string name;
+        string contact;
+        string mesg;
+        address crc20;
+        uint amount;
+    }
+    Buyer buyer;
+
+    struct Price {
+        address crc20;
+        uint amount;
+    }
+    Price[] prices;
+
+    int8 public status; // 0: stopped; 1: open for buyers; 2: buyer in escrow; 3: closed
+    string public title;
+    string public desc;
+    string public tags;
+    string public categories;
+    uint public escrow_period;
+    string [] image_urls;
+    
+    string public seller_mesg;
+
+    modifier onlyOwner() {
+        assert(msg.sender == owner);
+        _;
+    }
+
+    constructor (string _title, string _desc, string _tags, string _categories, string _image_url, uint _escrow_period, address _crc20, uint _amount) public {
+        require(_amount > 0);
+
+        owner = msg.sender;
+        title = _title;
+        desc = _desc;
+        tags = _tags;
+        categories = _categories;
+        image_urls.push(_image_url);
+        escrow_period = _escrow_period;
+        prices.push(Price(_crc20, _amount));
+
+        status = 1;
+    }
+    
+    function updateListing (string _title, string _desc, string _tags, string _categories, uint _escrow_period) external onlyOwner {
+        require(status == 0 || status == 1);
+        title = _title;
+        desc = _desc;
+        tags = _tags;
+        categories = _categories;
+        escrow_period = _escrow_period;
+    }
+
+    function setTitle (string _title) external onlyOwner {
+        require(status == 0 || status == 1);
+        title = _title;
+    }
+    
+    function setDesc (string _desc) external onlyOwner {
+        require(status == 0 || status == 1);
+        desc = _desc;
+    }
+    
+    function setTags (string _tags) external onlyOwner {
+        require(status == 0 || status == 1);
+        tags = _tags;
+    }
+    
+    function setCategories (string _categories) external onlyOwner {
+        require(status == 0 || status == 1);
+        categories = _categories;
+    }
+    
+    function setEscrowPeriod (uint _escrow_period) external onlyOwner {
+        require(status == 0 || status == 1);
+        escrow_period = _escrow_period;
+    }
+    
+    function setSellerMesg (string _seller_mesg) external onlyOwner {
+        seller_mesg = _seller_mesg;
+    }
+
+    function addImage (string _image_url) external onlyOwner {
+        require(status == 0 || status == 1);
+        image_urls.push(_image_url);
+    }
+
+    function getImagesCount() public view returns(uint) {
+        return image_urls.length;
+    }
+
+    function getImage(uint index) public view returns(string) {
+        return (image_urls[index]);
+    }
+    
+    function setImage (string _image_url, uint index) external onlyOwner {
+        require(status == 0 || status == 1);
+        image_urls[index] = _image_url;
+    }
+
+    function setPrice (address _crc20, uint _amount) external onlyOwner {
+        require(status == 0 || status == 1);
+
+        bool needUpdate = false;
+        uint i = 0;
+        for (i=0; i<prices.length; i++) {
+            if (prices[i].crc20 == _crc20) {
+                prices[i].amount = _amount;
+                needUpdate = true;
+                break;
+            }
+        }
+        if (needUpdate == false) {
+            prices.push(Price(_crc20, _amount));
+        }
+    }
+
+    function getPricesCount() public view returns(uint) {
+        return prices.length;
+    }
+
+    function getPrice(uint index) public view returns(address, uint) {
+        return (prices[index].crc20, prices[index].amount);
+    }
+    
+    function buyWithCMT (string _name, string _contact, string _mesg) payable public {
+        require(status == 1);
+
+        Price memory price;
+        uint i = 0;
+        for (i=0; i<prices.length; i++) {
+            if (prices[i].crc20 == address(0)) {
+                price = prices[i];
+            }
+        }
+        require (price.amount > 0);
+        require (msg.value >= price.amount);
+
+        buyer = Buyer (msg.sender, now, 0, false, "", _name, _contact, _mesg, price.crc20, price.amount);
+        status = 2;
+    }
+    
+    function buyWithCRC20 (address _crc20, string _name, string _contact, string _mesg) public {
+        require(_crc20 != address(0));
+        require(status == 1);
+
+        Price memory price;
+        uint i = 0;
+        for (i=0; i<prices.length; i++) {
+            if (prices[i].crc20 == _crc20) {
+                price = prices[i];
+            }
+        }
+        require (price.amount > 0);
+
+        ICRC20 token = ICRC20(_crc20);
+        require(token.transferFrom(msg.sender, address(this), price.amount));
+
+        buyer = Buyer (msg.sender, now, 0, false, "", _name, _contact, _mesg, price.crc20, price.amount);
+        status = 2;
+    }
+
+    function closeBySeller () external onlyOwner {
+        require (status == 2);
+        require (buyer.amount > 0);
+        require (buyer.dispute == false);
+        require (buyer.ts_escrow + escrow_period < now);
+        if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
+            owner.transfer(buyer.amount);
+        } else {
+            ICRC20 token = ICRC20(buyer.crc20);
+            token.transfer(owner, buyer.amount);
+        }
+        buyer.ts_sold = now;
+        status = 3;
+    }
+    
+    function closeByBuyer () public {
+        require (status == 2);
+        require (buyer.amount > 0);
+        require (buyer.addr == msg.sender);
+        if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
+            owner.transfer(buyer.amount);
+        } else {
+            ICRC20 token = ICRC20(buyer.crc20);
+            token.transfer(owner, buyer.amount);
+        }
+        buyer.dispute = false;
+        buyer.ts_sold = now;
+        status = 3;
+    }
+
+    function refund () external onlyOwner {
+        require (status == 2);
+        require (buyer.amount > 0);
+        if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
+            buyer.addr.transfer(buyer.amount);
+        } else {
+            ICRC20 token = ICRC20(buyer.crc20);
+            token.transfer(buyer.addr, buyer.amount);
+        }
+        buyer.addr = 0;
+        buyer.amount = 0;
+        buyer.ts_escrow = 0;
+        buyer.ts_sold = 0;
+        status = 1;
+    }
+
+    function dispute (string _reason) public {
+        require (status == 2);
+        require (buyer.addr != 0);
+        buyer.dispute = true;
+        buyer.dispute_reason = _reason;
+    }
+
+    function resolve () public {
+        require (status == 2);
+        require (buyer.amount > 0);
+        require (buyer.dispute == true);
+        require (msg.sender == buyer.addr);
+        buyer.dispute = false;
+
+        // Transfer fund to seller now
+        if (buyer.crc20 == address(0)) {
+            address(this).transfer(buyer.amount);
+        } else {
+            ICRC20 token = ICRC20(buyer.crc20);
+            token.transfer(address(this), buyer.amount);
+        }
+        status = 3;
+    }
+
+    function resolveByDAO (bool buyer_wins) public {
+        require (status == 2);
+        require (buyer.amount > 0);
+        require (buyer.dispute == true);
+        require (msg.sender == 0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1);
+        
+        ICRC20 token = ICRC20(buyer.crc20);
+        if (buyer_wins) {
+            // Transfer fund to buyer now
+            if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
+                buyer.addr.transfer(buyer.amount);
+            } else {
+                token.transfer(buyer.addr, buyer.amount);
+            }
+            status = 1;
+        } else {
+            // Transfer fund to seller now
+            if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
+                owner.transfer(buyer.amount);
+            } else {
+                token.transfer(owner, buyer.amount);
+            }
+            status = 3;
+        }
+    }
+
+    function pause () public onlyOwner {
+        require (status == 1);
+        require (buyer.addr == 0);
+        status = 0;
+    }
+
+    function resume () public onlyOwner {
+        require (status == 0);
+        status = 1;
+    }
+
+    function info () view public returns (int8, string, string, uint, uint, uint, address, address) {
+        return (status, title, desc, escrow_period, image_urls.length, prices.length, owner, buyer.addr);
+    }
+
+    function buyerInfo () view public returns (address, uint, uint, bool, string, string, string, string, address, uint) {
+        return (buyer.addr, buyer.ts_escrow, buyer.ts_sold, buyer.dispute, buyer.dispute_reason, buyer.name, buyer.contact, buyer.mesg, buyer.crc20, buyer.amount);
+    }
+
+    function kill() public onlyOwner {
+        require (status == 0 || status == 3); // Not started or sold
+        selfdestruct(owner);
+    }
+}
