@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">   
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.css">
 
+    <link rel="stylesheet" type="text/css" href="css/create.css">
     <title>New listing</title>
 </head>
     
@@ -24,13 +25,40 @@
             <label for="desc">Description</label>
             <input type="text" class="form-control" id="desc">
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="imageUrl">Image Url</label>
             <input type="text" class="form-control" id="imageUrl">
-        </div>
-        <div class="form-group">
-            <label for="escrow">Escrow period (s)</label>
-            <input type="number" class="form-control" id="escrow">
+        </div> -->
+        <!--upload img from local-->
+          <div class="form-group">
+            <label>Image</label>
+            <div id="local-input" class="margin-bottom-15">
+                <form id="img-form" method="post" action="https://api.cloudinary.com/v1_1/dgvnn4efo/image/upload" enctype="multipart/form-data" >
+                  <fieldset>
+                     <p style="display: none">
+                      <input type="text" name="upload_preset" value="fairplay" style="display: none">
+                    </p>
+                    <div class="image-upload-wrap">
+                    <label>
+                     <input id="selected-img" class="file-upload-input" type="file" name="file" accept="image/*" onchange="uploadPic()" onclick="changeBoxCSS();" onblur="changeBoxCSS();"></label>
+                    <div class="drag-text">
+                      <h3 data-translate="select_pic">Select your picture</h3>
+                    </div>
+                   <div class="uploading-text d-none">
+                      <h3 data-translate="uploading">Uploading......</h3>
+                    </div>
+                  </div>
+                  <input type="submit" id="submit" value="Submit Comment" style="display: none" /> 
+                  <div class="file-upload-content">
+                    <img id="uploaded" class="file-upload-image img-fluid img-thumbnail src="#" alt="your image" />
+                    <div class="image-title-wrap">
+                      <span onclick="removeUpload()" class="remove-btn oi oi-x"></span>
+                    </div>
+                  </div>
+                   <small id="uploadimgHelp" class="form-text text-muted" data-translate="upload_helper">Upload a feature image that illustrates prize. (Make sure that the extensions are one of them: jpg, jpeg, png, gif, PNG, JPG, JPEG, and the size is less than 2 MB.) </small>
+                  </fieldset>
+                </form>
+            </div>
         </div>
         <div class="form-group">
             <label for="amount">Price (USD)</label>

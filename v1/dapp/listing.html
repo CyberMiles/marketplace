@@ -12,26 +12,37 @@
     <title>Buy</title>
 </head>
 
-<body class="main-bg">
+<body>
 <div class="container" style="display:none" id="info-panel">
     <div>
         <p id="image-img"></p>
         <h3 id="title-div">... ...</h3>
     </div>
+    <div>
+        <p id="price-desc"></p>
+    </div>
 
+    <div>
+    <p>Description:</p>
     <div id="desc-panel">
+    </div>
     </div>
 
     <dl class="row" style="margin-top: 20px;">
-        <dt class="col-sm-3">Creator</dt>
+        <dt class="col-sm-3">Seller</dt>
         <dd class="col-sm-9" id="creator">... ...</dd>
         <dt class="col-sm-3">Escrow time (s)</dt>
         <dd class="col-sm-9" id="escrow">... ...</dd>
     </dl>
     <hr/>
 </div>
+<div class="container d-buyer d-seller d-escrow d-escrow-going d-escrow-done d-escrow-disputing d-none">
+    <p>Buyer Info:</p>
+    <p class="buyer-info">
 
-<div class="container" style="display:none" id="buy-panel">
+    </p>
+</div>
+<div class="container d-other d-buyer d-open d-none" id="buy-panel">
     <h3>Buy</h3>
     <form>
         <div class="form-row">
@@ -39,7 +50,9 @@
         </div>
         <div class="form-row">
             <div class="form-group" style="padding-left: 0px;">
-                How do you pay?
+                <label> How do you pay? </label>
+                <a href="">recharge SMC with credit card</a>
+
                 <select id="prices-select" class="form-control">
                 </select>
             </div>
@@ -72,39 +85,129 @@
     </div>
 </div>
 
-<div class="container" style="display:none" id="dispute-panel">
+<div class="container d-buyer d-seller d-escrow d-escrow-going d-escrow-disputing d-none" id="seller-mesg-text">
+    <p>Seller Mesg:</p>
+    <p class="seller-mesg"></p>
+</div>
+
+<div id="seller-mesg-panel" class="container d-seller d-escrow d-escrow-going n d-escrow-disputing d-none">
+    <form>
+        <div class="form-row">
+            <textarea class="form-control" id="seller-mesg-field" rows="2" placeholder="Leave a message to buyer."></textarea>
+        </div>
+    </form>
     <div>
-        <button id="close-submit" class="btn btn-primary" onclick="closeByBuyer()">I received it</button>
-        <button id="dispute-submit" class="btn btn-primary" onclick="dispute()">I want to dispute it</button>
+        <button id="send-mesg-submit" class="btn btn-primary" onclick="setSellerMesg($('#seller-mesg-field').val())">Push</button>
     </div>
 </div>
 
-<div class="container" style="display:none" id="resolve-panel">
+<div class="container d-buyer d-escrow d-escrow-going d-none" id="dispute-panel">
     <div>
-        <button id="resolve-submit" class="btn btn-primary" onclick="resolve()">The dispute is resolved</button>
+        <button id="close-dispute-submit" class="btn btn-primary d-buyer d-escrow d-escrow-going" onclick="closeByBuyer()">I received it</button>
+        <button id="dispute-submit" class="btn btn-primary d-buyer d-escrow d-escrow-going" onclick="dispute()">I want to dispute it</button>
     </div>
 </div>
 
-<div class="container" style="display:none" id="escrowed-panel">
-    <div class="alert alert-secondary" role="alert">
-        This product is no longer available
+<div class="container d-buyer d-escrow d-escrow-disputing d-none" id="resolve-panel">   
+    <div>
+        <p>You have disputed. The fund will be in the contract unless the dispute is solved. If the dispute has been resolved, you can click the following button, then the fund will be transfered to the seller.</p>
+    </div>
+    <div>
+        <button id="resolve-submit" class="btn btn-primary d-buyer d-escrow d-escrow-disputing" onclick="resolve()">The dispute is resolved</button>
     </div>
 </div>
 
-<div class="container" style="display:none" id="sold-panel">
-    <div class="alert alert-secondary" role="alert">
-        This product has been sold
+<div class="container d-seller d-open d-none">
+    <div class="alert alert-secondary text d-seller d-open" role="alert">
+        This product is listing and no one bought yet
+    </div>
+</div>
+
+<div class="container d-other d-unlisting d-none">
+    <div class="alert alert-secondary text" role="alert">
+        This product is unsold temporarily.
+    </div>
+</div>
+
+<div class="container d-seller d-unlisting d-none">
+    <div class="alert alert-secondary text d-other d-unlisting" role="alert">
+        This product is unlisting now.
+    </div>
+</div>
+
+<div class="container d-other d-escrow d-escrow-going d-escrow-done d-none">
+    <div class="alert alert-secondary text d-escrow" role="alert">
+        This product is no longer available.
+    </div>
+</div>
+
+<div class="container d-seller d-escrow d-escrow-going d-none">
+    <div class="alert alert-secondary text d-escrow" role="alert">
+        This product has been bought. The fund is now in the contract.
+    </div>
+</div>
+<div class="container d-seller d-escrowd-escrow-done d-none">
+    <div class="alert alert-secondary text d-escrow" role="alert">
+        This escrow time is up. Now you can click the receive fund to fetch the fund from the contract.
+    </div>
+</div>
+<div class="container d-buyer d-escrow d-escrow-going d-none">
+    <div class="alert alert-secondary text d-escrow" role="alert">
+        You have paid for it. The fund is now in the contract. If you want to dispute, please do it within the escrow time. Thanks.
+    </div>
+</div>
+<div class="container d-buyer d-escrow d-escrow-done d-none">
+    <div class="alert alert-secondary text d-escrow" role="alert">
+        The escrow time is up. Now the seller can fetch fund from the contract. Thanks.
+    </div>
+</div>
+<div class="container d-other d-closed d-closed-resolved d-closed-sold d-none">
+    <div class="alert alert-secondary text" role="alert">
+        This product has been sold.
+    </div>
+</div>
+<div class="container d-buyer d-closed d-closed-sold d-none">
+    <div class="alert alert-secondary text" role="alert">
+        You have successfully paid for this product.
+    </div>
+</div>
+<div class="container d-buyer d-closed d-closed-resolved d-none">
+    <div class="alert alert-secondary text" role="alert">
+        Your dispute has been successfully resolved. You wins.
+    </div>
+</div>
+<div class="container d-seller d-closed d-closed-sold d-none">
+    <div class="alert alert-secondary text" role="alert">
+        You have received the fund for this product.
+    </div>
+</div>
+<div class="container d-seller d-other d-closed d-closed-resolved d-none">
+    <div class="alert alert-secondary text" role="alert">
+        The dispution has been resolved.
     </div>
 </div>
     
-
-<div class="container" style="display:none" id="seller-panel">
+<div class="container" id="seller-panel">
+    <div class="container d-seller d-escrow d-escrow-disputing d-none">
+        <p>The buyer have disputed. The fund will be in the contract unless the dispute is solved. You can click the refund button to transfer fund back to the user.</p>
+    </div>
     <hr/>
-    <div>
+    <div class="do-edit d-seller d-open d-unlisting d-none">
         <button id="addImage-link" class="btn btn-info" onclick="addImage()">Add product image</button>
         <button id="setPrice-link" class="btn btn-info" onclick="setPrice()">Add or update price</button>
-        <button id="refund-submit" class="btn btn-primary" onclick="refund()">Refund buyer</button>
-        <button id="close-submit" class="btn btn-primary" onclick="closeBySeller()">Receive fund</button>
+       
+    </div>
+    <div class="do-unlist d-seller d-open d-none">
+        <button id="unlist-product" class="btn btn-primary" onclick="unlist()">Unlist product</button>
+    </div>
+    <div class="do-relist d-seller d-unlisting d-none">
+        <button id="relist-product" class="btn btn-primary" onclick="relist()">Relist product</button>        
+    </div>
+    <div class="do-refund d-seller d-escrow d-escrow-going d-escrow-disputing d-none">
+         <button id="refund-submit" class="btn btn-primary " onclick="refund()">Refund buyer</button>
+    </div>
+    <div class="d-seller d-escrow d-escrow-done d-none">
+        <button id="close-refund-submit" class="btn btn-primary" onclick="closeBySeller()">Receive fund</button>
     </div>
 </div>
 

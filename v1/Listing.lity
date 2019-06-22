@@ -104,6 +104,10 @@ contract Listing {
         seller_mesg = _seller_mesg;
     }
 
+    function getSellerMesg () public view returns(string) {
+        return seller_mesg;
+    }
+
     function addImage (string _image_url) external onlyOwner {
         require(status == 0 || status == 1);
         image_urls.push(_image_url);
