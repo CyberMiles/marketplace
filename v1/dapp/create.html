@@ -36,11 +36,11 @@
                 <form id="img-form" method="post" action="https://api.cloudinary.com/v1_1/dgvnn4efo/image/upload" enctype="multipart/form-data" >
                   <fieldset>
                      <p style="display: none">
-                      <input type="text" name="upload_preset" value="fairplay" style="display: none">
+                      <input type="text" name="upload_preset" value="openbay" style="display: none">
                     </p>
                     <div class="image-upload-wrap">
                     <label>
-                     <input id="selected-img" class="file-upload-input" type="file" name="file" accept="image/*" onchange="uploadPic()" onclick="changeBoxCSS();" onblur="changeBoxCSS();"></label>
+                     <input id="selected-img" class="file-upload-input" type="file" name="file" accept="image/*" onchange="uploadPic()" onclick="changeBoxCSS();" onblur="changeBoxCSS();" multiple></label>
                     <div class="drag-text">
                       <h3 data-translate="select_pic">Select your picture</h3>
                     </div>

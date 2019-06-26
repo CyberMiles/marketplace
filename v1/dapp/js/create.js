@@ -26,7 +26,7 @@ var create = function () {
             var title = $('#title').val();
             var desc = $('#desc').val();
             // var imageUrl = $('#imageUrl').val();
-            var imageUrl = $('#uploaded').attr("src");
+            var imageUrl = ($('#uploaded').attr("src") == undefined) ? "" : $('#uploaded').attr("src");
             var escrow = _default.escrow;
             var tags = $('#tags').val();
             var categories = $('#categories').val();

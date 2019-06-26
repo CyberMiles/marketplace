@@ -20,33 +20,34 @@ var imagesCount = '';
 $(function () {
     getAbi();
     getBin();
-
-    var interval = setInterval(function () {
-        if (abi.length > 0) {
+    var checkABIandGetInfo = function(){
+      if( abi.length > 0 && web3 != undefined) {
+        console.log("getInfo")
             getInfo();
-            clearInterval(interval);
-        }
-    }, 50);
+      }
+        else setTimeout( checkABIandGetInfo, 50 );
+    }
+    checkABIandGetInfo(); //immediate first run 
+
 });
 
-var initBuyer = (buyerPanel, buyer) => {
-    // buyerPanel.removeClass("d-none").find("input,textarea,select").attr("disabled", true)
-    // buyerPanel.find("#name-field").val(buyer.name)
-    // buyerPanel.find("#mesg-field").val(buyer.msg)
-    // var cc = buyer.contact.split(":");
-    // buyerPanel.find('#contact-app-field').val(cc[0].trim());
-    // buyerPanel.find('#contact-id-field').val(cc[1].trim());
+var initBuyer = (buyer) => {
 
-    // buyerPanel.find('h3').text("Buyer Infomation")
-    // buyerPanel.find('label').hide()
-    // buyerPanel.find('#buy-submit').hide()
-
-    //TODO price setting
+    updatePanel = $("#update-buyer-panel")
+    updatePanel.find("#update-name-field").val(buyer.name)
+    updatePanel.find("#update-mesg-field").val(buyer.msg)
+    var cc = buyer.contact.split(":");
+    if(cc.length == 2){
+        updatePanel.find('#update-contact-app-field').val(cc[0].trim());
+        updatePanel.find('#update-contact-id-field').val(cc[1].trim())
+    }
     buyerInfoStr = "addr: " + buyer.addr + "<br>" + 
                    "name: " + buyer.name + "<br>" +
                    "remark: " + buyer.msg  + "<br>" +
                    "payment date: " + new Date(buyer.boughtTime*1000) + "<br>" +
-                   "contact: " + buyer.contact + "<br>"
+                   "contact: " + buyer.contact + "<br>" + 
+                   "token name: " + buyer.token_name + "<br>" +
+                   "token amount: " + buyer.token_amount
     $(".buyer-info").append(buyerInfoStr)
 
 }
@@ -67,15 +68,26 @@ var getInfo = function () {
                 if (e) {
                     console.log(e);
                 } else {
-                    var status = r[0];
-                    $('#title-div').text(r[1]);
-                    $('#desc-panel').text(r[2]);
-                    var escrowDuration = r[3];
-                    $('#escrow').text(escrowDuration);
-                    imagesCount = r[4];
-                    var pricesCount = r[5];
-                    ownerAddress = r[6].toString();
-                    buyerAddress = r[7].toString();
+                    const tradingInfo = {
+                        status: r[0],
+                        title: r[1],
+                        desc: r[2],
+                        tags: r[3],
+                        categories: r[4],
+                        escrowDuration: r[5],
+                        imagesCount: r[6],
+                        pricesCount: r[7],
+                        ownerAddress: r[8].toString(),
+                        buyerAddress: r[9].toString(),
+                    }
+
+                    var status = tradingInfo.status;
+                    $('#title-div').text(tradingInfo.title);
+                    $('#desc-panel').text(tradingInfo.desc);
+                    $('#escrow').text(tradingInfo.escrowDuration);
+                    imagesCount = tradingInfo.imagesCount;
+                    ownerAddress = tradingInfo.ownerAddress;
+                    buyerAddress = tradingInfo.buyerAddress;
 
 
                     $('#creator').text(ownerAddress);
@@ -90,85 +102,142 @@ var getInfo = function () {
                         }
                     }else if (status == 1) {//open to buy
                         if(userAddress == ownerAddress){
-                            //1. edit
-                            //2. unlist
-                            //3. buy?
                             $('.d-seller.d-open').removeClass("d-none")
                         }else{
                             $('.d-other.d-open').removeClass("d-none")
                         }
-                    } else if (status == 2) {//buyer in escrow
-                        if (buyerAddress != userAddress && userAddress != ownerAddress) {
+                    } else if (status == 2) {//buyer locked
+                        if (userAddress != buyerAddress && userAddress != ownerAddress) {
                             $('.d-other.d-escrow').removeClass('d-none');
                         }
                         //other cases dealt in "instance.buyerInfo"
-                    } else if (status == 3) {
+                    } else if (status == 3 || status == 4 || status == 5) {
                         if (userAddress != buyerAddress && userAddress != ownerAddress) {
-                            $(".d-other.d-closed.d-closed-sold").removeClass('d-none')
+                            $(".d-other.d-closed.d-closed-sold").removeClass('d-none') //for others, all is sold
                         }
                         //other cases dealt in "instance.buyerInfo"
-                    }
+                    } 
 
                     instance.buyerInfo (function (be, br) {
                         if (be) {
                             console.log(be);
                         } else {
-                            var buyer = {
-                                addr: br[0],
-                                boughtTime: br[1],
-                                name: br[5],
-                                contact: br[6],
-                                msg: br[7],
-                            }
-                            var dispute = br[3];
-                            //check if time is up to receive
-                            var expiredTime = parseInt(br[1]) + parseInt(escrowDuration)
-                            if (expiredTime.toString().length == 10) {
-                                var expiredDate = new Date(expiredTime * 1000);
-                            } else if (expiredTime.toString().length == 13) {
-                                var expiredDate = new Date(expiredTime);
-                            }
-                            var currentDate = new Date()
-                            console.log(expiredDate)
-                            currentDate > expiredDate ? escrowDone = true : escrowDone = false
-                            if (status == 2) {
-                                //init the buyer info panel
-                                if (userAddress == ownerAddress) {
-                                    initBuyer($("#buy-panel"), buyer)
-                                    if(dispute){
-                                        $(".d-seller.d-escrow.d-escrow-disputing").removeClass('d-none')                                    
-                                    }else{
+                            if(br[0] != "0x0000000000000000000000000000000000000000"){
+                                token_crc20 = br[8]
+                                if (token_crc20 == "0x0000000000000000000000000000000000000000") {
+                                    token_name = "CMT";
+                                    token_amount = web3.fromWei(br[9]);
+                                } else if (token_crc20 == "0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a") {
+                                    token_name = "OPB";
+                                    token_amount = (parseInt(br[9]) / 100).toString();
+                                }
+
+                                var buyer = {
+                                    addr: br[0],
+                                    boughtTime: br[1],
+                                    dispute: br[3],
+                                    name: br[5],
+                                    contact: br[6],
+                                    msg: br[7],
+                                    token_name: token_name,
+                                    token_amount: token_amount,
+                                }
+                                //check if time is up to receive
+                                var expiredTime = parseInt(buyer.boughtTime) + parseInt(tradingInfo.escrowDuration)
+                                if (expiredTime.toString().length == 10) {
+                                    var expiredDate = new Date(expiredTime * 1000);
+                                } else if (expiredTime.toString().length == 13) {
+                                    var expiredDate = new Date(expiredTime);
+                                }
+                                var currentDate = new Date()
+                                console.log(expiredDate)
+                                currentDate > expiredDate ? escrowDone = true : escrowDone = false
+                                initBuyer(buyer)
+                                
+                                if (status == 2) {
+                                    //init the buyer info panel
+                                    if (userAddress == ownerAddress) {
                                         if(escrowDone){
                                             $(".d-seller.d-escrow.d-escrow-done").removeClass('d-none')
                                         }else{
                                             $(".d-seller.d-escrow.d-escrow-going").removeClass('d-none')
                                         }     
+                                       
                                     }
-                                   
-                                }
-                                if (userAddress == buyerAddress) {
-                                    initBuyer($("#buy-panel"), buyer)
-                                    // TODO: allow user to update info(when?)
-                                    if (dispute) {
-                                        $(".d-buyer.d-escrow.d-escrow-disputing").removeClass('d-none')                                    
-                                    } else {
+                                    if (userAddress == buyerAddress) {
+                                        // TODO: allow user to update info(when?)
                                         if(escrowDone){
                                             $(".d-buyer.d-escrow.d-escrow-done").removeClass('d-none')
                                         }else{
                                             $(".d-buyer.d-escrow.d-escrow-going").removeClass('d-none')
                                         }
                                     }
-                                }
+                                } else if (status == 3){
+
+                                    if(userAddress == ownerAddress) {
+                                        $(".d-seller.d-disputing").removeClass("d-none")
+                                    }
+                                    if(userAddress == buyerAddress){
+                                        $(".d-buyer.d-disputing").removeClass("d-none")
+                                    }
+                                } else if (status == 4 || status == 5){
+                                    instance.secondaryBuyerInfo(function(e, other_br){
+                                        refundedReason = other_br[0]
+                                        closedReason = other_br[1]
+                                        if (status == 4) {
+                                            if (buyer.dispute) {
+                                                if (closedReason == 2) { // resolve by buyer
+                                                    if (userAddress == ownerAddress) {
+                                                        $(".d-seller.d-closed.d-closed-resolve-disputed").removeClass("d-none")
+                                                    }
+                                                    if (userAddress == buyerAddress) {
+                                                        $(".d-buyer.d-closed.d-closed-resolve-disputed").removeClass("d-none")
+                                                    }
+                                                } else if (closedReason == 1) { // resolve by DAO
+
+                                                }
+                                                
+                                            }else{
+                                                if (userAddress == ownerAddress) {
+                                                    $(".d-seller.d-closed.d-closed-sold").removeClass("d-none")
+                                                }   
+                                                if (userAddress == buyerAddress) {
+                                                    $(".d-buyer.d-closed.d-closed-sold").removeClass("d-none")
+                                                }    
+                                            }
+                                            
+                                        }else if (status == 5) {
+                                            if(buyer.dispute){
+                                                if (closedReason == 0) {
+                                                    //refund by buyer
+                                                     if (userAddress == ownerAddress) {
+                                                        $(".d-seller.d-closed-buyer.d-closed-refund-disputed").removeClass("d-none")
+                                                    }
+                                                    if (userAddress == buyerAddress) {
+                                                        $(".d-buyer.d-closed-buyer.d-closed-refund-disputed").removeClass("d-none")
+                                                    }
+                                                } else if (closedReason == 1) {
+                                                    //resolve by DAO
+                                                }
+                                            }else{
+                                                //only buyerlocked state to buyerrefunded (refunded by buyer)
+                                                if(userAddress == ownerAddress) {
+                                                    console.log("refund")
+                                                    $(".d-seller.d-closed-buyer.d-closed-refund-direct").removeClass("d-none")
+                                                }
+                                                if(userAddress == buyerAddress){
+                                                    $(".d-buyer.d-closed-buyer.d-closed-refund-direct").removeClass("d-none")
+                                                }
+                                            }
+                                            
+                                        }
+                                        
+                                        
+                                    })
+                                    
+                                }     
                             }
-                            
-                            // soldTime = br[2]; //sold time (if the state is closed because of "resolve" , the sold time should be 0)
-                            // soldTime == 0 ? resolved = true : resolved = false
-                            if (userAddress == ownerAddress && status == 3) {
-                                $(".d-seller.d-closed.d-closed-sold").removeClass("d-none")
-                            }   
-                            if (userAddress == buyerAddress && status == 3) {
-                                $(".d-buyer.d-closed.d-closed-sold").removeClass("d-none")
-                            }         
+                                 
                         }
                     });
 
@@ -184,7 +253,7 @@ var getInfo = function () {
                     }
 
                     var price_options = "";
-                    for (i = 0; i < pricesCount; i++) {
+                    for (i = 0; i < tradingInfo.pricesCount; i++) {
                         instance.getPrice (i, function (e_price, r_price) {
                             if (e_price) {
                                 console.log(e_price);
@@ -259,7 +328,7 @@ var buy = function () {
         var crc20 = $("#prices-select").val();
         if (crc20 == "0x0000000000000000000000000000000000000000") {
             instance.buyWithCMT(name, contact, mesg, {
-                gas: '200000',
+                gas: '400000',
                 gasPrice: 0,
                 value: tokens[crc20]
             }, function (e, result) {
@@ -300,6 +369,27 @@ var buy = function () {
                 }
             }); // approve
         }
+}
+
+var updateBuyerInfo = () => {
+    var contactApp = $("#update-contact-app-field").val();
+    var contactId = $("#update-contact-id-field").val();
+    var contact = contactApp + ": " + contactId;
+    var name = $("#update-name-field").val();
+    var mesg = $("#update-mesg-field").val();
+    console.log(name, contact, mesg)
+    instance.updateBuyer(name, contact, mesg, {
+        gas: '400000',
+        gasPrice: 0
+    }, function(e, result){
+        if (e) {
+            console.log(e);
+        } else {
+            setTimeout(function () {
+                window.location.reload(true);
+            }, 20 * 1000);
+        }  
+    })
 }
 
 var closeBySeller = function () {
