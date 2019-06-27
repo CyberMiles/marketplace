@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.css">
+
+    <link rel="stylesheet" type="text/css" href="css/listing.css">
     <title>Buy</title>
 </head>
 
@@ -17,6 +19,13 @@
     <div>
         <p id="image-img"></p>
         <h3 id="title-div">... ...</h3>
+    </div>
+    <ul id="tags">
+        
+    </ul>
+    <div>
+        <p>Categories:</p>
+        <p id="categories"></p>
     </div>
     <div>
         <p id="price-desc"></p>
@@ -35,6 +44,11 @@
         <dd class="col-sm-9" id="escrow">... ...</dd>
     </dl>
     <hr/>
+</div>
+<div class="container do-unlist d-seller d-open d-none">
+    <p>
+        <button id="unlist-product" class="btn btn-primary" onclick="unlist()">Unlist product</button>
+    </p>
 </div>
 <div class="container d-buyer d-seller d-escrow d-escrow-going d-escrow-done d-disputing d-closed d-closed-resolve-disputed d-closed-sold d-closed-buyer d-closed-refund-disputed d-closed-refund-direct d-none">
     <p>Buyer Info:</p>
@@ -109,9 +123,35 @@
         <textarea class="form-control" id="update-mesg-field" rows="2" placeholder="Leave a message"></textarea>
     </div>
     <div>
-        <button id="buy-submit" class="btn btn-primary" onclick="updateBuyerInfo()">Update</button>
+        <button id="update-buy-submit" class="btn btn-primary" onclick="updateBuyerInfo()">Update</button>
     </div>
 
+</div>
+<div class="container d-seller d-open d-unlisting d-none" id="update-product-panel">
+    <p>Update Product Info:</p>
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="update-title">
+    </div>
+    <div class="form-group">
+        <label for="desc">Description</label>
+        <input type="text" class="form-control" id="update-desc">
+    </div>
+    <div class="form-group">
+        <label for="escrow">Escrow Time</label>
+        <input type="text" class="form-control" id="update-escrow-time">
+    </div>
+    <div class="form-group">
+        <label for="tags">Tags</label>
+        <input type="text" class="form-control" id="update-tags">
+    </div>
+<!--     <div class="form-group">
+        <label for="categories">Categories</label>
+        <input type="text" class="form-control" id="update-categories">
+    </div> -->
+    <div>
+        <button id="update-product-submit" class="btn btn-primary" onclick="updateListing()">Update</button>
+    </div>
 </div>
 
 <div class="container d-buyer d-seller d-escrow d-escrow-going d-disputing d-none" id="seller-mesg-text">
@@ -252,11 +292,9 @@
     <div class="do-edit d-seller d-open d-unlisting d-none">
         <button id="addImage-link" class="btn btn-info" onclick="addImage()">Add product image</button>
         <button id="setPrice-link" class="btn btn-info" onclick="setPrice()">Add or update price</button>
-       
+        <button id="setPrice-link" class="btn btn-info" onclick="setPrice()">Add or update price</button>
     </div>
-    <div class="do-unlist d-seller d-open d-none">
-        <button id="unlist-product" class="btn btn-primary" onclick="unlist()">Unlist product</button>
-    </div>
+    
     <div class="do-relist d-seller d-unlisting d-none">
         <button id="relist-product" class="btn btn-primary" onclick="relist()">Relist product</button>        
     </div>

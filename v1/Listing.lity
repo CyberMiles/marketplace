@@ -44,6 +44,14 @@ contract Listing {
     }
     Price[] prices;
 
+    struct MsgPiece {
+        address addr;
+        uint tmstp;
+        string content;
+    }
+
+    MsgPiece[] messageBoard;
+
     enum TradingStatus {Unlisting, Listing, LockedByBuyer, Dispute, BuyerPaid, BuyerRefunded}
 
     TradingStatus private status;
@@ -52,9 +60,10 @@ contract Listing {
     string private tags;
     string private categories;
     uint private escrow_period;
-    string [] image_urls;
+    string private seller_contact;
+    string image_urls;
     
-    string private seller_mesg;
+    // string private seller_mesg;
 
     modifier onlyOwner() {
         assert(msg.sender == owner);
@@ -66,7 +75,7 @@ contract Listing {
         _;
     }
 
-    constructor (string _title, string _desc, string _tags, string _categories, string _image_url, uint _escrow_period, address _crc20, uint _amount) public {
+    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20, uint _amount) public {
         require(_amount > 0);
 
         owner = msg.sender;
@@ -74,20 +83,23 @@ contract Listing {
         desc = _desc;
         tags = _tags;
         categories = _categories;
-        image_urls.push(_image_url);
+        seller_contact = _seller_contact;
+        image_urls = _image_urls;
         escrow_period = _escrow_period;
         prices.push(Price(_crc20, _amount));
 
         status = TradingStatus.Listing;
     }
     
-    function updateListing (string _title, string _desc, string _tags, string _categories, uint _escrow_period) external onlyOwner {
+    function updateListing (string _title, string _desc, string _tags, string _image_urls, string _contact, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2) external onlyOwner {
         require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);
         title = _title;
         desc = _desc;
         tags = _tags;
-        categories = _categories;
-        escrow_period = _escrow_period;
+        image_urls = _image_urls;
+        seller_contact = _contact;
+        setPrice(_crc20_1, _amount_1);
+        setPrice(_crc20_2, _amount_2);
     }
 
     function setTitle (string _title) external onlyOwner {
@@ -115,33 +127,33 @@ contract Listing {
         escrow_period = _escrow_period;
     }
     
-    function setSellerMesg (string _seller_mesg) external onlyOwner {
-        seller_mesg = _seller_mesg;
-    }
+    // function setSellerMesg (string _seller_mesg) external onlyOwner {
+    //     seller_mesg = _seller_mesg;
+    // }
 
-    function getSellerMesg () public view returns(string) {
-        return seller_mesg;
-    }
+    // function getSellerMesg () public view returns(string) {
+    //     return seller_mesg;
+    // }
 
-    function addImage (string _image_url) external onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-        image_urls.push(_image_url);
-    }
+    // function addImage (string _image_url) external onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
+    //     image_urls.push(_image_url);
+    // }
 
-    function getImagesCount() public view returns(uint) {
-        return image_urls.length;
-    }
+    // function getImagesCount() public view returns(uint) {
+    //     return image_urls.length;
+    // }
 
-    function getImage(uint index) public view returns(string) {
-        return (image_urls[index]);
+    function getImage() public view returns(string) {
+        return (image_urls);
     }
     
-    function setImage (string _image_url, uint index) external onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-        image_urls[index] = _image_url;
-    }
+    // function setImage ( uint index, string _image_url) public onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
+    //     image_urls[index] = _image_url;
+    // }
 
-    function setPrice (address _crc20, uint _amount) external onlyOwner {
+    function setPrice (address _crc20, uint _amount) public onlyOwner {
         require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
 
         bool needUpdate = false;
@@ -165,7 +177,12 @@ contract Listing {
     function getPrice(uint index) public view returns(address, uint) {
         return (prices[index].crc20, prices[index].amount);
     }
-    
+
+    function pushMsg(string words) public {
+        
+        messageBoard.push(MsgPiece(msg.sender, now, words));
+    }
+
     function buyWithCMT (string _name, string _contact, string _mesg) payable public {
         require(status == TradingStatus.Listing);
 
@@ -314,8 +331,8 @@ contract Listing {
         status = TradingStatus.Listing;
     }
 
-    function info () view public returns (uint, string, string, string, string, uint, uint, uint, address, address) {
-        return (uint256(status), title, desc, tags, categories, escrow_period, image_urls.length, prices.length, owner, buyer.addr);
+    function info () view public returns (uint, string, string, string, string, uint, string, uint, address, address) {
+        return (uint256(status), title, desc, tags, categories, escrow_period, image_urls, prices.length, owner, buyer.addr);
     }
 
     //InternalCompilerError: Stack too deep, try using fewer variables.
@@ -325,6 +342,14 @@ contract Listing {
     
     function secondaryBuyerInfo () view public returns (string, uint) { //if the contract has not been closed, these info is meaningless
         return (buyer.refunded_reason, uint256(buyer.closedReason));
+    }
+
+    function getMessagesCount() view public returns (uint) {
+        return messageBoard.length;
+    }
+
+    function showMessageBoard(uint idx) view public returns(address, uint, string) {
+        return (messageBoard[idx].addr, messageBoard[idx].tmstp, messageBoard[idx].content);
     }
 
     function kill() public onlyOwner {

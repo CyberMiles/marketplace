@@ -52,6 +52,16 @@ var initBuyer = (buyer) => {
 
 }
 
+var initTags = (tags) => {
+    tagsArr = tags.split(",")
+    $.each(tagsArr, function(idx, tag){
+        console.log(tag.trim())
+        $('#tags').append("<li>" + tag.trim() + "</li>")
+
+    })
+
+}
+
 var getInfo = function () {
     $('#info-panel').css("display", "block");
 
@@ -85,6 +95,8 @@ var getInfo = function () {
                     $('#title-div').text(tradingInfo.title);
                     $('#desc-panel').text(tradingInfo.desc);
                     $('#escrow').text(tradingInfo.escrowDuration);
+                    initTags(tradingInfo.tags)
+                    $("#categories").text(tradingInfo.categories)
                     imagesCount = tradingInfo.imagesCount;
                     ownerAddress = tradingInfo.ownerAddress;
                     buyerAddress = tradingInfo.buyerAddress;
@@ -247,7 +259,8 @@ var getInfo = function () {
                             if (e_img) {
                                 console.log(e_img);
                             } else {
-                                $('#image-img').append('<img src="' + r_img + '" class="img-fluid img-thumbnail">');
+                                imgSrc = r_img.split("upload/").join("upload/q_auto/")
+                                $('#image-img').append('<img src="' + imgSrc + '" class="img-fluid img-thumbnail">');
                             }
                         }); // getImage
                     }
@@ -510,6 +523,25 @@ var setSellerMesg = function (mesg) {
             }, 20 * 1000);
         }
     });   
+}
+
+var updateListing = function () {
+    var newTitle = $("#update-title").val()
+    var newDesc = $("#update-desc").val()
+    var newEscrow = $("#update-escrow-time").val()
+    var newTags = $("#update-tags").val()
+    instance.updateListing (newTitle, newDesc, newTags, "", newEscrow, {
+        gas: '400000',
+        gasPrice: 0
+    }, function (e, result) {
+        if (e) {
+            console.log(e);
+        } else {
+            setTimeout(function () {
+                window.location.reload(true);
+            }, 20 * 1000);
+        }
+    })
 }
 
 var addImage = function () {
