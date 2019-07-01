@@ -1,0 +1,59 @@
+<template>
+  <footer>
+    <a class="entry" href="">Home</a>
+    <a class="entry" href="">Profile</a>
+    <button class="new-btn">
+      <span class="plus-icon"></span>
+    </button>
+  </footer>
+</template>
+
+<style lang="stylus">
+footer
+  position fixed
+  bottom 0
+  z-index 99
+  width 100%
+  display flex
+  justify-content space-around
+  height (49/16)rem
+  box-shadow 0 -0.5px 0 0 #e5e5e5;
+  background-color rgba(250, 250, 250, 0.9);
+  .entry
+    height (49/16)rem
+    padding-top (34/16)rem
+    width (49/16)rem
+    text-align center
+    text-decoration none
+    font-size (10/16)rem
+    color #999999
+  .new-btn
+    position absolute
+    left 50%
+    margin-left (-22/16)rem
+    top (-22/16)rem
+    width (44/16)rem
+    height (44/16)rem
+    border-radius 50%
+    box-shadow 0 0 7px 0 rgba(255, 63, 15, 0.3)
+    background-image linear-gradient(to left, #ff7777, #ff3f0f)
+    .plus-icon
+      position absolute
+      top 50%
+      margin-top (-2.1/2/16)rem
+      left 50%
+      margin-left (-16.9/2/16)rem
+      width (16.9/16)rem
+      height (2.1/16)rem
+      background-color #fff
+      &:after
+        content ""
+        position absolute
+        top 50%
+        margin-top (-16.9/2/16)rem
+        left 50%
+        margin-left (-2.1/2/16)rem
+        width (2.1/16)rem
+        height (16.9/16)rem
+        background-color #fff
+</style>
