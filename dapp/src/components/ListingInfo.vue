@@ -8,7 +8,7 @@
         <div>
             <p id="image-img"></p>
         <div>
-            <p id="price-desc"> {{ ProductInfo.price }} </p>
+            <p id="price-desc"> $ {{ ProductInfo.USDprice }} </p>
         </div>
         </div>
         <h3 id="title-div"> {{ ProductInfo.title }} </h3>
@@ -49,7 +49,7 @@ export default {
                 desc: null,
                 seller: null,
                 contact: null,
-                price: null
+                USDprice: null
             }
         }
     },
@@ -85,7 +85,7 @@ export default {
                                         tags: r[3].split(","),
                                         escrowDuration: r[5],
                                         images: r[6].split(","),
-                                        pricesCount: r[7],
+                                        USDprice: (parseInt(r[7]) / 100).toString(),
                                         seller: r[8].toString(),
                                         buyerAddress: r[9].toString(),
                                         contact: r[4],
@@ -93,7 +93,7 @@ export default {
                                     console.log(that.ProductInfo)
                                     that.isSeller = (userAddress == that.ProductInfo.seller)
 
-                                    that.$emit('isSeller', that.isSeller)
+                                    that.$emit('tradingInfo', {isSeller: that.isSeller, status: that.ProductInfo.status})
                                 }
                             })
                         }
