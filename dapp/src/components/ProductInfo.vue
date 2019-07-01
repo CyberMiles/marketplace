@@ -98,6 +98,8 @@ export default {
                             var imageUrls = that.imageUrls.join(",")
                             console.log(imageUrls) 
                             
+                            that.amount = parseInt(parseFloat(that.amount) * 100); // the OPB is 2 decimals
+
                             var data = '0x' + contract.new.getData(that.title, that.desc, that.tags, that.categories, imageUrls, that.contact, that.escrowPeriod, that.crc20, that.amount, {data: Contracts.Listing.bin});
                             contract.new([that.title, that.desc, that.tags, that.categories, imageUrls, that.contact, that.escrowPeriod, that.crc20, that.amount], {
                                 from: userAddress,
