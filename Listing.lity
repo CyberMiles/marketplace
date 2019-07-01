@@ -332,7 +332,14 @@ contract Listing {
     }
 
     function info () view public returns (uint, string, string, string, string, uint, string, uint, address, address) {
-        return (uint256(status), title, desc, tags, categories, escrow_period, image_urls, prices.length, owner, buyer.addr);
+        //fetch USD price
+        uint USD_amount;
+        for (uint i = 0; i<prices.length; i++) {
+            if (prices[i].crc20 == 0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a) {
+                USD_amount = prices[i].amount;
+            }
+        }
+        return (uint256(status), title, desc, tags, seller_contact, escrow_period, image_urls, USD_amount, owner, buyer.addr);
     }
 
     //InternalCompilerError: Stack too deep, try using fewer variables.
