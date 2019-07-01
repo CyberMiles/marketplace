@@ -4,7 +4,8 @@
     <div class="home">
       <h1>MARKETPLACE</h1>
       <div class="search-field">
-        <input type="text" placeholder="Enter a search term or #tag" />
+        <input type="search" placeholder="Enter a search term or #tag" />
+        <span class="icon-search"></span>
       </div>
       <div class="cate-title">
         <h2>Popular Tags</h2>
@@ -150,8 +151,10 @@ import GoodListItem from "@/components/GoodListItem.vue";
 export default {
   name: "home",
   components: {
-    HelloWorld,
-  },
+    Header,
+    Footer,
+    GoodListItem
+  }
 };
 </script>
 
@@ -164,6 +167,7 @@ export default {
     letter-spacing 0.2rem
     margin 0 0 (15/16)rem
   .search-field
+    position relative
     input
       width 100%
       padding 0 0 0 (42/16)rem
@@ -172,6 +176,10 @@ export default {
       border-radius (4/16)rem
       border solid 1px #e5e5e5
       background-color #ffffff
+    .icon-search
+      position absolute
+      left (15/16)rem
+      top (12/16)rem
   .cate-title
     display flex
     justify-content space-between
