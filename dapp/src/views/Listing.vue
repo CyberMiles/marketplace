@@ -1,6 +1,6 @@
 <template>
   <div class="listing">
-    <ListingInfo v-on:tradingInfo="setNav"/>
+    <ListingInfo v-on:tradingInfo="setNav" />
     <component
       v-bind="{ contractAddr: contractAddr, status: status }"
       :is="footerComponent"
@@ -20,26 +20,26 @@ export default {
     SellerNav,
     BuyerNav
   },
-  data(){
+  data() {
     return {
       FooterNav: null,
       contractAddr: this.$route.params.contractAddr,
       status: null
-    }
+    };
   },
   methods: {
     setNav: function(tradingInfo) {
-      console.log(tradingInfo)
+      console.log(tradingInfo);
       if (tradingInfo.isSeller) {
-        this.FooterNav = "SellerNav"
+        this.FooterNav = "SellerNav";
       } else {
-        this.FooterNav = "BuyerNav"
+        this.FooterNav = "BuyerNav";
       }
-      this.status = parseInt(tradingInfo.status)
-    },
+      this.status = parseInt(tradingInfo.status);
+    }
   },
   computed: {
-    footerComponent: function () {
+    footerComponent: function() {
       return this.FooterNav;
     }
   }
