@@ -110,24 +110,25 @@ export default {
                                 } else {
                                     console.log(instance.address);
                                     if (instance.address != undefined) {
+                                        that.$router.push({path: `/listing/${instance.address}`})
                                         // window.location.href = "listing.html?contract=" + instance.address;
                                     } else {
-                                        var checkTransactionTimer = setInterval(function () {
-                                            web3.cmt.getTransactionReceipt(instance.transactionHash, function (error, result) {
-                                                if (!error) {
-                                                    if (result != null && result.status == '0x1') {
-                                                        clearInterval(checkTransactionTimer);
-                                                        if (result.contractAddress != undefined) {
-                                                            // window.location.href = "listing.html?contract=" + result.contractAddress;
-                                                        } else if (result.address != undefined) {
-                                                            // window.location.href = "listing.html?contract=" + result.address;
-                                                        } else {
-                                                            console.log("error here");
-                                                        }
-                                                    } 
-                                                }
-                                            })
-                                        }, 3000);
+                                        var filter = web3.cmt.filter("latest")
+                                        filter.watch(function(error, blockhash){
+                                            if (!error){
+                                                var txhash = instance.transactionHash
+                                                console.log(blockhash, txhash, instance)
+                                                web3.cmt.getBlock(blockhash, function(e,r){
+                                                    console.log(blockhash, txhash, r.transactions)
+                                                    //The filter will watch when the state is changing. As the trasaction has been mined, the instance.address is still undefined. So we need to wait for .instance.address state changed.
+                                                    if(instance.address != undefined && txhash.indexOf(r.transactions) != -1){
+                                                        filter.stopWatching()
+                                                        that.$router.push({path: `/listing/${instance.address}`})
+                                                    }
+                                                });
+                                            }
+                                        });
+
                                     }
                                 }
                             });

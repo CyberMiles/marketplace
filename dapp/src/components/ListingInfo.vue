@@ -41,6 +41,7 @@ export default {
     name: "ListingInfo",
     data(){
         return {
+            isSeller: false,
             ProductInfo: {
                 images: [],
                 title: null,
@@ -57,7 +58,8 @@ export default {
     },
     methods: {
         initProductInfo(){
-            var contract_address = this.$route.query.contract
+            var contract_address = this.$route.params.contractAddr
+            console.log(contract_address)
             var that = this
             //set timeout to check web3, because sometimes once mounted, the web3 hasn't been injected
             var checkWeb3 = function(){
@@ -86,10 +88,12 @@ export default {
                                         pricesCount: r[7],
                                         seller: r[8].toString(),
                                         buyerAddress: r[9].toString(),
-                                        contact: r[4]
+                                        contact: r[4],
                                     }
                                     console.log(that.ProductInfo)
+                                    that.isSeller = (userAddress == that.ProductInfo.seller)
 
+                                    that.$emit('isSeller', that.isSeller)
                                 }
                             })
                         }
@@ -99,9 +103,6 @@ export default {
                 }
             }
             checkWeb3(); //immediate first run 
-
-
-
         }
     }
 }
