@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Header>Marketplace</Header>
     <div class="home">
       <h1>MARKETPLACE</h1>
       <div class="search-field">
@@ -27,52 +26,37 @@
       </div>
       <div class="good-list">
         <GoodListItem>
-          <img
-            srcset="
-              https://via.placeholder.com/165x165,
-              https://via.placeholder.com/330x330 2x
-            "
-            src="https://via.placeholder.com/330x330"
-            alt="blabla"
+          <RespImg
+            src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
+            alt=""
+          />
           />
           <template v-slot:price>
             $110.00
           </template>
         </GoodListItem>
         <GoodListItem>
-          <img
-            srcset="
-              https://via.placeholder.com/165x165,
-              https://via.placeholder.com/330x330 2x
-            "
-            src="https://via.placeholder.com/330x330"
-            alt="blabla"
+          <RespImg
+            src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
+            alt=""
           />
           <template v-slot:price>
             $110.00
           </template>
         </GoodListItem>
         <GoodListItem>
-          <img
-            srcset="
-              https://via.placeholder.com/165x165,
-              https://via.placeholder.com/330x330 2x
-            "
-            src="https://via.placeholder.com/330x330"
-            alt="blabla"
+          <RespImg
+            src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
+            alt=""
           />
           <template v-slot:price>
             $110.00
           </template>
         </GoodListItem>
         <GoodListItem>
-          <img
-            srcset="
-              https://via.placeholder.com/165x165,
-              https://via.placeholder.com/330x330 2x
-            "
-            src="https://via.placeholder.com/330x330"
-            alt="blabla"
+          <RespImg
+            src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
+            alt=""
           />
           <template v-slot:price>
             $110.00
@@ -85,52 +69,36 @@
       </div>
       <div class="good-list">
         <GoodListItem sold="true">
-          <img
-            srcset="
-              https://via.placeholder.com/165x165,
-              https://via.placeholder.com/330x330 2x
-            "
-            src="https://via.placeholder.com/330x330"
-            alt="blabla"
+          <RespImg
+            src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
+            alt=""
           />
           <template v-slot:price>
             $110.00
           </template>
         </GoodListItem>
         <GoodListItem sold="true">
-          <img
-            srcset="
-              https://via.placeholder.com/165x165,
-              https://via.placeholder.com/330x330 2x
-            "
-            src="https://via.placeholder.com/330x330"
-            alt="blabla"
+          <RespImg
+            src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
+            alt=""
           />
           <template v-slot:price>
             $110.00
           </template>
         </GoodListItem>
         <GoodListItem sold="true">
-          <img
-            srcset="
-              https://via.placeholder.com/165x165,
-              https://via.placeholder.com/330x330 2x
-            "
-            src="https://via.placeholder.com/330x330"
-            alt="blabla"
+          <RespImg
+            src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
+            alt=""
           />
           <template v-slot:price>
             $110.00
           </template>
         </GoodListItem>
         <GoodListItem sold="true">
-          <img
-            srcset="
-              https://via.placeholder.com/165x165,
-              https://via.placeholder.com/330x330 2x
-            "
-            src="https://via.placeholder.com/330x330"
-            alt="blabla"
+          <RespImg
+            src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
+            alt=""
           />
           <template v-slot:price>
             $110.00
@@ -144,16 +112,16 @@
 
 <script>
 // @ is an alias to /src
-import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import GoodListItem from "@/components/GoodListItem.vue";
+import RespImg from "@/components/RespImg.vue";
 
 export default {
   name: "home",
   components: {
-    Header,
     Footer,
-    GoodListItem
+    GoodListItem,
+    RespImg
   }
 };
 </script>
