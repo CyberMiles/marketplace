@@ -16,12 +16,12 @@ export default {
 <style lang="stylus">
 html
   font-size 16px
+  color #191919
+  background-color #fafafa
 #app
   font-family -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
-  color #191919
-  background-color #fafafa
   &, *
     box-sizing border-box
     outline none
