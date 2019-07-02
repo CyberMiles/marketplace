@@ -1,6 +1,5 @@
 <template>
 <div class="create">
-    <p>Create page</p>
     <ProductInfo/>
 </div>
 </template>

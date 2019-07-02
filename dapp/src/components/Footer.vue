@@ -8,11 +8,22 @@
       <span class="icon-profile"></span>
       Profile
     </a>
-    <button class="new-btn">
+    <button class="new-btn" @click="goCreate">
       <span class="plus-icon"></span>
     </button>
   </footer>
 </template>
+
+<script>
+export default {
+  methods: {
+    goCreate() {
+      this.$router.push("create")
+    }
+  }
+};
+</script>
+
 
 <style lang="stylus">
 footer

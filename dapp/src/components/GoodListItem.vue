@@ -1,5 +1,5 @@
 <template>
-  <div class="good-list-item">
+  <div class="good-list-item" @click="goListing">
     <slot></slot>
     <div class="good-price">
       <slot name="price"></slot>
@@ -12,7 +12,12 @@
 
 <script>
 export default {
-  props: ["sold"]
+  props: ["sold", "contractAddr"],
+  methods: {
+    goListing() {
+      this.$router.push("listing/" + this.contractAddr)
+    }
+  }
 };
 </script>
 

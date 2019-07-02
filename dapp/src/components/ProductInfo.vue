@@ -72,6 +72,13 @@ export default {
     previewFiles(e) {
       console.log(event.target.files);
       var selectedFiles = e.target.files;
+      if (this.images.length +  selectedFiles.length > 4){
+        this.$swal({
+          html: "You are only allowed to upload a maximum of 4 files.",
+          width: "90%"
+        });
+        return 
+      }
       for (var i = 0; i < selectedFiles.length; i++) {
         this.images.push(selectedFiles[i]);
       }
@@ -195,7 +202,7 @@ export default {
 
 <style lang="stylus">
 .create-info
-  padding 0 (15/16)rem (60/16)rem
+  padding (20/16)rem (15/16)rem (60/16)rem
   .form-group
     padding 0 0 (20/16)rem
     label
