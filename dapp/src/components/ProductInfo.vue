@@ -1,41 +1,50 @@
 <template>
-  <div>
-    <input
-      type="file"
-      id="file"
-      ref="myFiles"
-      class="custom-file-input"
-      accept="image/*"
-      @change="previewFiles($event)"
-      multiple
-    />
-    <div v-for="(image, key) in images" :key="image.key">
-      <div>
+  <div class="create-info">
+    <label for="file">Image {{ images.length }}/4</label>    
+    <div class="form-group">
+      <div v-for="(image, key) in images" :key="image.key" class="preview-container">
         <img class="preview" v-bind:ref="'image' + parseInt(key)" />
-        {{ image.name }}
       </div>
+      <div v-if="images.length < 4" class="upload-container" @click="$refs.myFiles.click()">
+        <input
+          type="file"
+          id="file"
+          ref="myFiles"
+          class="custom-file-input"
+          accept="image/*"
+          @change="previewFiles($event)"
+          multiple
+        />
+      </div>
+      <img v-if="images.length < 4" src="../assets/imgs/plus.svg" @click="$refs.myFiles.click()" class="plus-btn" >
     </div>
+    
     <div class="form-group">
-      <label for="title">Title</label>
-      <input type="text" class="form-control" id="title" v-model="title" />
-    </div>
-    <div class="form-group">
-      <label for="desc">Description</label>
-      <input type="text" class="form-control" id="desc" v-model="desc" />
-    </div>
-    <div class="form-group">
-      <label for="amount">Price (USD)</label>
-      <input type="number" class="form-control" id="amount" v-model="amount" />
+      <label for="title">Name</label>
+      <input type="text" class="form-control" id="title" placeholder="What are you selling" v-model="title" />
     </div>
     <div class="form-group">
       <label for="tags">Tags</label>
-      <input type="text" class="form-control" id="tags" v-model="tags" />
+      <input type="text" class="form-control" id="tags" placeholder="Such as BTC; Space out" v-model="tags" />
+    </div>
+    <div class="form-group">
+      <label for="desc">Description</label>
+      <textarea rows="3" type="text" class="form-control" id="desc" placeholder="Describe your product in as much detail as possible" v-model="desc" />
+    </div>
+    <div class="form-group">
+      <label for="amount">Price</label>
+      <div>
+        <input type="number" class="form-control" id="amount" min="0" value="10" v-model="amount" />
+        <div class="price-unit-container">
+          <span class="price-unit">USD</span>
+        </div>
+      </div>
     </div>
     <div class="form-group">
       <label for="contact">Contact Info</label>
-      <input type="text" class="form-control" id="contact" v-model="contact" />
+      <input type="text" class="form-control" id="contact" placeholder="Email. Buyer contacts you." v-model="contact" />
     </div>
-    <a href="#" class="create-btn" @click="createTrading">List</a>
+    <a href="#" class="create-btn" @click="createTrading"><span>List</span></a>
   </div>
 </template>
 
@@ -79,7 +88,7 @@ export default {
               .post("https://api.cloudinary.com/v1_1/dgvnn4efo/image/upload", {
                 file: reader.result,
                 name: this.images[i].name,
-                upload_preset: "openbay"
+                upload_preset: "marketplace"
               })
               .then(function(result) {
                 console.log(result);
@@ -183,3 +192,69 @@ export default {
   }
 };
 </script>
+
+<style lang="stylus">
+.create-info
+  padding 0 (15/16)rem (60/16)rem
+  .form-group
+    padding 0 0 (20/16)rem
+    label
+      font-size (15/16)rem
+    .upload-container 
+      margin-top (10/16)rem
+      width (100/16)rem
+      height (100/16)rem
+      border-radius 8px
+      background-color #f0f0f0
+      display inline-block
+      position relative
+      #file
+        display none
+    .plus-btn 
+      position relative
+      top -(40/16)rem
+      right (60/16)rem
+    .preview-container
+      margin (10/16)rem (10/16)rem (10/16)rem 0
+      display inline-block
+      .preview
+        width (100/16)rem
+        height (100/16)rem
+        border-radius 8px
+        display inline-block
+    input
+      width 100%
+      padding 0 (10/16)rem
+      height (40/16)rem
+      line-height (38/16)rem
+      border-radius (4/16)rem
+      border solid 0.5px #e5e5e5
+      background-color #ffffff
+      margin (10/16)rem 0 0 0
+    textarea
+      width 100%
+      padding (10/16)rem
+      line-height (22/16)rem
+      border-radius (4/16)rem
+      border solid 0.5px #e5e5e5
+      background-color #ffffff
+      margin (10/16)rem 0 0 0
+    .price-unit-container
+      position relative
+      top -(28/16)rem
+      .price-unit
+        position absolute 
+        right (25/16)rem
+  .create-btn
+    display flex
+    border-radius 4px;
+    box-shadow 0 0 7px 0 rgba(255, 63, 15, 0.3)
+    background-image linear-gradient(to left, #ff7777, #ff3f0f)
+    height (44/16)rem
+    text-decoration none
+    align-items center
+    justify-content center
+    span
+      font-size (17/16)rem
+      color #ffffff
+</style>

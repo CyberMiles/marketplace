@@ -13,7 +13,8 @@
     "core-js": "^2.6.5",
     "normalize-styl": "^4.1.1",
     "vue": "^2.6.10",
-    "vue-router": "^3.0.3"
+    "vue-router": "^3.0.3",
+    "vue-sweetalert2": "^2.1.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.8.0",

@@ -2,14 +2,17 @@
   <div id="seller-nav">
     <div v-if="status == 1">
       <button @click="unlist">Unlist</button>
+      <router-link to="/">Edit</router-link>
     </div>
-    <div v-else-if="status == relist">
+    <div v-else-if="status == 0">
       <button @click="relist">Relist</button>
+      <router-link to="/">Edit</router-link>
     </div>
-    <router-link to="/">Edit</router-link>
+    
   </div>
 </template>
 <script>
+
 export default {
   name: "SellerNav",
   props: {
@@ -17,7 +20,12 @@ export default {
     status: Number
   },
   methods: {
-    unlist() {}
+    unlist() {
+      this.$swal({
+        html: "Hello Vue world!!!",
+        width: "800px"
+      });
+    }
   }
 };
 </script>
