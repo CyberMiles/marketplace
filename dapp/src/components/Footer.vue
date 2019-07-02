@@ -18,12 +18,11 @@
 export default {
   methods: {
     goCreate() {
-      this.$router.push("create")
+      this.$router.push("create");
     }
   }
 };
 </script>
-
 
 <style lang="stylus">
 footer

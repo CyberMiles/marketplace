@@ -1,5 +1,5 @@
 <template>
-  <div class="good-list-item" @click="goListing">
+  <div class="goods-list-item" @click="goListing">
     <slot></slot>
     <div class="goods-price">
       <span><slot name="price"></slot></span>
@@ -15,7 +15,7 @@ export default {
   props: ["sold", "contractAddr"],
   methods: {
     goListing() {
-      this.$router.push("listing/" + this.contractAddr)
+      this.$router.push("listing/" + this.contractAddr);
     }
   }
 };

@@ -1,7 +1,7 @@
 <template>
-<div class="create">
-    <ProductInfo/>
-</div>
+  <div class="create">
+    <ProductInfo />
+  </div>
 </template>
 <script>
 // @ is an alias to /src

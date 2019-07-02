@@ -1,11 +1,19 @@
 <template>
   <div class="create-info">
-    <label for="file">Image {{ images.length }}/4</label>    
+    <label for="file">Image {{ images.length }}/4</label>
     <div class="form-group">
-      <div v-for="(image, key) in images" :key="image.key" class="preview-container">
+      <div
+        v-for="(image, key) in images"
+        :key="image.key"
+        class="preview-container"
+      >
         <img class="preview" v-bind:ref="'image' + parseInt(key)" />
       </div>
-      <div v-if="images.length < 4" class="upload-container" @click="$refs.myFiles.click()">
+      <div
+        v-if="images.length < 4"
+        class="upload-container"
+        @click="$refs.myFiles.click()"
+      >
         <input
           type="file"
           id="file"
@@ -16,25 +24,55 @@
           multiple
         />
       </div>
-      <img v-if="images.length < 4" src="../assets/imgs/plus.svg" @click="$refs.myFiles.click()" class="plus-btn" >
+      <img
+        v-if="images.length < 4"
+        src="../assets/imgs/plus.svg"
+        @click="$refs.myFiles.click()"
+        class="plus-btn"
+      />
     </div>
-    
     <div class="form-group">
       <label for="title">Name</label>
-      <input type="text" class="form-control" id="title" placeholder="What are you selling" v-model="title" />
+      <input
+        type="text"
+        class="form-control"
+        id="title"
+        placeholder="What are you selling"
+        v-model="title"
+      />
     </div>
     <div class="form-group">
       <label for="tags">Tags</label>
-      <input type="text" class="form-control" id="tags" placeholder="Such as BTC; Space out" v-model="tags" />
+      <input
+        type="text"
+        class="form-control"
+        id="tags"
+        placeholder="Such as BTC; Space out"
+        v-model="tags"
+      />
     </div>
     <div class="form-group">
       <label for="desc">Description</label>
-      <textarea rows="3" type="text" class="form-control" id="desc" placeholder="Describe your product in as much detail as possible" v-model="desc" />
+      <textarea
+        rows="3"
+        type="text"
+        class="form-control"
+        id="desc"
+        placeholder="Describe your product in as much detail as possible"
+        v-model="desc"
+      />
     </div>
     <div class="form-group">
       <label for="amount">Price</label>
       <div>
-        <input type="number" class="form-control" id="amount" min="0" value="10" v-model="amount" />
+        <input
+          type="number"
+          class="form-control"
+          id="amount"
+          min="0"
+          value="10"
+          v-model="amount"
+        />
         <div class="price-unit-container">
           <span class="price-unit">USD</span>
         </div>
@@ -42,7 +80,13 @@
     </div>
     <div class="form-group">
       <label for="contact">Contact Info</label>
-      <input type="text" class="form-control" id="contact" placeholder="Email. Buyer contacts you." v-model="contact" />
+      <input
+        type="text"
+        class="form-control"
+        id="contact"
+        placeholder="Email. Buyer contacts you."
+        v-model="contact"
+      />
     </div>
     <a href="#" class="create-btn" @click="createTrading"><span>List</span></a>
   </div>
@@ -72,12 +116,12 @@ export default {
     previewFiles(e) {
       console.log(event.target.files);
       var selectedFiles = e.target.files;
-      if (this.images.length +  selectedFiles.length > 4){
+      if (this.images.length + selectedFiles.length > 4) {
         this.$swal({
           html: "You are only allowed to upload a maximum of 4 files.",
           width: "90%"
         });
-        return 
+        return;
       }
       for (var i = 0; i < selectedFiles.length; i++) {
         this.images.push(selectedFiles[i]);
@@ -207,7 +251,7 @@ export default {
     padding 0 0 (20/16)rem
     label
       font-size (15/16)rem
-    .upload-container 
+    .upload-container
       margin-top (10/16)rem
       width (100/16)rem
       height (100/16)rem
@@ -217,7 +261,7 @@ export default {
       position relative
       #file
         display none
-    .plus-btn 
+    .plus-btn
       position relative
       top -(40/16)rem
       right (60/16)rem
@@ -250,7 +294,7 @@ export default {
       position relative
       top -(28/16)rem
       .price-unit
-        position absolute 
+        position absolute
         right (25/16)rem
   .create-btn
     display flex
