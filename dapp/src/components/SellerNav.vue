@@ -1,7 +1,9 @@
 <template>
   <div class="listing-info-nav">
     <button class="link" v-if="status == 1" @click="unlist">Unlist</button>
-    <button class="link" v-else-if="status == relist" @click="relist">Relist</button>
+    <button class="link" v-else-if="status == relist" @click="relist">
+      Relist
+    </button>
     <router-link class="action" to="/">Edit</router-link>
   </div>
 </template>
