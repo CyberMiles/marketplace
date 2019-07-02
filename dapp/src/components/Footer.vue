@@ -66,7 +66,7 @@ footer
     height (44/16)rem
     border 0
     border-radius 50%
-    box-shadow 0 0 7px 0 rgba(255, 63, 15, 0.3)
+    box-shadow 0 0 (7/16)rem 0 rgba(255, 63, 15, 0.3)
     background-image linear-gradient(to left, #ff7777, #ff3f0f)
     .plus-icon
       position absolute

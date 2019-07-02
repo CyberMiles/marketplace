@@ -1,7 +1,7 @@
 <template>
-  <div id="buyer-nav">
-    <router-link to="/">Contact Seller</router-link> |
-    <router-link :to="`/buy/${contractAddr}`" v-if="status == 1"
+  <div class="listing-info-nav">
+    <router-link class="link" to="/">Contact Seller</router-link>
+    <router-link class="action" :to="`/buy/${contractAddr}`" v-if="status == 1"
       >Buy Now</router-link
     >
     <button v-else>Sold</button>

@@ -1,8 +1,8 @@
 <template>
   <div class="good-list-item" @click="goListing">
     <slot></slot>
-    <div class="good-price">
-      <slot name="price"></slot>
+    <div class="goods-price">
+      <span><slot name="price"></slot></span>
     </div>
     <div class="sold" v-if="sold">
       <span>Sold</span>
@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style lang="stylus">
-.good-list-item
+.goods-list-item
   position relative
   width (165/16)rem
   height (165/16)rem
@@ -33,12 +33,14 @@ export default {
   img
     width (165/16)rem
     height (165/16)rem
-  .good-price
+  .goods-price
+    display flex
+    align-items center
     position absolute
     left (5/16)rem
     bottom (5/16)rem
     height (24/16)rem
-    line-height (24/16)rem
+    line-height 1
     padding 0 (5/16)rem
     border-radius (12/16)rem
     background-color #ff3f0f

@@ -36,6 +36,7 @@
             </template>
           </GoodListItem>
         </div>
+ 
       </div>
       <div class="cate-title">
         <h2>Just Sold</h2>
@@ -53,6 +54,7 @@
             </template>
           </GoodListItem>
         </div>
+ 
       </div>
     </div>
     <Footer></Footer>
@@ -62,7 +64,7 @@
 <script>
 // @ is an alias to /src
 import Footer from "@/components/Footer.vue";
-import GoodListItem from "@/components/GoodListItem.vue";
+import GoodsListItem from "@/components/GoodsListItem.vue";
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
 
@@ -75,7 +77,7 @@ export default {
   },
   components: {
     Footer,
-    GoodListItem,
+    GoodsListItem,
     RespImg
   },
   mounted() {
@@ -185,7 +187,7 @@ export default {
       color #666666
       background-color #f0f0f0
       text-decoration none
-  .good-list
+  .goods-list
     display flex
     flex-wrap wrap
     justify-content space-between
