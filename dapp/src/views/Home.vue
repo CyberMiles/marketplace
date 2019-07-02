@@ -24,8 +24,8 @@
         <h2>Latest</h2>
         <a class="more">View all (109)></a>
       </div>
-      <div class="good-list">
-        <GoodListItem>
+      <div class="goods-list">
+        <GoodsListItem>
           <RespImg
             src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
             alt=""
@@ -34,8 +34,8 @@
           <template v-slot:price>
             $110.00
           </template>
-        </GoodListItem>
-        <GoodListItem>
+        </GoodsListItem>
+        <GoodsListItem>
           <RespImg
             src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
             alt=""
@@ -43,8 +43,8 @@
           <template v-slot:price>
             $110.00
           </template>
-        </GoodListItem>
-        <GoodListItem>
+        </GoodsListItem>
+        <GoodsListItem>
           <RespImg
             src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
             alt=""
@@ -52,8 +52,8 @@
           <template v-slot:price>
             $110.00
           </template>
-        </GoodListItem>
-        <GoodListItem>
+        </GoodsListItem>
+        <GoodsListItem>
           <RespImg
             src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
             alt=""
@@ -61,14 +61,14 @@
           <template v-slot:price>
             $110.00
           </template>
-        </GoodListItem>
+        </GoodsListItem>
       </div>
       <div class="cate-title">
         <h2>Just Sold</h2>
         <a class="more">View all (109)></a>
       </div>
-      <div class="good-list">
-        <GoodListItem sold="true">
+      <div class="goods-list">
+        <GoodsListItem sold="true">
           <RespImg
             src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
             alt=""
@@ -76,8 +76,8 @@
           <template v-slot:price>
             $110.00
           </template>
-        </GoodListItem>
-        <GoodListItem sold="true">
+        </GoodsListItem>
+        <GoodsListItem sold="true">
           <RespImg
             src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
             alt=""
@@ -85,8 +85,8 @@
           <template v-slot:price>
             $110.00
           </template>
-        </GoodListItem>
-        <GoodListItem sold="true">
+        </GoodsListItem>
+        <GoodsListItem sold="true">
           <RespImg
             src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
             alt=""
@@ -94,8 +94,8 @@
           <template v-slot:price>
             $110.00
           </template>
-        </GoodListItem>
-        <GoodListItem sold="true">
+        </GoodsListItem>
+        <GoodsListItem sold="true">
           <RespImg
             src="https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg"
             alt=""
@@ -103,7 +103,7 @@
           <template v-slot:price>
             $110.00
           </template>
-        </GoodListItem>
+        </GoodsListItem>
       </div>
     </div>
     <Footer></Footer>
@@ -113,14 +113,14 @@
 <script>
 // @ is an alias to /src
 import Footer from "@/components/Footer.vue";
-import GoodListItem from "@/components/GoodListItem.vue";
+import GoodsListItem from "@/components/GoodsListItem.vue";
 import RespImg from "@/components/RespImg.vue";
 
 export default {
   name: "home",
   components: {
     Footer,
-    GoodListItem,
+    GoodsListItem,
     RespImg
   }
 };
@@ -178,7 +178,7 @@ export default {
       color #666666
       background-color #f0f0f0
       text-decoration none
-  .good-list
+  .goods-list
     display flex
     flex-wrap wrap
     justify-content space-between

@@ -18,6 +18,8 @@ html
   font-size 16px
   color #191919
   background-color #fafafa
+  a
+    color #191919
 #app
   font-family -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing antialiased
