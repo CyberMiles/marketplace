@@ -38,6 +38,10 @@
       </div>
       <div class="end">~ No More ~</div>
     </div>
+    <div class="empty-list">
+      <div class="text">Sorry, we can’t find it</div>
+      <router-link to="/">Back Home</router-link>
+    </div>
     <Footer></Footer>
   </div>
 </template>
@@ -178,7 +182,7 @@ export default {
       color #ff3f0f
   .search-result
     margin (15/16)rem 0 (20/16)rem
-    font-size (22/16)rem 0
+    font-size (22/16)rem
     font-weight 600
     em
       font-style normal
@@ -186,5 +190,31 @@ export default {
   .end
     font-size (12/16)rem
     color #999999
+    text-align center
+.empty-list
+  position absolute
+  z-index -1
+  top 0
+  bottom 0
+  left 0
+  right 0
+  display flex
+  flex-direction column
+  align-items center
+  justify-content center
+  .text
+    font-size (15/16)rem
+    color #999999
+  a
+    margin-top (30/16)rem
+    width (200/16)rem
+    height (40/16)rem
+    line-height (40/16)rem
+    border-radius 20px
+    box-shadow 0 0 (7/16)rem 0 rgba(255, 63, 15, 0.3)
+    background-image linear-gradient(to left, #ff7777, #ff3f0f)
+    font-size (15/16)rem
+    color #ffffff
+    text-decoration none
     text-align center
 </style>
