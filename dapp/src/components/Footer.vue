@@ -1,10 +1,10 @@
 <template>
   <footer>
-    <a class="entry active" href="">
+    <a class="entry" :class="showing === 'home' || !showing ? 'active' : ''" href="">
       <span class="icon-home"></span>
       Home
     </a>
-    <a class="entry" href="">
+    <a class="entry" :class="showing === 'profile' ? 'active' : ''" href="">
       <span class="icon-profile"></span>
       Profile
     </a>
@@ -16,6 +16,7 @@
 
 <script>
 export default {
+  props: ["showing"],
   methods: {
     goCreate() {
       this.$router.push("/create");
@@ -50,6 +51,7 @@ footer
       top: 0.3rem;
       left: 50%;
       margin-left: -0.9rem;
+      color #c7c7c7
     &.active
       color #ff3f0f
       [class^="icon-"]

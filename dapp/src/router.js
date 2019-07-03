@@ -5,6 +5,7 @@ import CreatePage from "./views/Create.vue";
 import ListingPage from "./views/Listing.vue";
 import BuyPage from "./views/Buy.vue";
 import CatalogPage from "./views/Catalog.vue";
+import ProfilePage from "./views/Profile.vue";
 
 Vue.use(Router);
 
@@ -55,6 +56,11 @@ export default new Router({
       path: "/search/:search",
       name: "search",
       component: CatalogPage
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: ProfilePage
     }
   ]
 });
