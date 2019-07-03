@@ -4,7 +4,7 @@
     <router-link class="action" :to="`/buy/${contractAddr}`" v-if="status == 1"
       >Buy Now</router-link
     >
-    <button v-else>Sold</button>
+    <button class="link gray" v-else>Sold</button>
   </div>
 </template>
 <script>
@@ -16,3 +16,8 @@ export default {
   }
 };
 </script>
+<style lang="stylus">
+.gray
+  background-color #ccc !important
+  color #fff
+</style>

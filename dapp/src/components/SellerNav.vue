@@ -1,10 +1,15 @@
 <template>
   <div class="listing-info-nav">
-    <button class="link" v-if="status == 1" @click="unlist">Unlist</button>
-    <button class="link" v-else-if="status == relist" @click="relist">
+    <button class="link" v-if="status == 1" @click="unlistHandler">Unlist</button>
+    <button class="link" v-else-if="status == 0" @click="relistHandler">
       Relist
     </button>
-    <router-link class="action" to="/">Edit</router-link>
+    <router-link class="action" to="/" v-if="status == 0 || status == 1"
+      >Edit</router-link
+    >
+    <router-link class="link gray wide" to="/" v-if="status != 0 && status != 1"
+      >Sold</router-link
+    >
   </div>
 </template>
 <script>
@@ -15,10 +20,48 @@ export default {
     status: Number
   },
   methods: {
-    unlist() {
+    unlistHandler() {
+      let that = this;
       this.$swal({
-        html: "Hello Vue world!!!",
-        width: "800px"
+          title: 'Are you sure?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, unlist it!'
+      }).then( result => {
+          if (result.value) {
+            that.unlist()
+            // this.$swal(
+            //   'Unlisted!',
+            //   'Your product has been unlisted.',
+            //   'success'
+            // )
+          }
+      })
+    },
+    unlist() {
+      instance.pause ({
+          gas: '400000',
+          gasPrice: 0
+      }, function (e, result) {
+        if (e) {
+            console.log(e);
+        } else {
+          filter = web3.cmt.filter("latest")
+          filter.watch(function(error, blockhash) {
+            if (!error) {
+              console.log(blockhash, txhash)
+              web3.cmt.getBlock(blockhash, function(e,r) {
+                console.log(blockhash, txhash, r.transactions)
+                if (txhash.indexOf(r.transactions) != -1) {
+                  filter.stopWatching();
+                  location.reload(true);
+                }
+              });
+            }
+          });
+        }
       });
     }
   }
@@ -26,6 +69,8 @@ export default {
 </script>
 
 <style lang="stylus">
+.wide
+  width 100% !important
 .listing-info-nav
   position fixed
   bottom 0

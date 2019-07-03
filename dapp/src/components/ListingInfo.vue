@@ -37,7 +37,7 @@
         <dd>{{ ProductInfo.seller }}</dd>
         <dt>Completed Order</dt>
         <dd>8 order</dd>
-        <dt>Contract Info</dt>
+        <dt>Contact Info</dt>
         <dd>{{ ProductInfo.contact }}</dd>
       </dl>
     </section>
@@ -155,6 +155,7 @@ export default {
       background-color #f0f0f0
       overflow hidden
       margin-right (15/16)rem
+      display inline-block
       img
         display block
         width (60/16)rem

@@ -70,7 +70,7 @@
             .slice(0, 4)"
           :key="good.key"
         >
-          <GoodsListItem sold="true">
+          <GoodsListItem sold="true" v-bind:contractAddr="good.contractAddr">
             <RespImg v-bind:src="good.image" alt="" />
             <template v-slot:price>
               ${{ good.price }}
