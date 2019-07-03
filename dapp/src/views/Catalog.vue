@@ -12,8 +12,12 @@
           <a href="" class="tag-link">Cell Phone</a>
         </li>
       </ul>
+      <div class="search-field" v-if="search !== undefined">
+        <input type="search" placeholder="Enter a search term or #tag" />
+        <button>Go</button>
+      </div>
       <div class="search-result" v-if="search !== undefined">
-        Total “1” result
+        Total "<em>1</em>" result
       </div>
       <div class="goods-list">
         <div
@@ -155,10 +159,30 @@ export default {
     display flex
     flex-wrap wrap
     justify-content space-between
+  .search-field
+    position relative
+    margin-top (15/16)rem
+    display flex
+    justify-content space-between
+    input
+      width 90%
+      height (40/16)rem
+      line-height (38/16)rem
+      border-radius (8/16)rem
+      border solid 1px #e5e5e5
+      background-color #ffffff
+      padding-left (10/16)rem
+    button
+      font-size (17/16)rem
+      font-weight 500
+      color #ff3f0f
   .search-result
-    margin (20/16)rem 0
+    margin (15/16)rem 0 (20/16)rem
     font-size (22/16)rem 0
     font-weight 600
+    em
+      font-style normal
+      color #ff3f0f
   .end
     font-size (12/16)rem
     color #999999

@@ -183,7 +183,7 @@ export default {
       padding 0 0 0 (42/16)rem
       height (40/16)rem
       line-height (38/16)rem
-      border-radius (4/16)rem
+      border-radius (8/16)rem
       border solid 1px #e5e5e5
       background-color #ffffff
     .icon-search
