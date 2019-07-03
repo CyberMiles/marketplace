@@ -2,14 +2,14 @@
   <div>
     <div class="home">
       <h1>MARKETPLACE</h1>
-      <div class="search-field" :action="`/search/` + searchTerm">
+      <div class="search-field">
         <input
           type="search"
           placeholder="Enter a search term or #tag"
           v-model="searchTerm"
           v-on:keyup.enter="goSearch"
         />
-        <span class="icon-search"></span>
+        <span class="icon-search" @click="goSearch"></span>
       </div>
       <div class="cate-title">
         <h2>Popular Tags</h2>
@@ -167,6 +167,7 @@ export default {
       };
     },
     goSearch() {
+      if (this.searchTerm.trim() == "" || this.searchTerm.trim() == "#") return;
       if (this.searchTerm.slice(0, 1) == "#")
         this.$router.push("/tag/" + this.searchTerm.slice(1));
       else this.$router.push("/search/" + this.searchTerm);

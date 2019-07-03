@@ -15,8 +15,13 @@
         </li>
       </ul>
       <div class="search-field" v-if="search !== undefined">
-        <input type="search" placeholder="Enter a search term or #tag" />
-        <button>Go</button>
+        <input
+          type="search"
+          placeholder="Enter a search term or #tag"
+          v-model="searchTerm"
+          v-on:keyup.enter="goSearch"
+        />
+        <button @click="goSearch">Go</button>
       </div>
       <div class="search-result" v-if="search !== undefined">
         Total "<em>{{ goodList.length }}</em
@@ -61,7 +66,8 @@ export default {
       cata: this.$route.params.cata,
       search: this.$route.params.search,
       goodList: [],
-      popularTags: global.popularTags
+      popularTags: global.popularTags,
+      searchTerm: ""
     };
   },
   components: {
@@ -171,6 +177,21 @@ export default {
           return 0;
         }
       };
+    },
+    goSearch() {
+      if (this.searchTerm.trim() == "" || this.searchTerm.trim() == "#") return;
+      if (this.searchTerm.slice(0, 1) == "#")
+        this.$router.push("/tag/" + this.searchTerm.slice(1));
+      else this.$router.push("/search/" + this.searchTerm);
+    }
+  },
+  watch: {
+    $route(to) {
+      // console.log("change",from.params.search,to.params.search)
+      this.search = to.params.search;
+      this.tag = to.params.tag;
+      this.goodList.length = 0;
+      this.initGoodList();
     }
   }
 };
