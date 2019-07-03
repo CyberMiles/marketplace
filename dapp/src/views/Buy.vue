@@ -16,6 +16,7 @@
     <button @click="buy">BUY</button>
   </div>
 </template>
+
 <script>
 import Contracts from "@/contracts.js";
 
@@ -168,3 +169,10 @@ export default {
   }
 };
 </script>
+
+<style lang="stylus">
+.buy
+  #prices-select
+    width 100%
+    height (67/16)rem
+</style>

@@ -2,29 +2,23 @@
   <div>
     <div class="catalog-goods-list">
       <ul class="tags" v-if="tag !== undefined">
-        <li>
-          <a href="" class="tag-link">wallet</a>
-        </li>
-        <li>
-          <a href="" class="tag-link active">BTC</a>
-        </li>
-        <li>
-          <a href="" class="tag-link">Cell Phone</a>
+        <li
+          v-for="popularTag in popularTags"
+          :key="popularTag.key"
+        >
+          <a :href="`/tag/` + popularTag" class="tag-link active" v-if="popularTag == tag">{{ popularTag }}</a>
+          <a :href="`/tag/` + popularTag" class="tag-link" v-else>{{ popularTag }}</a>
         </li>
       </ul>
       <div class="search-result" v-if="search !== undefined">
-        Total “1” result
+        Total “{{ goodList.length }}” result
       </div>
       <div class="goods-list">
         <div
-          v-for="good in goodList
-            .filter(obj => {
-              return !obj.sold;
-            })
-            .slice(0, 4)"
+          v-for="good in goodList"
           :key="good.key"
         >
-          <GoodsListItem v-bind:contractAddr="good.contractAddr">
+          <GoodsListItem v-bind:contractAddr="good.contractAddr" :sold="good.sold?true:``">
             <RespImg v-bind:src="good.image" alt="" />
             <template v-slot:price>
               ${{ good.price }}
@@ -44,6 +38,7 @@ import Footer from "@/components/Footer.vue";
 import GoodsListItem from "@/components/GoodsListItem.vue";
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
+import global from "@/global.js";
 
 export default {
   name: "home",
@@ -52,7 +47,8 @@ export default {
       tag: this.$route.params.tag,
       cata: this.$route.params.cata,
       search: this.$route.params.search,
-      goodList: []
+      goodList: [],
+      popularTags: global.popularTags
     };
   },
   components: {
@@ -66,14 +62,34 @@ export default {
   methods: {
     initGoodList() {
       var that = this;
-      const queryMarketplaceABI = {
-        query: {
-          match: {
-            abiShaList:
-              "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
+      if (this.$route.params.tag !== undefined) {
+        var queryMarketplaceABI = 
+        {
+          "query": {
+            "bool": {
+              "must": [
+                { "match": { "abiShaList":   "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1" }},
+                { "match_phrase": {"functionDataList.0.functionData.info.3": this.tag}},
+                // { "match": {"functionDataList.0.functionData.info.0": "1"}}
+              ],
+            }
           }
         }
-      };
+      } else if (this.$route.params.search !== undefined) {
+        var queryMarketplaceABI = 
+        {
+          "query": {
+            "bool": {
+              "must": [
+                { "match": { "abiShaList":   "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1" }},
+                { "multi_match": {"fields":["functionDataList.0.functionData.info.1","functionDataList.0.functionData.info.2"],"query": this.search}},
+                // { "match": {"functionDataList.0.functionData.info.0": "1"}}
+              ],
+            }
+          }
+        }
+      }
+ 
       const options = {
         method: "POST",
         headers: { "content-type": "application/json" },

@@ -2,7 +2,7 @@
   <div class="listing">
     <ListingInfo v-on:tradingInfo="setNav" />
     <component
-      v-bind="{ contractAddr: contractAddr, status: status }"
+      v-bind="{ contractAddr: contractAddr, status: status, instance: instance }"
       :is="footerComponent"
       class="nav"
     ></component>
@@ -24,7 +24,8 @@ export default {
     return {
       FooterNav: null,
       contractAddr: this.$route.params.contractAddr,
-      status: null
+      status: null,
+      instance: null
     };
   },
   methods: {
@@ -36,6 +37,7 @@ export default {
         this.FooterNav = "BuyerNav";
       }
       this.status = parseInt(tradingInfo.status);
+      this.instance = tradingInfo.instance;
     }
   },
   computed: {

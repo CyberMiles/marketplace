@@ -107,7 +107,8 @@ export default {
                   that.isSeller = userAddress == that.ProductInfo.seller;
                   that.$emit("tradingInfo", {
                     isSeller: that.isSeller,
-                    status: that.ProductInfo.status
+                    status: that.ProductInfo.status,
+                    instance: instance
                   });
                 }
               });

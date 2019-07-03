@@ -9,16 +9,13 @@
       <div class="cate-title">
         <h2>Popular Tags</h2>
       </div>
-      <ul class="tags">
-        <li>
-          <a href="" class="tag-link">wallet</a>
+      <ul class="tags" >
+        <li
+          v-for="tag in popularTags"
+          :key="tag.key">
+            <a :href="`tag/` + tag" class="tag-link">{{ tag }}</a>
         </li>
-        <li>
-          <a href="" class="tag-link">BTC</a>
-        </li>
-        <li>
-          <a href="" class="tag-link">Cell Phone</a>
-        </li>
+         
       </ul>
       <div class="cate-title">
         <h2>Latest</h2>
@@ -89,12 +86,14 @@ import Footer from "@/components/Footer.vue";
 import GoodsListItem from "@/components/GoodsListItem.vue";
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
+import global from "@/global.js";
 
 export default {
   name: "home",
   data() {
     return {
-      goodList: []
+      goodList: [],
+      popularTags: global.popularTags
     };
   },
   components: {

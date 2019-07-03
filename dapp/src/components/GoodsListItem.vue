@@ -15,7 +15,7 @@ export default {
   props: ["sold", "contractAddr"],
   methods: {
     goListing() {
-      this.$router.push("listing/" + this.contractAddr);
+      this.$router.push("/listing/" + this.contractAddr);
     }
   }
 };

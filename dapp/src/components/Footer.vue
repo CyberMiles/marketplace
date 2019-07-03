@@ -18,7 +18,7 @@
 export default {
   methods: {
     goCreate() {
-      this.$router.push("create");
+      this.$router.push("/create");
     }
   }
 };
