@@ -4,6 +4,7 @@ import Home from "./views/Home.vue";
 import CreatePage from "./views/Create.vue";
 import ListingPage from "./views/Listing.vue";
 import BuyPage from "./views/Buy.vue";
+import CatalogPage from "./views/Catalog.vue";
 
 Vue.use(Router);
 
@@ -39,6 +40,21 @@ export default new Router({
       path: "/buy/:contractAddr",
       name: "buy",
       component: BuyPage
+    },
+    {
+      path: "/tag/:tag",
+      name: "tag",
+      component: CatalogPage
+    },
+    {
+      path: "/cata/:cata",
+      name: "cata",
+      component: CatalogPage
+    },
+    {
+      path: "/search/:search",
+      name: "search",
+      component: CatalogPage
     }
   ]
 });
