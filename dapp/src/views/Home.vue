@@ -2,20 +2,22 @@
   <div>
     <div class="home">
       <h1>MARKETPLACE</h1>
-      <div class="search-field">
-        <input type="search" placeholder="Enter a search term or #tag" />
+      <div class="search-field" :action="`/search/` + searchTerm">
+        <input
+          type="search"
+          placeholder="Enter a search term or #tag"
+          v-model="searchTerm"
+          v-on:keyup.enter="goSearch"
+        />
         <span class="icon-search"></span>
       </div>
       <div class="cate-title">
         <h2>Popular Tags</h2>
       </div>
-      <ul class="tags" >
-        <li
-          v-for="tag in popularTags"
-          :key="tag.key">
-            <a :href="`tag/` + tag" class="tag-link">{{ tag }}</a>
+      <ul class="tags">
+        <li v-for="tag in popularTags" :key="tag.key">
+          <a :href="`tag/` + tag" class="tag-link">{{ tag }}</a>
         </li>
-         
       </ul>
       <div class="cate-title">
         <h2>Latest</h2>
@@ -93,7 +95,8 @@ export default {
   data() {
     return {
       goodList: [],
-      popularTags: global.popularTags
+      popularTags: global.popularTags,
+      searchTerm: ""
     };
   },
   components: {
@@ -162,6 +165,11 @@ export default {
           return 0;
         }
       };
+    },
+    goSearch() {
+      if (this.searchTerm.slice(0, 1) == "#")
+        this.$router.push("/tag/" + this.searchTerm.slice(1));
+      else this.$router.push("/search/" + this.searchTerm);
     }
   }
 };
@@ -182,7 +190,7 @@ export default {
       padding 0 0 0 (42/16)rem
       height (40/16)rem
       line-height (38/16)rem
-      border-radius (4/16)rem
+      border-radius (8/16)rem
       border solid 1px #e5e5e5
       background-color #ffffff
     .icon-search

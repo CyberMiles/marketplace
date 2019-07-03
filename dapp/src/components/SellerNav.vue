@@ -1,10 +1,15 @@
 <template>
   <div class="listing-info-nav">
-    <button class="link" v-if="status == 1" @click="unlistHandler">Unlist</button>
+    <button class="link" v-if="status == 1" @click="unlistHandler">
+      Unlist
+    </button>
     <button class="link" v-else-if="status == 0" @click="relistHandler">
       Relist
     </button>
-    <router-link class="action" :to="`/edit/${contractAddr}`" v-if="status == 0 || status == 1"
+    <router-link
+      class="action"
+      :to="`/edit/${contractAddr}`"
+      v-if="status == 0 || status == 1"
       >Edit</router-link
     >
     <router-link class="link gray wide" to="/" v-if="status != 0 && status != 1"
@@ -22,74 +27,78 @@ export default {
   },
   methods: {
     relistHandler() {
-      var that = this;
-      this.instance.resume ({
-          gas: '400000',
+      this.instance.resume(
+        {
+          gas: "400000",
           gasPrice: 0
-      }, function (e, txhash) {
-        if (e) {
+        },
+        function(e, txhash) {
+          if (e) {
             console.log(e);
-        } else {
-          var filter = web3.cmt.filter("latest");
-          filter.watch(function(error, blockhash) {
-            if (!error) {
-              console.log(blockhash, txhash);
-              window.web3.cmt.getBlock(blockhash, function(e,r) {
-                console.log(blockhash, txhash, r.transactions);
-                if (txhash.indexOf(r.transactions) != -1) {
-                  filter.stopWatching();
-                  location.reload(true);
-                }
-              });
-            }
-          });
+          } else {
+            var filter = window.web3.cmt.filter("latest");
+            filter.watch(function(error, blockhash) {
+              if (!error) {
+                console.log(blockhash, txhash);
+                window.web3.cmt.getBlock(blockhash, function(e, r) {
+                  console.log(blockhash, txhash, r.transactions);
+                  if (txhash.indexOf(r.transactions) != -1) {
+                    filter.stopWatching();
+                    location.reload(true);
+                  }
+                });
+              }
+            });
+          }
         }
-      });
+      );
     },
     unlistHandler() {
       let that = this;
       this.$swal({
-          title: 'Are you sure?',
-          type: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, unlist it!'
-      }).then( result => {
-          if (result.value) {
-            that.unlist()
-            // this.$swal(
-            //   'Unlisted!',
-            //   'Your product has been unlisted.',
-            //   'success'
-            // )
-          }
-      })
-    },
-    unlist() {
-      var that = this;
-      this.instance.pause ({
-          gas: '400000',
-          gasPrice: 0
-      }, function (e, txhash) {
-        if (e) {
-            console.log(e);
-        } else {
-          var filter = web3.cmt.filter("latest");
-          filter.watch(function(error, blockhash) {
-            if (!error) {
-              console.log(blockhash, txhash);
-              window.web3.cmt.getBlock(blockhash, function(e,r) {
-                console.log(blockhash, txhash, r.transactions);
-                if (txhash.indexOf(r.transactions) != -1) {
-                  filter.stopWatching();
-                  location.reload(true);
-                }
-              });
-            }
-          });
+        title: "Are you sure?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, unlist it!"
+      }).then(result => {
+        if (result.value) {
+          that.unlist();
+          // this.$swal(
+          //   'Unlisted!',
+          //   'Your product has been unlisted.',
+          //   'success'
+          // )
         }
       });
+    },
+    unlist() {
+      this.instance.pause(
+        {
+          gas: "400000",
+          gasPrice: 0
+        },
+        function(e, txhash) {
+          if (e) {
+            console.log(e);
+          } else {
+            var filter = window.web3.cmt.filter("latest");
+            filter.watch(function(error, blockhash) {
+              if (!error) {
+                console.log(blockhash, txhash);
+                window.web3.cmt.getBlock(blockhash, function(e, r) {
+                  console.log(blockhash, txhash, r.transactions);
+                  if (txhash.indexOf(r.transactions) != -1) {
+                    filter.stopWatching();
+                    location.reload(true);
+                  }
+                });
+              }
+            });
+          }
+        }
+      );
     }
   }
 };
