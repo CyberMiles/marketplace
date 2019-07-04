@@ -34,15 +34,12 @@ icon-right-arrow = "\e902"
 .icon-profile
   &:before
     content icon-profile
-    color #c7c7c7
 .icon-search
   &:before
     content icon-search
-    color #c7c7c7
 .icon-copy
   &:before
     content icon-copy
-    color #ff3f0f
 .icon-close
   &:before
     content icon-close
