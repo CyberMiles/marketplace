@@ -1,7 +1,16 @@
 <template>
   <div class="create-info">
-    <label for="file">Image {{ images.length }}/4</label>
+    <label for="file">Image {{ uploadedImgs.length + images.length }}/4</label>
     <div class="form-group">
+      <div class="uploaded-img-container" v-if="edit">
+        <div
+          v-for="url in uploadedImgs"
+          :key="url.key"
+          class="preview-container"
+        >
+          <img class="preview" v-bind:src="url" />
+        </div>
+      </div>
       <div
         v-for="(image, key) in images"
         :key="image.key"
@@ -10,7 +19,7 @@
         <img class="preview" v-bind:ref="'image' + parseInt(key)" />
       </div>
       <div
-        v-if="images.length < 4"
+        v-if="uploadedImgs.length + images.length < 4"
         class="upload-container"
         @click="$refs.myFiles.click()"
       >
@@ -25,7 +34,7 @@
         />
       </div>
       <img
-        v-if="images.length < 4"
+        v-if="uploadedImgs.length + images.length < 4"
         src="../assets/imgs/plus.svg"
         @click="$refs.myFiles.click()"
         class="plus-btn"
@@ -69,12 +78,26 @@
           type="number"
           class="form-control"
           id="amount"
-          min="0"
-          value="10"
+          min="0.01"
           v-model="amount"
         />
         <div class="price-unit-container">
           <span class="price-unit">USD</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="CMTamount">Price2(optional)</label>
+      <div>
+        <input
+          type="number"
+          class="form-control"
+          id="CMTamount"
+          min="0.01"
+          v-model="CMTamount"
+        />
+        <div class="price-unit-container">
+          <span class="price-unit">CMT</span>
         </div>
       </div>
     </div>
@@ -88,7 +111,17 @@
         v-model="contact"
       />
     </div>
-    <a href="#" class="create-btn" @click="createTrading"><span>List</span></a>
+    <div v-if="edit">
+      <a @click="$router.go(-1)" class="create-btn left-btn"
+        ><span>Cancel</span></a
+      >
+      <a href="#" class="create-btn right-btn" @click="updateTrading"
+        ><span>Update</span></a
+      >
+    </div>
+    <a href="#" class="create-btn" @click="createTrading" v-else
+      ><span>List</span></a
+    >
   </div>
 </template>
 
@@ -102,21 +135,96 @@ export default {
     return {
       title: "",
       desc: "",
-      amount: 0,
+      amount: 10,
+      CMTamount: null,
       tags: "",
       contact: "",
       crc20: "0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a",
       categories: "",
       escrowPeriod: 600,
       images: [],
-      imageUrls: []
+      imageUrls: [],
+      uploadedImgs: [],
+      editModeInfo: {
+        instance: null,
+        userAddress: ""
+      }
     };
   },
+  props: ["edit", "contractAddr"],
+  mounted() {
+    this.initProductInfo();
+  },
   methods: {
+    initProductInfo() {
+      if (this.edit) {
+        var contract_address = this.contractAddr;
+        var that = this;
+        //set timeout to check web3, because sometimes once mounted, the web3 hasn't been injected
+        var checkWeb3 = function() {
+          try {
+            window.web3.cmt.getAccounts(function(e, address) {
+              if (e) {
+                console.log(e);
+              } else {
+                var userAddress = address.toString();
+
+                var contract = window.web3.cmt.contract(Contracts.Listing.abi);
+                var instance = contract.at(contract_address);
+                that.editModeInfo.instance = instance;
+                that.editModeInfo.userAddress = userAddress;
+
+                instance.info(function(e, r) {
+                  if (e) {
+                    console.log(e);
+                  } else {
+                    console.log(r[3]);
+                    that.title = r[1];
+                    that.desc = r[2];
+                    that.tags = r[3];
+                    that.uploadedImgs = r[6].split(",");
+                    that.amount = (parseInt(r[7]) / 100).toString();
+                    // seller: r[8].toString(),
+                    that.contact = r[4];
+                  }
+                });
+                instance.getPricesCount(function(e, pricesCount) {
+                  if (e) {
+                    console.log(e);
+                  } else {
+                    for (let i = 0; i < pricesCount; i++) {
+                      instance.getPrice(i, function(e_price, r_price) {
+                        if (e_price) {
+                          console.log(e_price);
+                        } else {
+                          var token_crc20 = r_price[0].toString();
+                          if (
+                            token_crc20 ==
+                            "0x0000000000000000000000000000000000000000"
+                          ) {
+                            that.CMTamount = window.web3.fromWei(r_price[1]);
+                          }
+                        }
+                      });
+                    }
+                  }
+                });
+              }
+            });
+          } catch (e) {
+            setTimeout(checkWeb3, 50);
+          }
+        };
+        checkWeb3(); //immediate first run
+      }
+    },
     previewFiles(e) {
       console.log(event.target.files);
       var selectedFiles = e.target.files;
-      if (this.images.length + selectedFiles.length > 4) {
+      if (
+        this.uploadedImgs.length + this.images.length + selectedFiles.length >
+        4
+      ) {
         this.$swal({
           html: "You are only allowed to upload a maximum of 4 files.",
           width: "90%"
@@ -152,6 +260,60 @@ export default {
       }
     },
 
+    updateTrading() {
+      var that = this;
+      console.log(that.imageUrls.length, that.images.length);
+      //wait until the pics have been uploaded to the cloud
+      var checkUploadImg = function() {
+        if (that.imageUrls.length == that.images.length) {
+          var imageUrls = that.uploadedImgs.concat(that.imageUrls).join(",");
+          console.log(imageUrls);
+          var amount2Addr = that.crc20;
+          var amount2 = parseInt(parseFloat(that.amount) * 100); // the OPB is 2 decimals,
+          if (that.CMTamount > 0) {
+            amount2Addr = "0x0000000000000000000000000000000000000000";
+            amount2 = window.web3.toWei(that.CMTamount);
+          }
+          console.log(that.CMTamount, amount2Addr, parseInt(amount2));
+          that.editModeInfo.instance.updateListing(
+            that.title,
+            that.desc,
+            that.tags,
+            imageUrls,
+            that.contact,
+            that.crc20,
+            parseInt(parseFloat(that.amount) * 100), // the OPB is 2 decimals,
+            amount2Addr,
+            parseInt(amount2),
+            {
+              gas: "400000",
+              gasPrice: 0
+            },
+            function(e, txhash) {
+              if (e) {
+                console.log(e);
+              } else {
+                var filter = window.web3.cmt.filter("latest");
+                filter.watch(function(error, blockhash) {
+                  if (!error) {
+                    console.log(blockhash, txhash);
+                    window.web3.cmt.getBlock(blockhash, function(e, r) {
+                      console.log(blockhash, txhash, r.transactions);
+                      if (r.transactions.indexOf(txhash) != -1) {
+                        filter.stopWatching();
+                        console.log("stop and redirect");
+                        that.$router.push("/listing/" + that.contractAddr);
+                      }
+                    });
+                  }
+                });
+              }
+            }
+          );
+        } else setTimeout(checkUploadImg, 50);
+      };
+      checkUploadImg(); //immediate first run
+    },
     createTrading() {
       var that = this;
       window.web3.cmt.getAccounts(function(e, addr) {
@@ -166,7 +328,6 @@ export default {
               var contract = window.web3.cmt.contract(Contracts.Listing.abi);
               var imageUrls = that.imageUrls.join(",");
               console.log(imageUrls);
-              that.amount = parseInt(parseFloat(that.amount) * 100); // the OPB is 2 decimals
               var data =
                 "0x" +
                 contract.new.getData(
@@ -178,7 +339,7 @@ export default {
                   that.contact,
                   that.escrowPeriod,
                   that.crc20,
-                  that.amount,
+                  parseInt(parseFloat(that.amount) * 100), // the OPB is 2 decimals,
                   { data: Contracts.Listing.bin }
                 );
               contract.new(
@@ -203,34 +364,28 @@ export default {
                   if (e) {
                     console.log(e);
                   } else {
-                    console.log(instance.address);
-                    if (instance.address != undefined) {
-                      that.$router.push({
-                        path: `/listing/${instance.address}`
-                      });
-                      // window.location.href = "listing.html?contract=" + instance.address;
-                    } else {
-                      var filter = window.web3.cmt.filter("latest");
-                      filter.watch(function(error, blockhash) {
-                        if (!error) {
-                          var txhash = instance.transactionHash;
-                          console.log(blockhash, txhash, instance);
-                          window.web3.cmt.getBlock(blockhash, function(e, r) {
-                            console.log(blockhash, txhash, r.transactions);
-                            //The filter will watch when the state is changing. As the trasaction has been mined, the instance.address is still undefined. So we need to wait for .instance.address state changed.
-                            if (
-                              instance.address != undefined &&
-                              txhash.indexOf(r.transactions) != -1
-                            ) {
-                              filter.stopWatching();
-                              that.$router.push({
-                                path: `/listing/${instance.address}`
-                              });
-                            }
-                          });
-                        }
-                      });
-                    }
+                    var filter = window.web3.cmt.filter("latest");
+                    var confirmed = false;
+                    filter.watch(function(error, blockhash) {
+                      if (!error) {
+                        var txhash = instance.transactionHash;
+                        console.log(blockhash, txhash, instance);
+                        window.web3.cmt.getBlock(blockhash, function(e, r) {
+                          if (r.transactions.indexOf(txhash) != -1) {
+                            confirmed = true;
+                          }
+                          // console.log(confirmed, blockhash, txhash, r.transactions);
+                          //The filter will watch when the state is changing. As the trasaction has been mined, the instance.address is still undefined. So we need to wait for .instance.address state changed.
+                          if (instance.address != undefined && confirmed) {
+                            filter.stopWatching();
+                            console.log("stop and redirect"); //???
+                            that.$router.push({
+                              path: `/listing/${instance.address}`
+                            });
+                          }
+                        });
+                      }
+                    });
                   }
                 }
               );
@@ -251,6 +406,8 @@ export default {
     padding 0 0 (20/16)rem
     label
       font-size (15/16)rem
+    .uploaded-img-container
+      display inline-block
     .upload-container
       margin-top (10/16)rem
       width (100/16)rem
@@ -308,4 +465,11 @@ export default {
     span
       font-size (17/16)rem
       color #ffffff
+  .right-btn
+    width 45%
+    float right
+    display inline-flex
+  .left-btn
+    width 45%
+    display inline-flex
 </style>

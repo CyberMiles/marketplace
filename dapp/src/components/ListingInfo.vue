@@ -20,7 +20,7 @@
         </div>
       </div>
       <h1>{{ ProductInfo.title }}</h1>
-      <ul class="tags">
+      <ul class="tags" v-if="ProductInfo.tags.length > 0">
         <li v-for="tag in ProductInfo.tags" :key="tag.id">
           <a href="" class="tag-link">{{ tag.trim() }}</a>
         </li>
@@ -58,7 +58,7 @@ export default {
       ProductInfo: {
         images: [],
         title: null,
-        tags: null,
+        tags: [],
         desc: null,
         seller: null,
         contact: null,
@@ -95,7 +95,7 @@ export default {
                     status: r[0],
                     title: r[1],
                     desc: r[2],
-                    tags: r[3].split(","),
+                    tags: r[3].split(",").filter(obj => obj.trim() != ""),
                     escrowDuration: r[5],
                     images: r[6].split(","),
                     USDprice: (parseInt(r[7]) / 100).toString(),

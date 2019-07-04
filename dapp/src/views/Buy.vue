@@ -1,8 +1,8 @@
 <template>
   <!-- WARNING: a temporay page! -->
   <div class="buy">
-    <select id="prices-select" class="form-control" v-model="selectedCRC20">
-      <option
+    <ul id="prices-select" class="form-control">
+      <li
         v-for="token in tokenSet"
         :key="token.id"
         v-bind:value="{
@@ -11,8 +11,8 @@
         }"
       >
         {{ token.token_amount + token.token_name }}
-      </option>
-    </select>
+      </li>
+    </ul>
     <button @click="buy">BUY</button>
   </div>
 </template>

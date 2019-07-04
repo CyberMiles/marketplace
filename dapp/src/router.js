@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Home from "./views/Home.vue";
 import CreatePage from "./views/Create.vue";
 import ListingPage from "./views/Listing.vue";
+import EditPage from "./views/Edit.vue";
 import BuyPage from "./views/Buy.vue";
 import CatalogPage from "./views/Catalog.vue";
 
@@ -40,6 +41,11 @@ export default new Router({
       path: "/buy/:contractAddr",
       name: "buy",
       component: BuyPage
+    },
+    {
+      path: "/edit/:contractAddr",
+      name: "edit",
+      component: EditPage
     },
     {
       path: "/tag/:tag",
