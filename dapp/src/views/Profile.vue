@@ -2,7 +2,15 @@
   <div class="profile">
     <div class="account">
       <h2>Account</h2>
-      <div class="account-addr">x07fg204fg80v02239f239f8hc3333999</div>
+      <div class="account-addr">
+        0x411380d37faed1509127ddb32cfc56c8a91d38a3
+        <span
+          class="icon-copy"
+          v-clipboard="() => '0x411380d37faed1509127ddb32cfc56c8a91d38a3'"
+          v-clipboard:success="copySuccess"
+        >
+        </span>
+      </div>
     </div>
     <div class="roles-switch">
       <div
@@ -23,8 +31,7 @@
 
     <div class="container">
       <ProfileOrders v-if="role === 'buy'" />
-
-      <div class="sell-overview" v-if="role === 'sell'"></div>
+      <SellOverview v-if="role === 'sell'" />
     </div>
 
     <Footer showing="profile"></Footer>
@@ -33,19 +40,37 @@
 
 <script>
 // @ is an alias to /src
+import Vue from "vue";
+import Clipboard from "v-clipboard";
+import Toast from "@/components/Toast.vue";
 import Footer from "@/components/Footer.vue";
 import ProfileOrders from "@/views/ProfileOrders.vue";
+import SellOverview from "@/views/SellOverview.vue";
+
+Vue.use(Clipboard);
+Vue.use(Toast);
 
 export default {
   name: "profile",
   components: {
     Footer,
-    ProfileOrders
+    ProfileOrders,
+    SellOverview
   },
   data() {
     return {
       role: "buy"
     };
+  },
+  created() {
+    if (this.$route.hash === "#sell") {
+      this.role = "sell";
+    }
+  },
+  methods: {
+    copySuccess() {
+      this.$toast("copied");
+    }
   }
 };
 </script>
@@ -65,6 +90,12 @@ export default {
       font-weight 500
     .account-addr
       font-size (12/16)rem
+      display flex
+      align-items center
+      .icon-copy
+        color rgba(255, 63, 15, 0.5)
+        font-size (15/16)rem
+        margin-left (5/16)rem
   .roles-switch
     background-color #ffffff
     box-shadow 0 0.5px 0 0 #e5e5e5
