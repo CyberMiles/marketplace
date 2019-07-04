@@ -16,5 +16,5 @@ export default {
 </script>
 <style lang="stylus">
 .create
-  background-color: #fafafa;
+  background-color #fafafa
 </style>

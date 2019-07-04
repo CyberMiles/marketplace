@@ -23,11 +23,9 @@
         <h2>Latest</h2>
         <a class="more"
           >View all ({{
-            goodList
-              .filter(obj => {
-                return !obj.sold;
-              })
-              .slice(0, 4).length
+            goodList.filter(obj => {
+              return !obj.sold;
+            }).length
           }})></a
         >
       </div>
@@ -52,11 +50,9 @@
         <h2>Just Sold</h2>
         <a class="more"
           >View all ({{
-            goodList
-              .filter(obj => {
-                return obj.sold;
-              })
-              .slice(0, 4).length
+            goodList.filter(obj => {
+              return obj.sold;
+            }).length
           }})></a
         >
       </div>

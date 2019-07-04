@@ -86,7 +86,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" v-if="edit">
       <label for="CMTamount">Price2(optional)</label>
       <div>
         <input
