@@ -2,7 +2,15 @@
   <div class="profile">
     <div class="account">
       <h2>Account</h2>
-      <div class="account-addr">x07fg204fg80v02239f239f8hc3333999</div>
+      <div class="account-addr">
+        0x411380d37faed1509127ddb32cfc56c8a91d38a3
+        <span
+          class="icon-copy"
+          v-clipboard="() => '0x411380d37faed1509127ddb32cfc56c8a91d38a3'"
+          v-clipboard:success="copySuccess"
+        >
+        </span>
+      </div>
     </div>
     <div class="roles-switch">
       <div
@@ -22,42 +30,8 @@
     </div>
 
     <div class="container">
-      <div class="order-list" v-if="role === 'buy'">
-        <h3>My Orders</h3>
-        <ul class="status-tabs">
-          <li>
-            <a
-              href="/"
-              class="status-tab"
-              :class="selectedOrderStatus === 'paid' ? 'active' : ''"
-            >
-              Paid(10)
-            </a>
-          </li>
-          <li>
-            <a
-              href="/"
-              class="status-tab"
-              :class="selectedOrderStatus === 'completed' ? 'active' : ''"
-            >
-              Completed(1)
-            </a>
-          </li>
-          <li>
-            <a
-              href="/"
-              class="status-tab"
-              :class="selectedOrderStatus === 'refund' ? 'active' : ''"
-            >
-              Refund(0)
-            </a>
-          </li>
-        </ul>
-
-        <OrderCard :order="sampleOrder" />
-      </div>
-
-      <div class="sell-overview" v-if="role === 'sell'"></div>
+      <ProfileOrders v-if="role === 'buy'" />
+      <SellOverview v-if="role === 'sell'" />
     </div>
 
     <Footer showing="profile"></Footer>
@@ -66,30 +40,37 @@
 
 <script>
 // @ is an alias to /src
+import Vue from "vue";
+import Clipboard from "v-clipboard";
+import Toast from "@/components/Toast.vue";
 import Footer from "@/components/Footer.vue";
-import OrderCard from "@/components/OrderCard.vue";
+import ProfileOrders from "@/views/ProfileOrders.vue";
+import SellOverview from "@/views/SellOverview.vue";
+
+Vue.use(Clipboard);
+Vue.use(Toast);
 
 export default {
-  name: "home",
+  name: "profile",
   components: {
     Footer,
-    OrderCard
+    ProfileOrders,
+    SellOverview
   },
   data() {
     return {
-      role: "buy",
-      selectedOrderStatus: "paid",
-      sampleOrder: {
-        status: "paid",
-        goods: {
-          image:
-            "https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg",
-          title: "There is a kind of beauty in imperfection and you will like",
-          price: "11"
-        },
-        time: 1562147586285
-      }
+      role: "buy"
     };
+  },
+  created() {
+    if (this.$route.hash === "#sell") {
+      this.role = "sell";
+    }
+  },
+  methods: {
+    copySuccess() {
+      this.$toast("copied");
+    }
   }
 };
 </script>
@@ -109,6 +90,12 @@ export default {
       font-weight 500
     .account-addr
       font-size (12/16)rem
+      display flex
+      align-items center
+      .icon-copy
+        color rgba(255, 63, 15, 0.5)
+        font-size (15/16)rem
+        margin-left (5/16)rem
   .roles-switch
     background-color #ffffff
     box-shadow 0 0.5px 0 0 #e5e5e5
@@ -137,30 +124,4 @@ export default {
 
   .container
     padding 0 (15/16)rem (60/16)rem
-    h3
-      margin (22/16)rem 0 (15/16)rem
-
-  .status-tabs
-    margin 0 0 (20/16)rem
-    padding 0
-    list-style none
-    display flex
-    li
-      margin-right (15/16)rem
-      &:last-child
-        margin-right 0
-    .status-tab
-      display block
-      height (24/16)rem
-      line-height (24/16)rem
-      padding 0 (12/16)rem
-      border-radius (12/16)rem
-      font-size (13/16)rem
-      color #666666
-      background-color #f0f0f0
-      text-decoration none
-      &.active
-        box-shadow 0 0 (7/16)rem 0 rgba(255, 63, 15, 0.3)
-        background-image linear-gradient(to left, #ff7777, #ff3f0f)
-        color #ffffff
 </style>
