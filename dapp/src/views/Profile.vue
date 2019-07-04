@@ -22,40 +22,7 @@
     </div>
 
     <div class="container">
-      <div class="order-list" v-if="role === 'buy'">
-        <h3>My Orders</h3>
-        <ul class="status-tabs">
-          <li>
-            <a
-              href="/"
-              class="status-tab"
-              :class="selectedOrderStatus === 'paid' ? 'active' : ''"
-            >
-              Paid(10)
-            </a>
-          </li>
-          <li>
-            <a
-              href="/"
-              class="status-tab"
-              :class="selectedOrderStatus === 'completed' ? 'active' : ''"
-            >
-              Completed(1)
-            </a>
-          </li>
-          <li>
-            <a
-              href="/"
-              class="status-tab"
-              :class="selectedOrderStatus === 'refund' ? 'active' : ''"
-            >
-              Refund(0)
-            </a>
-          </li>
-        </ul>
-
-        <OrderCard :order="sampleOrder" />
-      </div>
+      <ProfileOrders v-if="role === 'buy'" />
 
       <div class="sell-overview" v-if="role === 'sell'"></div>
     </div>
@@ -67,28 +34,17 @@
 <script>
 // @ is an alias to /src
 import Footer from "@/components/Footer.vue";
-import OrderCard from "@/components/OrderCard.vue";
+import ProfileOrders from "@/views/ProfileOrders.vue";
 
 export default {
-  name: "home",
+  name: "profile",
   components: {
     Footer,
-    OrderCard
+    ProfileOrders
   },
   data() {
     return {
-      role: "buy",
-      selectedOrderStatus: "paid",
-      sampleOrder: {
-        status: "paid",
-        goods: {
-          image:
-            "https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg",
-          title: "There is a kind of beauty in imperfection and you will like",
-          price: "11"
-        },
-        time: 1562147586285
-      }
+      role: "buy"
     };
   }
 };
@@ -137,30 +93,4 @@ export default {
 
   .container
     padding 0 (15/16)rem (60/16)rem
-    h3
-      margin (22/16)rem 0 (15/16)rem
-
-  .status-tabs
-    margin 0 0 (20/16)rem
-    padding 0
-    list-style none
-    display flex
-    li
-      margin-right (15/16)rem
-      &:last-child
-        margin-right 0
-    .status-tab
-      display block
-      height (24/16)rem
-      line-height (24/16)rem
-      padding 0 (12/16)rem
-      border-radius (12/16)rem
-      font-size (13/16)rem
-      color #666666
-      background-color #f0f0f0
-      text-decoration none
-      &.active
-        box-shadow 0 0 (7/16)rem 0 rgba(255, 63, 15, 0.3)
-        background-image linear-gradient(to left, #ff7777, #ff3f0f)
-        color #ffffff
 </style>
