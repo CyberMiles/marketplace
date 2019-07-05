@@ -152,7 +152,7 @@ export default {
     };
   },
   props: ["edit", "contractAddr"],
-  mounted() {
+  created() {
     this.initProductInfo();
   },
   methods: {

@@ -68,7 +68,7 @@ export default {
       }
     };
   },
-  mounted() {
+  created() {
     this.initProductInfo();
   },
   methods: {

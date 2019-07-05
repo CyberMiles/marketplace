@@ -3,10 +3,10 @@
     <div class="account">
       <h2>Account</h2>
       <div class="account-addr">
-        0x411380d37faed1509127ddb32cfc56c8a91d38a3
+        {{ userAddr }}
         <span
           class="icon-copy"
-          v-clipboard="() => '0x411380d37faed1509127ddb32cfc56c8a91d38a3'"
+          v-clipboard="() => userAddr"
           v-clipboard:success="copySuccess"
         >
         </span>
@@ -30,8 +30,8 @@
     </div>
 
     <div class="container">
-      <ProfileOrders v-if="role === 'buy'" />
-      <SellOverview v-if="role === 'sell'" />
+      <ProfileOrders v-if="role === 'buy'" v-bind="{userAddr: userAddr}" />
+      <SellOverview v-if="role === 'sell'" v-bind="{userAddr: userAddr}" />
     </div>
 
     <Footer showing="profile"></Footer>
@@ -59,13 +59,29 @@ export default {
   },
   data() {
     return {
-      role: "buy"
+      role: "buy",
+      userAddr: ""
     };
   },
   created() {
+    var that = this;
     if (this.$route.hash === "#sell") {
       this.role = "sell";
     }
+    var checkWeb3 = function() {
+      try {
+        window.web3.cmt.getAccounts(function(e, address) {
+          if (e) {
+            console.log(e);
+          } else {
+            that.userAddr = address.toString();
+          }
+        });
+      } catch (e) {
+        setTimeout(checkWeb3, 50);
+      }
+    };
+    checkWeb3(); //immediate first run
   },
   methods: {
     copySuccess() {

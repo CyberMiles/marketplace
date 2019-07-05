@@ -15,7 +15,7 @@
     <div class="order-info">
       <div class="paid-order" v-if="order.status === 'paid'">
         <div class="countdown">
-          {{ countdown(order.time) }}
+          {{ countdown(order.time) }} h
           <button class="expl" @click.stop="showExplPop">?</button>
         </div>
         <div class="order-actions">
@@ -30,12 +30,14 @@
             <template v-if="actionsPopShown">
               <div class="others-pop" v-if="role === 'sell'">
                 <button v-on:touchstart="cancelOrder">Cancel Order</button>
-                <button>Contract Buyer</button>
+                <button>Contact Buyer</button>
+                <button v-on:touchstart="receiveFund" v-if="countdown(order.time) == 0">Receive Fund</button>
                 <button>Remark</button>
               </div>
               <div class="others-pop" v-else>
                 <button v-on:touchstart="confirm">Confirm Receipt</button>
-                <button>Contract Seller</button>
+                <button>Contact Seller</button>
+                <button v-on:touchstart="dispute" v-if="countdown(order.time) > 0">Dispute</button>
                 <button>Remark</button>
               </div>
             </template>
@@ -50,12 +52,19 @@
 
       <div class="refund-order" v-if="order.status === 'refund'">
         <div>
-          <label>Refund Amout:</label>
+          <label>Refund Amount:</label>
           <span class="refund-amount">${{ order.refundAmount }}</span>
         </div>
         <div>
-          <label>Refund Reson:</label>
+          <label>Refund Reason:</label>
           <span class="refund-reason">{{ order.refundReason }}</span>
+        </div>
+      </div>
+
+      <div class="refund-order" v-if="order.status === 'dispute'">
+        <div>
+          <label>Dispute Reason:</label>
+          <span class="refund-reason">{{ order.disputeReason }}</span>
         </div>
       </div>
     </div>
@@ -71,6 +80,7 @@
 
 <script>
 import RespImg from "@/components/RespImg.vue";
+import Contracts from "@/contracts.js";
 
 export default {
   props: ["order", "role"],
@@ -85,8 +95,12 @@ export default {
   },
   methods: {
     countdown(time) {
-      const remain = new Date().getTime() - time;
-      return Math.ceil(remain / (60 * 60 * 1000)) + "h";
+      const remain = time - new Date().getTime();
+      if (remain > 0) {
+        return Math.ceil(remain / (60 * 60 * 1000));
+      } else {
+        return 0;
+      }
     },
     showExplPop() {
       this.explPopShown = true;
@@ -105,13 +119,118 @@ export default {
       this.actionsPopShown = false;
     },
     confirm() {
-      console.log("confirm");
+      let that = this;
+      this.$swal({
+        title: "Are you sure?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, receive it!"
+      }).then(result => {
+        if (result.value) {
+          that.confirmHandler();
+          // this.$swal(
+          //   'Unlisted!',
+          //   'Your product has been unlisted.',
+          //   'success'
+          // )
+        }
+      });
+    },
+    dispute() {
+      let that = this;
+      this.$swal({
+        title: "Are you sure?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, dispute!"
+      }).then(result => {
+        if (result.value) that.disputeHandler();
+      });
+    },
+    confirmHandler() {
+      var contract = window.web3.cmt.contract(Contracts.Listing.abi);
+      var instance = contract.at(this.order.id);
+      var that = this;
+      instance.closeByBuyer(
+        {
+          gas: "400000",
+          gasPrice: 0
+        },
+        function(e, txhash) {
+          that.web3Callback(e, txhash)
+        }
+      );
+    },
+    disputeHandler() {
+      var instance = this.createInstance(this.order.id);
+      var that = this;
+      instance.dispute(
+        "", //prefilled dispute reason
+        {
+          gas: "400000",
+          gasPrice: 0
+        },
+        function(e, txhash) {
+          that.web3Callback(e, txhash)
+        }
+      );
+    },
+    receiveFund() {
+      var instance = this.createInstance(this.order.id);
+      var that = this;
+      instance.closeBySeller(
+        {
+          gas: "400000",
+          gasPrice: 0
+        },
+        function(e, txhash) {
+          that.web3Callback(e, txhash)
+        }
+      );
     },
     cancelOrder() {
-      console.log("cancel");
+      var instance = this.createInstance(this.order.id);
+      var that = this;
+      instance.refund(
+        {
+          gas: "400000",
+          gasPrice: 0
+        },
+        function(e, txhash) {
+          that.web3Callback(e, txhash)
+        }
+      );
     },
     viewOrder(id) {
       this.$router.push(`/order/${this.role}/${id}`);
+    },
+    web3Callback(e, txhash) {
+      if (e) {
+        console.log(e);
+      } else {
+        var filter = window.web3.cmt.filter("latest");
+        filter.watch(function(error, blockhash) {
+          if (!error) {
+            console.log(blockhash, txhash);
+            window.web3.cmt.getBlock(blockhash, function(e, r) {
+              console.log(blockhash, txhash, r.transactions);
+              if (txhash.indexOf(r.transactions) != -1) {
+                filter.stopWatching();
+                location.reload(true);
+                //TODO
+              }
+            });
+          }
+        });
+      }
+    },
+    createInstance(addr) {
+      var contract = window.web3.cmt.contract(Contracts.Listing.abi);
+      return contract.at(addr);
     }
   }
 };

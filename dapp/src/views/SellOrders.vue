@@ -9,6 +9,8 @@
 <script>
 import OrderCard from "@/components/OrderCard.vue";
 import Footer from "@/components/Footer.vue";
+import Contracts from "@/contracts.js";
+import axios from "axios";
 
 export default {
   name: "sellOrders",
@@ -18,86 +20,228 @@ export default {
   },
   data() {
     return {
-      paidOrders: [
-        {
-          id: "1",
-          status: "paid",
-          goods: {
-            image:
-              "https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg",
-            title: "There is a kind of beauty in imperfection",
-            price: "11"
-          },
-          time: 1562147586285
-        },
-        {
-          id: "2",
-          status: "paid",
-          goods: {
-            image:
-              "https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg",
-            title: "There is a kind of beauty in imperfection",
-            price: "11"
-          },
-          time: 1562147586285
-        },
-        {
-          id: "3",
-          status: "paid",
-          goods: {
-            image:
-              "https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg",
-            title: "There is a kind of beauty in imperfection",
-            price: "11"
-          },
-          time: 1562147586285
-        },
-        {
-          id: "4",
-          status: "paid",
-          goods: {
-            image:
-              "https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg",
-            title: "There is a kind of beauty in imperfection",
-            price: "11"
-          },
-          time: 1562147586285
-        }
-      ],
-      completedOrders: [
-        {
-          id: "1",
-          status: "completed",
-          goods: {
-            image:
-              "https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg",
-            title: "There is a kind of beauty in imperfection",
-            price: "11"
-          },
-          time: 1562147586285,
-          contract: "0xa3f1e99c46d1d7e6cc96f71b6116cee8160fa4d3"
-        }
-      ],
-      refundOrders: [
-        {
-          id: "1",
-          status: "refund",
-          goods: {
-            image:
-              "https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg",
-            title: "There is a kind of beauty in imperfection",
-            price: "11"
-          },
-          time: 1562147586285,
-          refundAmount: "11",
-          refundReason: "Seller has cancelled order"
-        }
-      ],
-      sampleOrders: []
+      paidOrders: [],
+      completedOrders: [],
+      refundOrders: [],
+      disputeOrders: [],
+      sampleOrders: [],
+      userAddr: "",
     }
   },
   created() {
+    var that = this;
+    var checkWeb3 = function() {
+      try {
+        window.web3.cmt.getAccounts(function(e, address) {
+          if (e) {
+            console.log(e);
+          } else {
+            that.userAddr = address.toString();
+          }
+        });
+      } catch (e) {
+        setTimeout(checkWeb3, 50);
+      }
+    };
+    checkWeb3(); //immediate first run
+    this.setOrders();
     this.sampleOrders = this[`${this.$route.params.type}Orders`];
+  },
+  watch: {
+    userAddr: function(){
+      this.setOrders();
+    }
+  },
+  methods: {
+    setOrders() {
+      if(this.userAddr == "")
+        return;
+      var that = this;
+      var queryPaid = {
+        query: {
+          bool: {
+            must: [
+              {
+                match: {
+                  abiShaList:
+                    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
+                }
+              },
+              {
+                match: {
+                  "functionDataList.0.functionData.info.0": "2"
+                }
+              },
+              {
+                match: {
+                  "functionDataList.0.functionData.info.8": this.userAddr
+                }
+              }
+            ]
+          }
+        }
+      };
+      var queryCompleted = {
+        query: {
+          bool: {
+            must: [
+              {
+                match: {
+                  abiShaList:
+                    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
+                }
+              },
+              {
+                match: {
+                  "functionDataList.0.functionData.info.0": "4"
+                }
+              },
+              {
+                match: {
+                  "functionDataList.0.functionData.info.8": this.userAddr
+                }
+              }
+            ]
+          }
+        }
+      };
+      var queryRefund = {
+        query: {
+          bool: {
+            must: [
+              {
+                match: {
+                  abiShaList:
+                    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
+                }
+              },
+              {
+                match: {
+                  "functionDataList.0.functionData.info.0": "5"
+                }
+              },
+              {
+                match: {
+                  "functionDataList.0.functionData.info.8": this.userAddr
+                }
+              }
+            ]
+          }
+        }
+      };
+      var queryDispute = {
+        query: {
+          bool: {
+            must: [
+              {
+                match: {
+                  abiShaList:
+                    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
+                }
+              },
+              {
+                match: {
+                  "functionDataList.0.functionData.info.0": "3"
+                }
+              },
+              {
+                match: {
+                  "functionDataList.0.functionData.info.8": this.userAddr
+                }
+              }
+            ]
+          }
+        }
+      };
+      const options = (query) => {
+        return {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          data: JSON.stringify(query),
+          url: "https://cmt-testnet.search.secondstate.io/api/es_search"
+        }
+      };
+      axios(options(queryPaid)).then(r => {
+        console.log(r.data);
+        that.paidOrders.length = 0;
+        r.data.forEach(function(item, id) {
+          that.paidOrders.push(
+            {
+              id: item.contractAddress,
+              status: "paid",
+              goods: {
+                image:
+                  item.functionData.getImage.split(",")[0],
+                title: item.functionData.info[1],
+                price: (parseInt(item.functionData.info[7]) / 100).toString()
+              },
+              time: 1000 * parseInt(item.functionData.buyerInfo[1]) +  1000 * parseInt(item.functionData.info[5])
+            }
+          )
+        })
+      });
+      axios(options(queryCompleted)).then(r => {
+        console.log(r.data);
+        that.completedOrders.length = 0;
+        r.data.forEach(function(item, id) {
+          that.completedOrders.push(
+            {
+              id: item.contractAddress,
+              status: "completed",
+              goods: {
+                image:
+                  item.functionData.getImage.split(",")[0],
+                title: item.functionData.info[1],
+                price: (parseInt(item.functionData.info[7]) / 100).toString()
+              },
+              contract: item.contractAddress
+            }
+          )
+          
+        })
+      });
+      axios(options(queryDispute)).then(r => {
+        console.log(r.data);
+        that.disputeOrders.length = 0;
+        r.data.forEach(function(item, id) {
+          that.disputeOrders.push(
+            {
+              id: item.contractAddress,
+              status: "dispute",
+              goods: {
+                image:
+                  item.functionData.getImage.split(",")[0],
+                title: item.functionData.info[1],
+                price: (parseInt(item.functionData.info[7]) / 100).toString()
+              },
+              disputeReason: "Dispute."
+            }
+          )
+          
+        })
+      });
+      axios(options(queryRefund)).then(r => {
+        console.log(r.data);
+        that.refundOrders.length = 0;
+        r.data.forEach(function(item, id) {
+          that.refundOrders.push(
+            {
+              id: item.contractAddress,
+              status: "refund",
+              goods: {
+                image:
+                  item.functionData.getImage.split(",")[0],
+                title: item.functionData.info[1],
+                price: (parseInt(item.functionData.info[7]) / 100).toString()
+              },
+              refundAmount: (parseInt(item.functionData.info[7]) / 100).toString(),
+              refundReason: "Refund."
+            }
+          )
+          
+        })
+      });
+    }
   }
 }
 </script>

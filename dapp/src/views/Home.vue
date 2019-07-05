@@ -100,7 +100,7 @@ export default {
     GoodsListItem,
     RespImg
   },
-  mounted() {
+  created() {
     this.initGoodList();
   },
   methods: {
