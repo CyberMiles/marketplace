@@ -1,5 +1,5 @@
 <template>
-  <div class="order-card">
+  <div class="order-card" @click="viewOrder(order.id)">
     <div class="order-goods-info">
       <div class="goods-img">
         <RespImg v-bind:src="order.goods.image" alt="" />
@@ -19,17 +19,26 @@
           <button class="expl" @click.stop="showExplPop">?</button>
         </div>
         <div class="order-actions">
-          <button class="main-action" @click="confirm">Confirm Receipt</button>
+          <button class="main-action" @click.stop="cancelOrder" v-if="role === 'sell'">Cancel Order</button>
+          <button class="main-action" @click.stop="confirm" v-else>Confirm Receipt</button>
           <div class="other-actions">
             <button class="others-trigger" @click.stop="showActionsPop">
               <span></span>
               <span></span>
               <span></span>
             </button>
-            <div class="others-pop" v-if="actionsPopShown">
-              <button v-on:touchstart="confirm">Confirm Receipt</button>
-              <button>Contract Seller</button>
-            </div>
+            <template v-if="actionsPopShown">
+              <div class="others-pop" v-if="role === 'sell'">
+                <button v-on:touchstart="cancelOrder">Cancel Order</button>
+                <button>Contract Buyer</button>
+                <button>Remark</button>
+              </div>
+              <div class="others-pop" v-else>
+                <button v-on:touchstart="confirm">Confirm Receipt</button>
+                <button>Contract Seller</button>
+                <button>Remark</button>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -64,7 +73,7 @@
 import RespImg from "@/components/RespImg.vue";
 
 export default {
-  props: ["order"],
+  props: ["order", "role"],
   components: {
     RespImg
   },
@@ -96,7 +105,13 @@ export default {
       this.actionsPopShown = false;
     },
     confirm() {
-      alert(1);
+      console.log("confirm");
+    },
+    cancelOrder() {
+      console.log("cancel");
+    },
+    viewOrder(id) {
+      this.$router.push(`/order/${this.role}/${id}`);
     }
   }
 };

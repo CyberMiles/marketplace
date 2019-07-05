@@ -2,38 +2,38 @@
   <div class="sell-overview">
     <h3>Items</h3>
     <div class="entries">
-      <div class="entry">
+      <router-link class="entry" to="/sell-items-listed">
         <label>Listed</label>
         <span class="count">2</span>
-      </div>
-      <div class="entry">
+      </router-link>
+      <router-link class="entry" to="/sell-items-unlisted">
         <label>Unlisted</label>
         <span class="count">2</span>
-      </div>
-      <div class="entry">
+      </router-link>
+      <router-link class="entry" to="/sell-itmes-sold">
         <label>Sold</label>
         <span class="count">2</span>
-      </div>
+      </router-link>
     </div>
 
     <h3>Orders</h3>
     <div class="entries">
-      <div class="entry">
+      <router-link class="entry" to="/sell-orders/paid">
         <label>Buyer has paid</label>
         <span class="count">2</span>
-      </div>
-      <div class="entry">
+      </router-link>
+      <router-link class="entry" to="/sell-orders/completed">
         <label>Completed</label>
         <span class="count">2</span>
-      </div>
-      <div class="entry">
+      </router-link>
+      <router-link class="entry" to="/sell-orders/dispute">
         <label>Dispute</label>
         <span class="count">2</span>
-      </div>
-      <div class="entry">
+      </router-link>
+      <router-link class="entry" to="/sell-orders/refund">
         <label>Refund to buyer</label>
         <span class="count">2</span>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -61,6 +61,7 @@ export default {
       justify-content space-between
       border-bottom solid 0.5px #e5e5e5
       font-size (15/16)rem
+      text-decoration none
       &:last-child
         border 0
       &:after
