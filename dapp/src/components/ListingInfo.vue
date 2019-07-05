@@ -36,7 +36,7 @@
         <dt>Address</dt>
         <dd>{{ ProductInfo.seller }}</dd>
         <dt>Completed Order</dt>
-        <dd>8 order</dd>
+        <dd>{{ ProductInfo.sellerCompletedNumber }} order</dd>
         <dt>Contact Info</dt>
         <dd>{{ ProductInfo.contact }}</dd>
       </dl>
@@ -46,6 +46,7 @@
 <script>
 import Contracts from "@/contracts.js";
 import RespImg from "@/components/RespImg";
+import axios from "axios";
 
 export default {
   name: "ListingInfo",
@@ -62,7 +63,8 @@ export default {
         desc: null,
         seller: null,
         contact: null,
-        USDprice: null
+        USDprice: null,
+        sellerCompletedNumber: 0
       }
     };
   },
@@ -72,7 +74,7 @@ export default {
   methods: {
     initProductInfo() {
       var contract_address = this.$route.params.contractAddr;
-      console.log(contract_address);
+      // console.log(contract_address);
       var that = this;
       //set timeout to check web3, because sometimes once mounted, the web3 hasn't been injected
       var checkWeb3 = function() {
@@ -90,7 +92,7 @@ export default {
                 if (e) {
                   console.log(e);
                 } else {
-                  console.log(r[3]);
+                  // console.log(r[3]);
                   that.ProductInfo = {
                     status: r[0],
                     title: r[1],
@@ -103,13 +105,14 @@ export default {
                     buyerAddress: r[9].toString(),
                     contact: r[4]
                   };
-                  console.log(that.ProductInfo);
+                  // console.log(that.ProductInfo);
                   that.isSeller = userAddress == that.ProductInfo.seller;
                   that.$emit("tradingInfo", {
                     isSeller: that.isSeller,
                     status: that.ProductInfo.status,
                     instance: instance
                   });
+                  that.getCompletedOrder(that.ProductInfo.seller);
                 }
               });
             }
@@ -119,6 +122,43 @@ export default {
         }
       };
       checkWeb3(); //immediate first run
+    },
+    getCompletedOrder(seller) {
+      var that = this;
+      var queryMarketplaceABI = {
+        query: {
+          bool: {
+            must: [
+              {
+                match: {
+                  abiShaList:
+                    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
+                }
+              },
+              {
+                match: {
+                  "functionDataList.0.functionData.info.0": "4"
+                }
+              },
+              {
+                match: {
+                  "functionDataList.0.functionData.info.8": seller
+                }
+              }
+            ]
+          }
+        }
+      };
+      const options = {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        data: JSON.stringify(queryMarketplaceABI),
+        url: "https://cmt-testnet.search.secondstate.io/api/es_search"
+      };
+      axios(options).then(r => {
+        console.log(r.data.length);
+        that.ProductInfo.sellerCompletedNumber = r.data.length;
+      });
     }
   }
 };

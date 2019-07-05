@@ -2,7 +2,11 @@
   <div class="listing">
     <ListingInfo v-on:tradingInfo="setNav" />
     <component
-      v-bind="{ contractAddr: contractAddr, status: status, instance: instance }"
+      v-bind="{
+        contractAddr: contractAddr,
+        status: status,
+        instance: instance
+      }"
       :is="footerComponent"
       class="nav"
     ></component>

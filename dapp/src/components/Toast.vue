@@ -2,9 +2,9 @@
 export default {
   install(Vue, options) {
     Vue.prototype.$toast = function(text) {
-      const container = document.createElement('div');
+      const container = document.createElement("div");
       container.className = "toast";
-      const ele = document.createElement('div');
+      const ele = document.createElement("div");
       ele.appendChild(document.createTextNode(text));
       container.appendChild(ele);
       document.body.appendChild(container);
@@ -12,9 +12,9 @@ export default {
       setTimeout(() => {
         container.remove();
       }, 2000);
-    }
+    };
   }
-}
+};
 </script>
 
 <style lang="stylus">

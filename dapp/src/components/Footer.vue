@@ -1,10 +1,18 @@
 <template>
   <footer>
-    <a class="entry" :class="showing === 'home' || !showing ? 'active' : ''" href="">
+    <a
+      class="entry"
+      :class="showing === 'home' || !showing ? 'active' : ''"
+      href=""
+    >
       <span class="icon-home"></span>
       Home
     </a>
-    <a class="entry" :class="showing === 'profile' ? 'active' : ''" href="/profile">
+    <a
+      class="entry"
+      :class="showing === 'profile' ? 'active' : ''"
+      href="/profile"
+    >
       <span class="icon-profile"></span>
       Profile
     </a>
