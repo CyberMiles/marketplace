@@ -1,52 +1,23 @@
 <template>
-  <div class="profile-order-list">
-    <h3>My Orders</h3>
-    <ul class="status-tabs">
-      <li>
-        <a
-          class="status-tab"
-          :class="selectedOrderStatus === 'paid' ? 'active' : ''"
-          @click="selectedOrderStatus = 'paid'"
-        >
-          Paid(10)
-        </a>
-      </li>
-      <li>
-        <a
-          class="status-tab"
-          :class="selectedOrderStatus === 'completed' ? 'active' : ''"
-          @click="selectedOrderStatus = 'completed'"
-        >
-          Completed(1)
-        </a>
-      </li>
-      <li>
-        <a
-          class="status-tab"
-          :class="selectedOrderStatus === 'refund' ? 'active' : ''"
-          @click="selectedOrderStatus = 'refund'"
-        >
-          Refund(0)
-        </a>
-      </li>
-    </ul>
-
-    <OrderCard v-for="o in sampleOrders" role="buy" :order="o" :key="o.id" />
+  <div class="sell-orders">
+    <OrderCard v-for="o in sampleOrders" role="sell" :order="o" :key="o.id" />
     <div class="end">~ No More ~</div>
+    <Footer></Footer>
   </div>
 </template>
 
 <script>
 import OrderCard from "@/components/OrderCard.vue";
+import Footer from "@/components/Footer.vue";
 
 export default {
-  name: "profileOrders",
+  name: "sellOrders",
   components: {
-    OrderCard
+    OrderCard,
+    Footer
   },
   data() {
     return {
-      selectedOrderStatus: "paid",
       paidOrders: [
         {
           id: "1",
@@ -123,44 +94,19 @@ export default {
         }
       ],
       sampleOrders: []
-    };
+    }
   },
   created() {
-    this.sampleOrders = this.paidOrders;
-  },
-  watch: {
-    selectedOrderStatus: function(val) {
-      this.sampleOrders = this[`${val}Orders`];
-    }
+    this.sampleOrders = this[`${this.$route.params.type}Orders`];
   }
-};
+}
 </script>
 
 <style lang="stylus">
-.profile-order-list
-  h3
-    margin (22/16)rem 0 (15/16)rem
-  .status-tabs
-    margin 0 0 (20/16)rem
-    padding 0
-    list-style none
-    display flex
-    li
-      margin-right (15/16)rem
-      &:last-child
-        margin-right 0
-    .status-tab
-      display block
-      height (24/16)rem
-      line-height (24/16)rem
-      padding 0 (12/16)rem
-      border-radius (12/16)rem
-      font-size (13/16)rem
-      color #666666
-      background-color #f0f0f0
-      text-decoration none
-      &.active
-        box-shadow 0 0 (7/16)rem 0 rgba(255, 63, 15, 0.3)
-        background-image linear-gradient(to left, #ff7777, #ff3f0f)
-        color #ffffff
+.sell-orders
+  padding (15/16)rem (15/16)rem (80/16)rem
+  .end
+    font-size (12/16)rem
+    color #999999
+    text-align center
 </style>

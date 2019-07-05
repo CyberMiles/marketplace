@@ -16,14 +16,14 @@
       <div
         class="role"
         :class="role === 'buy' ? 'active' : ''"
-        @click="role = 'buy'"
+        @click="switchRole('buy')"
       >
         Buy
       </div>
       <div
         class="role"
         :class="role === 'sell' ? 'active' : ''"
-        @click="role = 'sell'"
+        @click="switchRole('sell')"
       >
         Sell
       </div>
@@ -70,6 +70,10 @@ export default {
   methods: {
     copySuccess() {
       this.$toast("copied");
+    },
+    switchRole(role) {
+      this.role = role;
+      this.$router.replace("#" + role);
     }
   }
 };
@@ -123,5 +127,9 @@ export default {
           background-color #ff3f0f
 
   .container
-    padding 0 (15/16)rem (60/16)rem
+    padding 0 (15/16)rem (80/16)rem
+    .end
+      font-size (12/16)rem
+      color #999999
+      text-align center
 </style>

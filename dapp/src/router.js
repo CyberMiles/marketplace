@@ -7,6 +7,8 @@ import EditPage from "./views/Edit.vue";
 import BuyPage from "./views/Buy.vue";
 import CatalogPage from "./views/Catalog.vue";
 import ProfilePage from "./views/Profile.vue";
+import SellOrdersPage from "./views/SellOrders.vue";
+import OrderDetailPage from "./views/OrderDetail.vue";
 
 Vue.use(Router);
 
@@ -67,6 +69,16 @@ export default new Router({
       path: "/profile",
       name: "profile",
       component: ProfilePage
+    },
+    {
+      path: "/sell-orders/:type",
+      name: "sell-orders",
+      component: SellOrdersPage
+    },
+    {
+      path: "/order/:role/:orderId",
+      name: "order",
+      component: OrderDetailPage
     }
   ]
 });
