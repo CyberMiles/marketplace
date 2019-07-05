@@ -10,6 +10,7 @@ import ProfilePage from "./views/Profile.vue";
 import SellOrdersPage from "./views/SellOrders.vue";
 import OrderDetailPage from "./views/OrderDetail.vue";
 import SellGoodsPage from "./views/SellGoods.vue";
+import RemarkPage from "./views/Remark.vue";
 
 Vue.use(Router);
 
@@ -85,6 +86,11 @@ export default new Router({
       path: "/sell-goods/:type",
       name: "sell-goods",
       component: SellGoodsPage
+    },
+    {
+      path: "/remark",
+      name: "remark",
+      component: RemarkPage
     }
   ]
 });
