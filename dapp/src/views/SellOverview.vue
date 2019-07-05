@@ -2,15 +2,15 @@
   <div class="sell-overview">
     <h3>Items</h3>
     <div class="entries">
-      <router-link class="entry" to="/sell-items-listed">
+      <router-link class="entry" to="/sell-goods/listed">
         <label>Listed</label>
         <span class="count">2</span>
       </router-link>
-      <router-link class="entry" to="/sell-items-unlisted">
+      <router-link class="entry" to="/sell-goods/unlisted">
         <label>Unlisted</label>
         <span class="count">2</span>
       </router-link>
-      <router-link class="entry" to="/sell-itmes-sold">
+      <router-link class="entry" to="/sell-goods/sold">
         <label>Sold</label>
         <span class="count">2</span>
       </router-link>
