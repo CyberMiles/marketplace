@@ -94,7 +94,9 @@ export default {
     },
     hideExplPop() {
       document.removeEventListener("touchstart", this.hideExplPop);
-      this.explPopShown = false;
+      setTimeout(() => {
+        this.explPopShown = false;
+      }, 100);
     },
     showActionsPop() {
       this.actionsPopShown = true;
@@ -102,7 +104,9 @@ export default {
     },
     hideActionsPop() {
       document.removeEventListener("touchstart", this.hideActionsPop);
-      this.actionsPopShown = false;
+      setTimeout(() => {
+        this.actionsPopShown = false;
+      }, 100);
     },
     confirm() {
       console.log("confirm");
@@ -111,7 +115,9 @@ export default {
       console.log("cancel");
     },
     viewOrder(id) {
-      this.$router.push(`/order/${this.role}/${id}`);
+      if (!this.actionsPopShown && !this.explPopShown) {
+        this.$router.push(`/order/${this.role}/${id}`);
+      }
     }
   }
 };
