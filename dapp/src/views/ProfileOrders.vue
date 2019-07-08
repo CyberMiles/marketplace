@@ -59,21 +59,7 @@ export default {
       selectedOrderStatus: "paid",
       paidOrders: [],
       completedOrders: [],
-      refundOrders: [
-        {
-          id: "1",
-          status: "refund",
-          goods: {
-            image:
-              "https://res.cloudinary.com/dgvnn4efo/image/upload/v1562052108/uhuuafn7ubeodsrg4qsv.jpg",
-            title: "There is a kind of beauty in imperfection",
-            price: "11"
-          },
-          time: 1562147586285,
-          refundAmount: "11",
-          refundReason: "Seller has cancelled order"
-        }
-      ],
+      refundOrders: [],
       disputeOrders: [],
       sampleOrders: []
     };
@@ -268,13 +254,13 @@ export default {
         r.data.forEach(function(item, id) {
         var refundReason = (function(){
           if (item.functionData.buyerInfo[3] === "True") {
-            if (item.functionData.secondaryBuyerInfo[2] == 0) {
-              return "You disputed and buyer refunded you."
-            } else if (item.functionData.secondaryBuyerInfo[2] == 1) {
+            if (item.functionData.secondaryBuyerInfo[1] == 0) {
+              return "You disputed and seller refunded you."
+            } else if (item.functionData.secondaryBuyerInfo[1] == 1) {
               return "You disputed and DAO assume that you win."
             }
           } else {
-            return "Buyer refunded you."
+            return "Seller refunded you."
           }
         })();
           that.refundOrders.push(

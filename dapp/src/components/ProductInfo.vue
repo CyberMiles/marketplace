@@ -128,6 +128,7 @@
 <script>
 import Contracts from "@/contracts.js";
 import axios from "axios";
+import Global from "@/global.js";
 
 export default {
   name: "ProductInfo",
@@ -139,9 +140,9 @@ export default {
       CMTamount: null,
       tags: "",
       contact: "",
-      crc20: "0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a",
+      crc20: Global.USDaddr,
       categories: "",
-      escrowPeriod: 600,
+      escrowPeriod: Global.escrowPeriod,
       images: [],
       imageUrls: [],
       uploadedImgs: [],
@@ -352,7 +353,7 @@ export default {
                   that.contact,
                   that.escrowPeriod,
                   that.crc20,
-                  that.amount
+                  parseInt(parseFloat(that.amount) * 100), // the OPB is 2 decimals,
                 ],
                 {
                   from: userAddress,

@@ -273,6 +273,7 @@ contract Listing {
     function dispute (string _reason) public {
         require (status == TradingStatus.LockedByBuyer);
         require (buyer.addr != 0);
+        require (buyer.ts_escrow + escrow_period > now);
         buyer.dispute = true;
         buyer.dispute_reason = _reason;
         status = TradingStatus.Dispute;

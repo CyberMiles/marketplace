@@ -179,6 +179,7 @@ export default {
     buy() {
       var crc20 = this.selectedCRC20.addr;
       var amount = this.selectedCRC20.amount;
+      var that = this;
       console.log(crc20, amount);
       if (crc20 == "0x0000000000000000000000000000000000000000") {
         this.instance.buyWithCMT(
@@ -190,20 +191,28 @@ export default {
             gasPrice: 0,
             value: amount
           },
-          function(e) {
+          function(e, txhash) {
             if (e) {
               console.log(e);
             } else {
-              setTimeout(function() {
-                window.location.reload(true);
-              }, 20 * 1000);
+              var filter = window.web3.cmt.filter("latest");
+              filter.watch(function(error, blockhash) {
+                if (!error) {
+                  console.log(blockhash, txhash);
+                  window.web3.cmt.getBlock(blockhash, function(e, r) {
+                    console.log(blockhash, txhash, r.transactions);
+                    if (txhash.indexOf(r.transactions) != -1) {
+                      filter.stopWatching();
+                    }
+                  });
+                }
+              });
             }
           }
         ); // buyWithCMT
       } else {
         var contract_crc20 = window.web3.cmt.contract(Contracts.ERC20.abi);
         var instance_crc20 = contract_crc20.at(crc20);
-        var that = this;
         instance_crc20.approve(
           this.contractAddr,
           parseInt(amount),
@@ -224,13 +233,23 @@ export default {
                   gas: "400000",
                   gasPrice: 0
                 },
-                function(e) {
+                function(e, txhash) {
                   if (e) {
-                    console.log(error);
+                    console.log(e);
                   } else {
-                    setTimeout(function() {
-                      window.location.reload(true);
-                    }, 20 * 1000);
+                    var filter = window.web3.cmt.filter("latest");
+                    filter.watch(function(error, blockhash) {
+                      if (!error) {
+                        console.log(blockhash, txhash);
+                        window.web3.cmt.getBlock(blockhash, function(e, r) {
+                          console.log(blockhash, txhash, r.transactions);
+                          if (txhash.indexOf(r.transactions) != -1) {
+                            filter.stopWatching();
+                            location.href = "/order/buy/" + that.contractAddr;
+                          }
+                        });
+                      }
+                    });
                   }
                 }
               ); // buyWithCRC20

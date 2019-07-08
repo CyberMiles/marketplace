@@ -2,7 +2,7 @@
   <div class="sell-orders">
     <OrderCard v-for="o in sampleOrders" role="sell" :order="o" :key="o.id" />
     <div class="end">~ No More ~</div>
-    <Footer></Footer>
+    <Footer showing="profile"></Footer>
   </div>
 </template>
 
@@ -224,6 +224,17 @@ export default {
         console.log(r.data);
         that.refundOrders.length = 0;
         r.data.forEach(function(item, id) {
+          var refundReason = (function(){
+            if (item.functionData.buyerInfo[3] === "True") {
+              if (item.functionData.secondaryBuyerInfo[1] == 0) {
+                return "Buyer disputed and you refunded."
+              } else if (item.functionData.secondaryBuyerInfo[1] == 1) {
+                return "Buyer disputed and DAO assumes buyer won."
+              }
+            } else {
+              return "You refunded."
+            }
+          })();
           that.refundOrders.push(
             {
               id: item.contractAddress,
@@ -235,7 +246,7 @@ export default {
                 price: (parseInt(item.functionData.info[7]) / 100).toString()
               },
               refundAmount: (parseInt(item.functionData.info[7]) / 100).toString(),
-              refundReason: "Refund."
+              refundReason: refundReason
             }
           )
           

@@ -36,7 +36,7 @@
         <dt>Address</dt>
         <dd>{{ ProductInfo.seller }}</dd>
         <dt>Completed Order</dt>
-        <dd>{{ ProductInfo.sellerCompletedNumber }} order</dd>
+        <dd>{{ sellerCompletedNumber }} order</dd>
         <dt>Contact Info</dt>
         <dd>{{ ProductInfo.contact }}</dd>
       </dl>
@@ -56,6 +56,7 @@ export default {
   data() {
     return {
       isSeller: false,
+      sellerCompletedNumber: 0,
       ProductInfo: {
         images: [],
         title: null,
@@ -63,8 +64,7 @@ export default {
         desc: null,
         seller: null,
         contact: null,
-        USDprice: null,
-        sellerCompletedNumber: 0
+        USDprice: null
       }
     };
   },
@@ -103,7 +103,7 @@ export default {
                     USDprice: (parseInt(r[7]) / 100).toString(),
                     seller: r[8].toString(),
                     buyerAddress: r[9].toString(),
-                    contact: r[4]
+                    contact: r[4],
                   };
                   // console.log(that.ProductInfo);
                   that.isSeller = userAddress == that.ProductInfo.seller;
@@ -157,7 +157,7 @@ export default {
       };
       axios(options).then(r => {
         console.log(r.data.length);
-        that.ProductInfo.sellerCompletedNumber = r.data.length;
+        that.sellerCompletedNumber = r.data.length;
       });
     }
   }

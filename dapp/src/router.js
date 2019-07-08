@@ -9,6 +9,8 @@ import CatalogPage from "./views/Catalog.vue";
 import ProfilePage from "./views/Profile.vue";
 import SellOrdersPage from "./views/SellOrders.vue";
 import OrderDetailPage from "./views/OrderDetail.vue";
+import SellGoodsPage from "./views/SellGoods.vue";
+import RemarkPage from "./views/Remark.vue";
 
 Vue.use(Router);
 
@@ -19,7 +21,10 @@ export default new Router({
     {
       path: "/",
       name: "home",
-      component: Home
+      component: Home,
+      meta: {
+        title: "Market Place"
+      }
     },
     {
       path: "/about",
@@ -33,7 +38,10 @@ export default new Router({
     {
       path: "/create",
       name: "create",
-      component: CreatePage
+      component: CreatePage,
+      meta: {
+        title: "Create Trading"
+      }
     },
     {
       path: "/listing/:contractAddr",
@@ -79,6 +87,16 @@ export default new Router({
       path: "/order/:role/:orderId",
       name: "order",
       component: OrderDetailPage
+    },
+    {
+      path: "/sell-goods/:type",
+      name: "sell-goods",
+      component: SellGoodsPage
+    },
+    {
+      path: "/remark",
+      name: "remark",
+      component: RemarkPage
     }
   ]
 });

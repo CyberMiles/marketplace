@@ -15,6 +15,15 @@ Vue.config.productionTip = false;
 console.log(Contracts);
 window.Contracts = Contracts;
 
+router.beforeEach((to, from, next) => {
+  const nearestWithTitle = to.matched
+    .slice()
+    .reverse()
+    .find(r => r.meta && r.meta.title);
+  if (nearestWithTitle) document.title = nearestWithTitle.meta.title;
+  next();
+});
+
 new Vue({
   el: "#app",
   router,

@@ -2,17 +2,17 @@
   <div class="sell-overview">
     <h3>Items</h3>
     <div class="entries">
-      <router-link class="entry" to="/sell-items-listed">
+      <router-link class="entry" to="/sell-goods/listed">
         <label>Listed</label>
-        <span class="count">2</span>
+        <span class="count">{{ listedN }}</span>
       </router-link>
-      <router-link class="entry" to="/sell-items-unlisted">
+      <router-link class="entry" to="/sell-goods/unlisted">
         <label>Unlisted</label>
-        <span class="count">2</span>
+        <span class="count">{{ unlistedN }}</span>
       </router-link>
-      <router-link class="entry" to="/sell-itmes-sold">
+      <router-link class="entry" to="/sell-goods/sold">
         <label>Sold</label>
-        <span class="count">2</span>
+        <span class="count">{{ soldN }}</span>
       </router-link>
     </div>
 
@@ -20,27 +20,79 @@
     <div class="entries">
       <router-link class="entry" to="/sell-orders/paid">
         <label>Buyer has paid</label>
-        <span class="count">2</span>
+        <span class="count">{{ paidN }}</span>
       </router-link>
       <router-link class="entry" to="/sell-orders/completed">
         <label>Completed</label>
-        <span class="count">2</span>
+        <span class="count">{{ completedN }}</span>
       </router-link>
       <router-link class="entry" to="/sell-orders/dispute">
         <label>Dispute</label>
-        <span class="count">2</span>
+        <span class="count">{{ disputeN }}</span>
       </router-link>
       <router-link class="entry" to="/sell-orders/refund">
         <label>Refund to buyer</label>
-        <span class="count">2</span>
+        <span class="count">{{ refundN }}</span>
       </router-link>
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import axios from "axios";
+import { queryOptions, makeQuery } from "@/global.js";
 
+export default {
+  data() {
+    return {
+      userAddress: "",
+      listedN: "",
+      unlistedN: "",
+      soldN: "",
+      paidN: "",
+      completedN: "",
+      disputeN: "",
+      refundN: ""
+    }
+  },
+  created() {
+    var that = this;
+    var checkWeb3 = function() {
+      try {
+        window.web3.cmt.getAccounts(function(e, address) {
+          if (e) {
+            console.log(e);
+          } else {
+            that.userAddress = address.toString();
+            axios(queryOptions(makeQuery(["1"], that.userAddress))).then(r => {
+              that.listedN = r.data.length;
+            });
+            axios(queryOptions(makeQuery(["0"], that.userAddress))).then(r => {
+              that.unlistedN = r.data.length;
+            });
+            axios(queryOptions(makeQuery(["2", "3", "4", "5"], that.userAddress))).then(r => {
+              that.soldN = r.data.length;
+            });
+            axios(queryOptions(makeQuery(["2"], that.userAddress))).then(r => {
+              that.paidN = r.data.length;
+            });
+            axios(queryOptions(makeQuery(["4"], that.userAddress))).then(r => {
+              that.completedN = r.data.length;
+            });
+            axios(queryOptions(makeQuery(["3"], that.userAddress))).then(r => {
+              that.disputeN = r.data.length;
+            });
+            axios(queryOptions(makeQuery(["5"], that.userAddress))).then(r => {
+              that.refundN = r.data.length;
+            });
+          }
+        });
+      } catch (e) {
+        setTimeout(checkWeb3, 50);
+      }
+    }
+    checkWeb3();
+  }
 };
 </script>
 

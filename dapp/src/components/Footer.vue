@@ -3,7 +3,7 @@
     <a
       class="entry"
       :class="showing === 'home' || !showing ? 'active' : ''"
-      href=""
+      href="/"
     >
       <span class="icon-home"></span>
       Home

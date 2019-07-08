@@ -32,13 +32,13 @@
                 <button v-on:touchstart="cancelOrder">Cancel Order</button>
                 <button>Contact Buyer</button>
                 <button v-on:touchstart="receiveFund" v-if="countdown(order.time) == 0">Receive Fund</button>
-                <button>Remark</button>
+                <button v-on:touchstart="remark(order.id)">Remark</button>
               </div>
               <div class="others-pop" v-else>
                 <button v-on:touchstart="confirm">Confirm Receipt</button>
                 <button>Contact Seller</button>
                 <button v-on:touchstart="dispute" v-if="countdown(order.time) > 0">Dispute</button>
-                <button>Remark</button>
+                <button v-on:touchstart="remark(order.id)">Remark</button>
               </div>
             </template>
           </div>
@@ -61,10 +61,13 @@
         </div>
       </div>
 
-      <div class="refund-order" v-if="order.status === 'dispute'">
+      <div class="dispute-order" v-if="order.status === 'dispute'">
         <div>
           <label>Dispute Reason:</label>
-          <span class="refund-reason">{{ order.disputeReason }}</span>
+          <span class="dispute-reason">{{ order.disputeReason }}</span>
+        </div>
+        <div class="order-actions">
+          <button class="main-action" @click.stop="cancelOrder" v-if="role === 'sell'">Cancel Order</button>
         </div>
       </div>
     </div>
@@ -81,6 +84,7 @@
 <script>
 import RespImg from "@/components/RespImg.vue";
 import Contracts from "@/contracts.js";
+import { closeByBuyerHandler, remarkHandler } from "@/global.js";
 
 export default {
   props: ["order", "role"],
@@ -108,7 +112,9 @@ export default {
     },
     hideExplPop() {
       document.removeEventListener("touchstart", this.hideExplPop);
-      this.explPopShown = false;
+      setTimeout(() => {
+        this.explPopShown = false;
+      }, 100);
     },
     showActionsPop() {
       this.actionsPopShown = true;
@@ -116,7 +122,9 @@ export default {
     },
     hideActionsPop() {
       document.removeEventListener("touchstart", this.hideActionsPop);
-      this.actionsPopShown = false;
+      setTimeout(() => {
+        this.actionsPopShown = false;
+      }, 100);
     },
     confirm() {
       let that = this;
@@ -152,18 +160,20 @@ export default {
       });
     },
     confirmHandler() {
-      var contract = window.web3.cmt.contract(Contracts.Listing.abi);
-      var instance = contract.at(this.order.id);
-      var that = this;
-      instance.closeByBuyer(
-        {
-          gas: "400000",
-          gasPrice: 0
-        },
-        function(e, txhash) {
-          that.web3Callback(e, txhash)
-        }
-      );
+      var instance = this.createInstance(this.order.id);
+      var reloc = `/order/${this.role}/${this.order.id}`;
+      closeByBuyerHandler(instance, reloc);
+
+      // var that = this;
+      // instance.closeByBuyer(
+      //   {
+      //     gas: "400000",
+      //     gasPrice: 0
+      //   },
+      //   function(e, txhash) {
+      //     that.web3Callback(e, txhash);
+      //   }
+      // );
     },
     disputeHandler() {
       var instance = this.createInstance(this.order.id);
@@ -175,7 +185,7 @@ export default {
           gasPrice: 0
         },
         function(e, txhash) {
-          that.web3Callback(e, txhash)
+          that.web3Callback(e, txhash);
         }
       );
     },
@@ -188,7 +198,7 @@ export default {
           gasPrice: 0
         },
         function(e, txhash) {
-          that.web3Callback(e, txhash)
+          that.web3Callback(e, txhash);
         }
       );
     },
@@ -201,12 +211,28 @@ export default {
           gasPrice: 0
         },
         function(e, txhash) {
-          that.web3Callback(e, txhash)
+          that.web3Callback(e, txhash);
         }
       );
     },
     viewOrder(id) {
+      if (!this.actionsPopShown && !this.explPopShown) {
+        this.$router.push(`/order/${this.role}/${id}`);
+      }
       this.$router.push(`/order/${this.role}/${id}`);
+    },
+    async remark(id) {
+      const {value: text} = await this.$swal({
+        input: 'textarea',
+        inputPlaceholder: 'Type your remark here...',
+        showCancelButton: true
+      })
+      if (text) {
+        console.log(text)
+        var instance = this.createInstance(id);
+        var reloc = `/order/${this.role}/${this.order.id}`;
+        remarkHandler(instance, text, reloc);
+      }
     },
     web3Callback(e, txhash) {
       if (e) {
@@ -357,15 +383,27 @@ export default {
     .contract-addr
       color #00a0ff
       word-break break-all
-  .refund-order
+  .refund-order,.dispute-order
     font-size (13/16)rem
     label
       color #999999
       margin-right (8/16)rem
     .refund-amount
       color #ff3f0f
-    .refund-reason
+    .refund-reason,.dispute-reason
       word-break break-all
+    .order-actions
+      display inline-flex
+      position relative
+      padding-top (10/16)rem
+      button
+        height (24/16)rem
+        border-radius (8/16)rem
+        border solid 0.5px #e5e5e5
+        font-size (13/16)rem
+        padding 0 (10/16)rem
+        background-color transparent
+    
   .countdown-expl-pop
     position absolute
     left (30/16)rem
