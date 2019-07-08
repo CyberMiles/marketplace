@@ -19,8 +19,16 @@
           <button class="expl" @click.stop="showExplPop">?</button>
         </div>
         <div class="order-actions">
-          <button class="main-action" @click.stop="cancelOrder" v-if="role === 'sell'">Cancel Order</button>
-          <button class="main-action" @click.stop="confirm" v-else>Confirm Receipt</button>
+          <button
+            class="main-action"
+            @click.stop="cancelOrder"
+            v-if="role === 'sell'"
+          >
+            Cancel Order
+          </button>
+          <button class="main-action" @click.stop="confirm" v-else>
+            Confirm Receipt
+          </button>
           <div class="other-actions">
             <button class="others-trigger" @click.stop="showActionsPop">
               <span></span>
@@ -31,13 +39,23 @@
               <div class="others-pop" v-if="role === 'sell'">
                 <button v-on:touchstart="cancelOrder">Cancel Order</button>
                 <button>Contact Buyer</button>
-                <button v-on:touchstart="receiveFund" v-if="countdown(order.time) == 0">Receive Fund</button>
+                <button
+                  v-on:touchstart="receiveFund"
+                  v-if="countdown(order.time) == 0"
+                >
+                  Receive Fund
+                </button>
                 <button v-on:touchstart="remark(order.id)">Remark</button>
               </div>
               <div class="others-pop" v-else>
                 <button v-on:touchstart="confirm">Confirm Receipt</button>
                 <button>Contact Seller</button>
-                <button v-on:touchstart="dispute" v-if="countdown(order.time) > 0">Dispute</button>
+                <button
+                  v-on:touchstart="dispute"
+                  v-if="countdown(order.time) > 0"
+                >
+                  Dispute
+                </button>
                 <button v-on:touchstart="remark(order.id)">Remark</button>
               </div>
             </template>
@@ -67,7 +85,13 @@
           <span class="dispute-reason">{{ order.disputeReason }}</span>
         </div>
         <div class="order-actions">
-          <button class="main-action" @click.stop="cancelOrder" v-if="role === 'sell'">Cancel Order</button>
+          <button
+            class="main-action"
+            @click.stop="cancelOrder"
+            v-if="role === 'sell'"
+          >
+            Cancel Order
+          </button>
         </div>
       </div>
     </div>
@@ -222,13 +246,12 @@ export default {
       this.$router.push(`/order/${this.role}/${id}`);
     },
     async remark(id) {
-      const {value: text} = await this.$swal({
-        input: 'textarea',
-        inputPlaceholder: 'Type your remark here...',
+      const { value: text } = await this.$swal({
+        input: "textarea",
+        inputPlaceholder: "Type your remark here...",
         showCancelButton: true
-      })
+      });
       if (text) {
-        console.log(text)
         var instance = this.createInstance(id);
         var reloc = `/order/${this.role}/${this.order.id}`;
         remarkHandler(instance, text, reloc);
@@ -403,7 +426,6 @@ export default {
         font-size (13/16)rem
         padding 0 (10/16)rem
         background-color transparent
-    
   .countdown-expl-pop
     position absolute
     left (30/16)rem

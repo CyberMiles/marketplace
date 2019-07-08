@@ -88,16 +88,35 @@
       </div>
     </section>
 
-    <button class="order-action" v-if="order.status === 'paid' && role === 'buy'" @click="closeByBuyer">
+    <button
+      class="order-action"
+      v-if="order.status === 'paid' && role === 'buy'"
+      @click="closeByBuyer"
+    >
       <span>Confirm Receipt</span>
     </button>
-    <button class="order-action sell-action" v-if="(order.status === 'paid' || order.status === 'dispute') && role === 'sell'" @click="refund">
+    <button
+      class="order-action sell-action"
+      v-if="
+        (order.status === 'paid' || order.status === 'dispute') &&
+          role === 'sell'
+      "
+      @click="refund"
+    >
       <span>Cancel Order</span>
     </button>
-    <button class="order-action sell-action" v-if="order.status === 'paid' && role === 'sell' && timeisup" @click="closeBySeller">
+    <button
+      class="order-action sell-action"
+      v-if="order.status === 'paid' && role === 'sell' && timeisup"
+      @click="closeBySeller"
+    >
       <span>Receive Fund</span>
     </button>
-    <button class="order-action sell-action" v-if="order.status === 'paid' && role === 'buy' && !timeisup" @click="dispute">
+    <button
+      class="order-action sell-action"
+      v-if="order.status === 'paid' && role === 'buy' && !timeisup"
+      @click="dispute"
+    >
       <span>Dispute</span>
     </button>
   </div>
@@ -107,9 +126,15 @@
 import RespImg from "@/components/RespImg.vue";
 import Contracts from "@/contracts.js";
 import Global from "@/global.js";
-import { closeByBuyerHandler, closeBySellerHandler, refundHandler, disputeHandler, remarkHandler, compare } from "@/global.js";
-import { setTimeout } from 'timers';
-import Swal from "sweetalert2";
+import {
+  closeByBuyerHandler,
+  closeBySellerHandler,
+  refundHandler,
+  disputeHandler,
+  remarkHandler,
+  compare
+} from "@/global.js";
+import { setTimeout } from "timers";
 
 export default {
   components: {
@@ -124,7 +149,7 @@ export default {
         status: "",
         goods: {
           image: "",
-          title: "",
+          title: ""
         },
         buyer: {
           addr: "",
@@ -136,10 +161,10 @@ export default {
         seller: {
           addr: ""
         },
-        escrow_time: "",
+        escrow_time: ""
       },
       messageBoard: []
-    }
+    };
   },
   created() {
     this.role = this.$route.params.role;
@@ -155,26 +180,23 @@ export default {
           if (e) {
             console.log(e);
           } else {
-            if (r[0] == 2)
-              that.order.status = "paid";
-            else if (r[0] == 3)
-              that.order.status = "dispute";
-            else if (r[0] == 4)
-              that.order.status = "completed";
+            if (r[0] == 2) that.order.status = "paid";
+            else if (r[0] == 3) that.order.status = "dispute";
+            else if (r[0] == 4) that.order.status = "completed";
             else if (r[0] == 5) {
               that.order.status = "refund";
             }
             that.order.goods = {
               image: r[6].split(",")[0],
-              title: r[1],
+              title: r[1]
             };
             that.order.seller = {
               addr: r[8],
               contact: r[4]
             };
-            that.order.escrow_time = parseInt(r[5])
+            that.order.escrow_time = parseInt(r[5]);
           }
-        })
+        });
         instance.buyerInfo(function(e, b_r) {
           if (e) {
             console.log(e);
@@ -196,7 +218,7 @@ export default {
               remark: b_r[7],
               disputed: b_r[3],
               closedReason: that.order.buyer.closedReason
-            }
+            };
           }
         });
         instance.secondaryBuyerInfo(function(e, s_r) {
@@ -206,11 +228,11 @@ export default {
             that.order.buyer.closedReason = s_r[1];
           }
         });
-        instance.getMessagesCount(function(e, r){
+        instance.getMessagesCount(function(e, r) {
           if (e) {
             console.log(e);
           } else {
-            for(let i = 0; i < r; i++ ) {
+            for (let i = 0; i < r; i++) {
               instance.showMessageBoard(i, function(e, msg) {
                 if (e) {
                   console.log(e);
@@ -220,37 +242,46 @@ export default {
                     party: msg[0],
                     time: new Date(1000 * msg[1]),
                     words: msg[2]
-                  })
+                  });
                 }
-              })
+              });
             }
           }
-        })
+        });
       } catch (e) {
         console.log("wait");
         setTimeout(checkWeb3, 50);
       }
-    }
+    };
     checkWeb3();
   },
   computed: {
     refundReason: function() {
       if (this.order.buyer.disputed) {
         if (this.order.buyer.closedReason == 0) {
-          return (this.role == "sell") ? "Buyer disputed and you refunded." : "You disputed and seller refunded you.";
+          return this.role == "sell"
+            ? "Buyer disputed and you refunded."
+            : "You disputed and seller refunded you.";
         } else if (this.order.buyer.closedReason == 1) {
-          return (this.role == "sell") ? "Buyer disputed and DAO assumes buyer won." : "You disputed and DAO assume that you win.";
+          return this.role == "sell"
+            ? "Buyer disputed and DAO assumes buyer won."
+            : "You disputed and DAO assume that you win.";
+        } else {
+          return "empty";
         }
       } else {
-        return (this.role == "sell") ? "You refunded." : "Seller refunded you.";
+        return this.role == "sell" ? "You refunded." : "Seller refunded you.";
       }
     },
     timeisup: function() {
-      return (this.order.buyer.paymentDate != null &&
-      this.order.escrow_time + this.order.buyer.paymentDate.getTime()/1000 < new Date().getTime()/1000);
+      return (
+        this.order.buyer.paymentDate != null &&
+        this.order.escrow_time + this.order.buyer.paymentDate.getTime() / 1000 <
+          new Date().getTime() / 1000
+      );
     },
     sortedMessageBoard: function() {
-      return this.messageBoard.sort(compare("id"))
+      return this.messageBoard.clone().sort(compare("id"));
     }
   },
   methods: {
@@ -273,18 +304,17 @@ export default {
       return speaker;
     },
     async remark() {
-      const {value: text} = await this.$swal({
-        input: 'textarea',
-        inputPlaceholder: 'Type your remark here...',
+      const { value: text } = await this.$swal({
+        input: "textarea",
+        inputPlaceholder: "Type your remark here...",
         showCancelButton: true
-      })
+      });
       if (text) {
-        console.log(text)
         remarkHandler(this.instance, text);
       }
     }
   }
-}
+};
 </script>
 
 <style lang="stylus">

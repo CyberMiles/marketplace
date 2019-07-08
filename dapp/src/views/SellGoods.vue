@@ -21,7 +21,9 @@
             <button @click="goEdit(g.id)"><span>Edit</span></button>
           </div>
           <div v-if="g.status === 'sold'">
-            <button @click="reCreate(g.id)" class="long"><span>Relist</span></button>
+            <button @click="reCreate(g.id)" class="long">
+              <span>Relist</span>
+            </button>
           </div>
         </div>
       </div>
@@ -34,8 +36,14 @@
 <script>
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
-import { setTimeout } from 'timers';
-import { makeQuery, queryOptions, unlistHandler, relistHandler, createHandler } from "@/global.js";
+import { setTimeout } from "timers";
+import {
+  makeQuery,
+  queryOptions,
+  unlistHandler,
+  relistHandler,
+  createHandler
+} from "@/global.js";
 import Global from "@/global.js";
 import Contracts from "@/contracts.js";
 
@@ -47,11 +55,11 @@ export default {
     return {
       goods: [],
       userAddress: ""
-    }
+    };
   },
   created() {
     var that = this;
-    console.log(this.$route.params.type)
+    console.log(this.$route.params.type);
     var checkWeb3 = function() {
       try {
         window.web3.cmt.getAccounts(function(e, address) {
@@ -59,38 +67,34 @@ export default {
             console.log(e);
           } else {
             that.userAddress = address.toString();
-            console.log(makeQuery(that.typeStatus, that.userAddress))
-            axios(queryOptions(makeQuery(that.typeStatus, that.userAddress))).then(r => {
+            console.log(makeQuery(that.typeStatus, that.userAddress));
+            axios(
+              queryOptions(makeQuery(that.typeStatus, that.userAddress))
+            ).then(r => {
               console.log(r.data);
               that.goods.length = 0;
-              r.data.forEach(function(item, id) {
-                that.goods.push(
-                  {
-                    id: item.contractAddress,
-                    status: that.$route.params.type,
-                    image:
-                      item.functionData.getImage.split(",")[0],
-                    price: (parseInt(item.functionData.info[7]) / 100).toString()
-                  }
-                )
-              })
+              r.data.forEach(function(item) {
+                that.goods.push({
+                  id: item.contractAddress,
+                  status: that.$route.params.type,
+                  image: item.functionData.getImage.split(",")[0],
+                  price: (parseInt(item.functionData.info[7]) / 100).toString()
+                });
+              });
             });
           }
         });
       } catch (e) {
-        setTimeout(checkWeb3, 50)
+        setTimeout(checkWeb3, 50);
       }
-    }
+    };
     checkWeb3();
   },
   computed: {
     typeStatus: function() {
-      if (this.$route.params.type === "listed")
-        return ["1"];
-      else if (this.$route.params.type == "unlisted")
-        return ["0"];
-      else 
-        return ["2", "3", "4", "5"];
+      if (this.$route.params.type === "listed") return ["1"];
+      else if (this.$route.params.type == "unlisted") return ["0"];
+      else return ["2", "3", "4", "5"];
     }
   },
   methods: {
@@ -126,7 +130,7 @@ export default {
             escrowPeriod: r[5],
             crc20: Global.USDaddr,
             amount: r[7]
-          }
+          };
           var newContract = window.web3.cmt.contract(Contracts.Listing.abi);
           window.web3.cmt.getAccounts(function(e, addr) {
             if (e) {
@@ -136,12 +140,12 @@ export default {
               var bin = Contracts.Listing.bin;
               createHandler(newContract, newItem, bin, userAddress, that);
             }
-          })
+          });
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="stylus">

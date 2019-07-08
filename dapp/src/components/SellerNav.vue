@@ -12,14 +12,19 @@
       v-if="status == 0 || status == 1"
       >Edit</router-link
     >
-    <button class="link gray wide" @click="reCreate" v-if="status != 0 && status != 1"
-      >Relist a New One</button>
-    
+    <button
+      class="link gray wide"
+      @click="reCreate"
+      v-if="status != 0 && status != 1"
+    >
+      Relist a New One
+    </button>
   </div>
 </template>
 <script>
 import { createHandler } from "@/global.js";
 import Global from "@/global.js";
+import Contracts from "@/contracts.js";
 
 export default {
   name: "SellerNav",
@@ -105,7 +110,6 @@ export default {
     },
     reCreate() {
       var that = this;
-      var contract = window.web3.cmt.contract(Contracts.Listing.abi);
       var instance = this.instance;
       instance.info(function(e, r) {
         if (e) {
@@ -121,7 +125,7 @@ export default {
             escrowPeriod: r[5],
             crc20: Global.USDaddr,
             amount: r[7]
-          }
+          };
           var newContract = window.web3.cmt.contract(Contracts.Listing.abi);
           window.web3.cmt.getAccounts(function(e, addr) {
             if (e) {
@@ -131,9 +135,9 @@ export default {
               var bin = Contracts.Listing.bin;
               createHandler(newContract, newItem, bin, userAddress, that);
             }
-          })
+          });
         }
-      })
+      });
     }
   }
 };
