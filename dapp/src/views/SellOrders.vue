@@ -24,7 +24,7 @@ export default {
       refundOrders: [],
       disputeOrders: [],
       sampleOrders: [],
-      userAddr: ""
+      userAddr: "",
     };
   },
   created() {
@@ -49,6 +49,11 @@ export default {
   watch: {
     userAddr: function() {
       this.setOrders();
+    },
+    sampleOrders: function() {
+      document.title = `${this.$route.params.type} (${
+        this.sampleOrders.length
+      })`;
     }
   },
   methods: {

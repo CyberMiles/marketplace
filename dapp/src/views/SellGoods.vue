@@ -67,12 +67,11 @@ export default {
             console.log(e);
           } else {
             that.userAddress = address.toString();
-            console.log(makeQuery(that.typeStatus, that.userAddress));
             axios(
               queryOptions(makeQuery(that.typeStatus, that.userAddress))
             ).then(r => {
-              console.log(r.data);
               that.goods.length = 0;
+              document.title = `${that.$route.params.type} (${r.data.length})`;
               r.data.forEach(function(item) {
                 that.goods.push({
                   id: item.contractAddress,

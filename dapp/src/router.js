@@ -46,17 +46,26 @@ export default new Router({
     {
       path: "/listing/:contractAddr",
       name: "listing",
-      component: ListingPage
+      component: ListingPage,
+      meta: {
+        title: "Market Place"
+      }
     },
     {
       path: "/buy/:contractAddr",
       name: "buy",
-      component: BuyPage
+      component: BuyPage,
+      meta: {
+        title: "Pay"
+      }
     },
     {
       path: "/edit/:contractAddr",
       name: "edit",
-      component: EditPage
+      component: EditPage,
+      meta: {
+        title: "Edit"
+      }
     },
     {
       path: "/tag/:tag",
@@ -71,12 +80,18 @@ export default new Router({
     {
       path: "/search/:search",
       name: "search",
-      component: CatalogPage
+      component: CatalogPage,
+      meta: {
+        title: "Search Result"
+      }
     },
     {
       path: "/profile",
       name: "profile",
-      component: ProfilePage
+      component: ProfilePage,
+      meta: {
+        title: "Profile"
+      }
     },
     {
       path: "/sell-orders/:type",
@@ -86,7 +101,10 @@ export default new Router({
     {
       path: "/order/:role/:orderId",
       name: "order",
-      component: OrderDetailPage
+      component: OrderDetailPage,
+      meta: {
+        title: "Detail"
+      }
     },
     {
       path: "/sell-goods/:type",
@@ -96,7 +114,10 @@ export default new Router({
     {
       path: "/remark",
       name: "remark",
-      component: RemarkPage
+      component: RemarkPage,
+      meta: {
+        title: "Remark"
+      }
     }
   ]
 });
