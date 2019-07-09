@@ -1,0 +1,451 @@
+<template>
+  <div class="order-card" @click="viewOrder(order.id)">
+    <div class="order-goods-info">
+      <div class="goods-img">
+        <RespImg v-bind:src="order.goods.image" alt="" />
+      </div>
+      <div class="goods-desc">
+        <div class="goods-title">{{ order.goods.title }}</div>
+        <div class="goods-price">$ {{ order.goods.price }}</div>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="order-info">
+      <div class="paid-order" v-if="order.status === 'paid'">
+        <div class="countdown">
+          {{ countdown(order.time) }} h
+          <button class="expl" @click.stop="showExplPop">?</button>
+        </div>
+        <div class="order-actions">
+          <button
+            class="main-action"
+            @click.stop="cancelOrder"
+            v-if="role === 'sell'"
+          >
+            Cancel Order
+          </button>
+          <button class="main-action" @click.stop="confirm" v-else>
+            Confirm Receipt
+          </button>
+          <div class="other-actions">
+            <button class="others-trigger" @click.stop="showActionsPop">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            <template v-if="actionsPopShown">
+              <div class="others-pop" v-if="role === 'sell'">
+                <button v-on:touchstart="cancelOrder">Cancel Order</button>
+                <button>Contact Buyer</button>
+                <button
+                  v-on:touchstart="receiveFund"
+                  v-if="countdown(order.time) == 0"
+                >
+                  Receive Fund
+                </button>
+                <button v-on:touchstart="remark(order.id)">Remark</button>
+              </div>
+              <div class="others-pop" v-else>
+                <button v-on:touchstart="confirm">Confirm Receipt</button>
+                <button>Contact Seller</button>
+                <button
+                  v-on:touchstart="dispute"
+                  v-if="countdown(order.time) > 0"
+                >
+                  Dispute
+                </button>
+                <button v-on:touchstart="remark(order.id)">Remark</button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <div class="completed-order" v-if="order.status === 'completed'">
+        <label>Contract:</label>
+        <span class="contract-addr">{{ order.contract }}</span>
+      </div>
+
+      <div class="refund-order" v-if="order.status === 'refund'">
+        <div>
+          <label>Refund Amount:</label>
+          <span class="refund-amount">${{ order.refundAmount }}</span>
+        </div>
+        <div>
+          <label>Refund Reason:</label>
+          <span class="refund-reason">{{ order.refundReason }}</span>
+        </div>
+      </div>
+
+      <div class="dispute-order" v-if="order.status === 'dispute'">
+        <div>
+          <label>Dispute Reason:</label>
+          <span class="dispute-reason">{{ order.disputeReason }}</span>
+        </div>
+        <div class="order-actions">
+          <button
+            class="main-action"
+            @click.stop="cancelOrder"
+            v-if="role === 'sell'"
+          >
+            Cancel Order
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="countdown-expl-pop" v-if="explPopShown">
+      After payment, the digital currency is locked into an intelligent contract
+      for 10 days, and the seller delivers the goods within 10 days; Smart
+      contracts will automatically transfer digital money to the seller after 10
+      days; If the seller fails to deliver the goods, please apply for
+      arbitration refund within 10 days
+    </div>
+  </div>
+</template>
+
+<script>
+import RespImg from "@/components/RespImg.vue";
+import Contracts from "@/contracts.js";
+import { closeByBuyerHandler, remarkHandler } from "@/global.js";
+
+export default {
+  props: ["order", "role"],
+  components: {
+    RespImg
+  },
+  data() {
+    return {
+      explPopShown: false,
+      actionsPopShown: false
+    };
+  },
+  methods: {
+    countdown(time) {
+      const remain = time - new Date().getTime();
+      if (remain > 0) {
+        return Math.ceil(remain / (60 * 60 * 1000));
+      } else {
+        return 0;
+      }
+    },
+    showExplPop() {
+      this.explPopShown = true;
+      document.addEventListener("touchstart", this.hideExplPop);
+    },
+    hideExplPop() {
+      document.removeEventListener("touchstart", this.hideExplPop);
+      setTimeout(() => {
+        this.explPopShown = false;
+      }, 100);
+    },
+    showActionsPop() {
+      this.actionsPopShown = true;
+      document.addEventListener("touchstart", this.hideActionsPop);
+    },
+    hideActionsPop() {
+      document.removeEventListener("touchstart", this.hideActionsPop);
+      setTimeout(() => {
+        this.actionsPopShown = false;
+      }, 100);
+    },
+    confirm() {
+      let that = this;
+      this.$swal({
+        title: "Are you sure?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, receive it!"
+      }).then(result => {
+        if (result.value) {
+          that.confirmHandler();
+          // this.$swal(
+          //   'Unlisted!',
+          //   'Your product has been unlisted.',
+          //   'success'
+          // )
+        }
+      });
+    },
+    dispute() {
+      let that = this;
+      this.$swal({
+        title: "Are you sure?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, dispute!"
+      }).then(result => {
+        if (result.value) that.disputeHandler();
+      });
+    },
+    confirmHandler() {
+      var instance = this.createInstance(this.order.id);
+      var reloc = `/order/${this.role}/${this.order.id}`;
+      closeByBuyerHandler(instance, reloc);
+
+      // var that = this;
+      // instance.closeByBuyer(
+      //   {
+      //     gas: "400000",
+      //     gasPrice: 0
+      //   },
+      //   function(e, txhash) {
+      //     that.web3Callback(e, txhash);
+      //   }
+      // );
+    },
+    disputeHandler() {
+      var instance = this.createInstance(this.order.id);
+      var that = this;
+      instance.dispute(
+        "", //prefilled dispute reason
+        {
+          gas: "400000",
+          gasPrice: 0
+        },
+        function(e, txhash) {
+          that.web3Callback(e, txhash);
+        }
+      );
+    },
+    receiveFund() {
+      var instance = this.createInstance(this.order.id);
+      var that = this;
+      instance.closeBySeller(
+        {
+          gas: "400000",
+          gasPrice: 0
+        },
+        function(e, txhash) {
+          that.web3Callback(e, txhash);
+        }
+      );
+    },
+    cancelOrder() {
+      var instance = this.createInstance(this.order.id);
+      var that = this;
+      instance.refund(
+        {
+          gas: "400000",
+          gasPrice: 0
+        },
+        function(e, txhash) {
+          that.web3Callback(e, txhash);
+        }
+      );
+    },
+    viewOrder(id) {
+      if (!this.actionsPopShown && !this.explPopShown) {
+        this.$router.push(`/order/${this.role}/${id}`);
+      }
+      this.$router.push(`/order/${this.role}/${id}`);
+    },
+    async remark(id) {
+      const { value: text } = await this.$swal({
+        input: "textarea",
+        inputPlaceholder: "Type your remark here...",
+        showCancelButton: true
+      });
+      if (text) {
+        var instance = this.createInstance(id);
+        var reloc = `/order/${this.role}/${this.order.id}`;
+        remarkHandler(instance, text, reloc);
+      }
+    },
+    web3Callback(e, txhash) {
+      if (e) {
+        console.log(e);
+      } else {
+        var filter = window.web3.cmt.filter("latest");
+        filter.watch(function(error, blockhash) {
+          if (!error) {
+            console.log(blockhash, txhash);
+            window.web3.cmt.getBlock(blockhash, function(e, r) {
+              console.log(blockhash, txhash, r.transactions);
+              if (txhash.indexOf(r.transactions) != -1) {
+                filter.stopWatching();
+                location.reload(true);
+                //TODO
+              }
+            });
+          }
+        });
+      }
+    },
+    createInstance(addr) {
+      var contract = window.web3.cmt.contract(Contracts.Listing.abi);
+      return contract.at(addr);
+    }
+  }
+};
+</script>
+
+<style lang="stylus">
+.order-card
+  background-color #ffffff
+  padding (15/16)rem
+  border-radius (8/16)rem
+  box-shadow 0 (3/16)rem (9/16)rem 0 rgba(0, 0, 0, 0.03)
+  margin-bottom (15/16)rem
+  .order-goods-info
+    display flex
+    .goods-img
+      width (60/16)rem
+      min-width (60/16)rem
+      height (60/16)rem
+      margin-right (10/16)rem
+      border-radius (8/16)rem
+      background-color #e5e5e5
+      overflow hidden
+      img
+        width (60/16)rem
+    .goods-desc
+      height (60/16)rem
+      overflow hidden
+      position relative
+      .goods-title
+        font-size (15/16)rem
+        line-height 1.4
+      .goods-price
+        position absolute
+        bottom 0
+        font-size (13/16)rem
+        font-weight 600
+        color #ff3f0f
+        background-color #ffffff
+        width 100%
+  hr
+    margin (15/16)rem 0
+    height 1px
+    border 0
+    background-color #e5e5e5
+  .paid-order
+    display flex
+    justify-content space-between
+    .countdown
+      font-size (13/16)rem
+      color #ff3f0f
+      display flex
+      align-items center
+      .expl
+        display block
+        background-color transparent
+        text-align center
+        width (13/16)rem
+        height (13/16)rem
+        line-height 1
+        color #999999
+        border 1px solid #999999
+        border-radius 50%
+        font-size (10/16)rem
+        margin-left (5/16)rem
+        padding 0
+    .order-actions
+      display flex
+      position relative
+      button
+        height (24/16)rem
+        border-radius (8/16)rem
+        border solid 0.5px #e5e5e5
+        font-size (13/16)rem
+        padding 0 (10/16)rem
+        background-color transparent
+      .others-trigger
+        margin-left (15/16)rem
+        width (48/16)rem
+        display flex
+        align-items center
+        justify-content space-evenly
+        span
+          display block
+          width (3/16)rem
+          height (3/16)rem
+          border-radius 50%
+          background-color #666666
+      .others-pop
+        position absolute
+        margin-top (10/16)rem
+        right 0
+        border-radius (8/16)rem
+        background-color rgba(0, 0, 0, 0.7)
+        padding 0 (12/16)rem
+        z-index 1
+        display flex
+        flex-direction column
+        justify-content space-around
+        height (75/16)rem
+        &:after
+          content ""
+          box-sizing border-box
+          position absolute
+          top (-10/16)rem
+          right (10/16)rem
+          width (10/16)rem
+          height (10/16)rem
+          border-width 0 (5/16)rem (5/16)rem (5/16)rem
+          border-style solid
+          border-color transparent transparent rgba(0, 0, 0, 0.7) transparent
+        button
+          display block
+          height auto
+          padding 0
+          white-space nowrap
+          font-size (13/16)rem
+          color rgba(255, 255, 255, 0.8)
+          border 0
+  .completed-order
+    font-size (13/16)rem
+    label
+      color #999999
+      margin-right (8/16)rem
+    .contract-addr
+      color #00a0ff
+      word-break break-all
+  .refund-order,.dispute-order
+    font-size (13/16)rem
+    label
+      color #999999
+      margin-right (8/16)rem
+    .refund-amount
+      color #ff3f0f
+    .refund-reason,.dispute-reason
+      word-break break-all
+    .order-actions
+      display inline-flex
+      position relative
+      padding-top (10/16)rem
+      button
+        height (24/16)rem
+        border-radius (8/16)rem
+        border solid 0.5px #e5e5e5
+        font-size (13/16)rem
+        padding 0 (10/16)rem
+        background-color transparent
+  .countdown-expl-pop
+    position absolute
+    left (30/16)rem
+    margin-top (5/16)rem
+    border-radius (8/16)rem
+    background-color rgba(0, 0, 0, 0.7)
+    font-size (11/16)rem
+    color rgba(255, 255, 255, 0.8)
+    padding (12/16)rem
+    width (315/16)rem
+    z-index 1
+    &:after
+      content ""
+      box-sizing border-box
+      position absolute
+      top (-10/16)rem
+      left (10/16)rem
+      width (10/16)rem
+      height (10/16)rem
+      border-width 0 (5/16)rem (5/16)rem (5/16)rem
+      border-style solid
+      border-color transparent transparent rgba(0, 0, 0, 0.7) transparent
+</style>
