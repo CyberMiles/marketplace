@@ -16,7 +16,9 @@
       </div>
       <ul class="tags">
         <li v-for="tag in popularTags" :key="tag.key">
-          <a :href="`tag/` + tag" class="tag-link">{{ tag }}</a>
+          <router-link :to="`tag/` + tag" class="tag-link">{{
+            tag
+          }}</router-link>
         </li>
       </ul>
       <div class="cate-title">

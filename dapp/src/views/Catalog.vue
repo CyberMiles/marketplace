@@ -3,15 +3,15 @@
     <div class="catalog-goods-list">
       <ul class="tags" v-if="tag !== undefined">
         <li v-for="popularTag in popularTags" :key="popularTag.key">
-          <a
-            :href="`/tag/` + popularTag"
+          <router-link
+            :to="`/tag/` + popularTag"
             class="tag-link active"
             v-if="popularTag == tag"
-            >{{ popularTag }}</a
+            >{{ popularTag }}</router-link
           >
-          <a :href="`/tag/` + popularTag" class="tag-link" v-else>{{
+          <router-link :to="`/tag/` + popularTag" class="tag-link" v-else>{{
             popularTag
-          }}</a>
+          }}</router-link>
         </li>
       </ul>
       <div class="search-field" v-if="search !== undefined">

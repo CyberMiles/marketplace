@@ -185,7 +185,10 @@ export default {
     },
     confirmHandler() {
       var instance = this.createInstance(this.order.id);
-      var reloc = `/order/${this.role}/${this.order.id}`;
+      var reloc = {
+        router: this.$router,
+        href: `/order/${this.role}/${this.order.id}`
+      };
       closeByBuyerHandler(instance, reloc);
 
       // var that = this;
@@ -253,7 +256,10 @@ export default {
       });
       if (text) {
         var instance = this.createInstance(id);
-        var reloc = `/order/${this.role}/${this.order.id}`;
+        var reloc = {
+          router: this.$router,
+          href: `/order/${this.role}/${this.order.id}`
+        };
         remarkHandler(instance, text, reloc);
       }
     },

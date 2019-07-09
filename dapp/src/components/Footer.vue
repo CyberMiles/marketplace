@@ -1,21 +1,21 @@
 <template>
   <footer>
-    <a
+    <router-link
       class="entry"
       :class="showing === 'home' || !showing ? 'active' : ''"
-      href="/"
+      to="/"
     >
       <span class="icon-home"></span>
       Home
-    </a>
-    <a
+    </router-link>
+    <router-link
       class="entry"
       :class="showing === 'profile' ? 'active' : ''"
-      href="/profile"
+      to="/profile"
     >
       <span class="icon-profile"></span>
       Profile
-    </a>
+    </router-link>
     <button class="new-btn" @click="goCreate">
       <span class="plus-icon"></span>
     </button>

@@ -77,7 +77,7 @@ function relistHandler(instance, reloc = "") {
       gasPrice: 0
     },
     function(e, txhash) {
-      web3Callback(e, txhash, reloc)
+      web3Callback(e, txhash, reloc);
     }
   );
 }
@@ -186,7 +186,9 @@ function web3Callback(e, txhash, reloc) {
           if (txhash.indexOf(r.transactions) != -1) {
             filter.stopWatching();
             if (reloc != undefined) {
-              location.href = reloc;
+              var router = reloc.router;
+              router.push(reloc.href);
+              // location.href = reloc;
             } else {
               location.reload(true);
             }
