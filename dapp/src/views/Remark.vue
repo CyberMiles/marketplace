@@ -21,8 +21,7 @@
   </div>
 </template>
 
-<script>
-</script>
+<script></script>
 
 <style lang="stylus">
 .remark-page

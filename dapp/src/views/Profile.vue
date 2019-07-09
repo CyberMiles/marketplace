@@ -30,8 +30,8 @@
     </div>
 
     <div class="container">
-      <ProfileOrders v-if="role === 'buy'" v-bind="{userAddr: userAddr}" />
-      <SellOverview v-if="role === 'sell'" v-bind="{userAddr: userAddr}" />
+      <ProfileOrders v-if="role === 'buy'" v-bind="{ userAddr: userAddr }" />
+      <SellOverview v-if="role === 'sell'" v-bind="{ userAddr: userAddr }" />
     </div>
 
     <Footer showing="profile"></Footer>

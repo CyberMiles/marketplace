@@ -53,7 +53,7 @@ export default {
       completedN: "",
       disputeN: "",
       refundN: ""
-    }
+    };
   },
   created() {
     var that = this;
@@ -70,7 +70,9 @@ export default {
             axios(queryOptions(makeQuery(["0"], that.userAddress))).then(r => {
               that.unlistedN = r.data.length;
             });
-            axios(queryOptions(makeQuery(["2", "3", "4", "5"], that.userAddress))).then(r => {
+            axios(
+              queryOptions(makeQuery(["2", "3", "4", "5"], that.userAddress))
+            ).then(r => {
               that.soldN = r.data.length;
             });
             axios(queryOptions(makeQuery(["2"], that.userAddress))).then(r => {
@@ -90,7 +92,7 @@ export default {
       } catch (e) {
         setTimeout(checkWeb3, 50);
       }
-    }
+    };
     checkWeb3();
   }
 };

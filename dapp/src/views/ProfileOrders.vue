@@ -76,14 +76,13 @@ export default {
       this.sampleOrders = this[`${val}Orders`];
     },
     userAddr: function() {
-      console.log("userAddr changed")
-      this.setOrders()
+      console.log("userAddr changed");
+      this.setOrders();
     }
   },
   methods: {
     setOrders() {
-      if(this.userAddr == "")
-        return;
+      if (this.userAddr == "") return;
       var that = this;
       var queryPaid = {
         query: {
@@ -181,104 +180,93 @@ export default {
           }
         }
       };
-      const options = (query) => {
+      const options = query => {
         return {
           method: "POST",
           headers: { "content-type": "application/json" },
           data: JSON.stringify(query),
           url: "https://cmt-testnet.search.secondstate.io/api/es_search"
-        }
+        };
       };
       axios(options(queryPaid)).then(r => {
         console.log(r.data);
         that.paidOrders.length = 0;
-        r.data.forEach(function(item, id) {
-          that.paidOrders.push(
-            {
-              id: item.contractAddress,
-              status: "paid",
-              goods: {
-                image:
-                  item.functionData.getImage.split(",")[0],
-                title: item.functionData.info[1],
-                price: (parseInt(item.functionData.info[7]) / 100).toString()
-              },
-              time: 1000 * parseInt(item.functionData.buyerInfo[1]) +  1000 * parseInt(item.functionData.info[5])
-            }
-          )
-        })
+        r.data.forEach(function(item) {
+          that.paidOrders.push({
+            id: item.contractAddress,
+            status: "paid",
+            goods: {
+              image: item.functionData.getImage.split(",")[0],
+              title: item.functionData.info[1],
+              price: (parseInt(item.functionData.info[7]) / 100).toString()
+            },
+            time:
+              1000 * parseInt(item.functionData.buyerInfo[1]) +
+              1000 * parseInt(item.functionData.info[5])
+          });
+        });
       });
       axios(options(queryCompleted)).then(r => {
         console.log(r.data);
         that.completedOrders.length = 0;
-        r.data.forEach(function(item, id) {
-          that.completedOrders.push(
-            {
-              id: item.contractAddress,
-              status: "completed",
-              goods: {
-                image:
-                  item.functionData.getImage.split(",")[0],
-                title: item.functionData.info[1],
-                price: (parseInt(item.functionData.info[7]) / 100).toString()
-              },
-              contract: item.contractAddress
-            }
-          )
-          
-        })
+        r.data.forEach(function(item) {
+          that.completedOrders.push({
+            id: item.contractAddress,
+            status: "completed",
+            goods: {
+              image: item.functionData.getImage.split(",")[0],
+              title: item.functionData.info[1],
+              price: (parseInt(item.functionData.info[7]) / 100).toString()
+            },
+            contract: item.contractAddress
+          });
+        });
       });
       axios(options(queryDispute)).then(r => {
         console.log(r.data);
         that.disputeOrders.length = 0;
-        r.data.forEach(function(item, id) {
-          that.disputeOrders.push(
-            {
-              id: item.contractAddress,
-              status: "dispute",
-              goods: {
-                image:
-                  item.functionData.getImage.split(",")[0],
-                title: item.functionData.info[1],
-                price: (parseInt(item.functionData.info[7]) / 100).toString()
-              },
-              disputeReason: "Dispute."
-            }
-          )
-          
-        })
+        r.data.forEach(function(item) {
+          that.disputeOrders.push({
+            id: item.contractAddress,
+            status: "dispute",
+            goods: {
+              image: item.functionData.getImage.split(",")[0],
+              title: item.functionData.info[1],
+              price: (parseInt(item.functionData.info[7]) / 100).toString()
+            },
+            disputeReason: "Dispute."
+          });
+        });
       });
       axios(options(queryRefund)).then(r => {
         console.log(r.data);
         that.refundOrders.length = 0;
-        r.data.forEach(function(item, id) {
-        var refundReason = (function(){
-          if (item.functionData.buyerInfo[3] === "True") {
-            if (item.functionData.secondaryBuyerInfo[1] == 0) {
-              return "You disputed and seller refunded you."
-            } else if (item.functionData.secondaryBuyerInfo[1] == 1) {
-              return "You disputed and DAO assume that you win."
+        r.data.forEach(function(item) {
+          var refundReason = (function() {
+            if (item.functionData.buyerInfo[3] === "True") {
+              if (item.functionData.secondaryBuyerInfo[1] == 0) {
+                return "You disputed and seller refunded you.";
+              } else if (item.functionData.secondaryBuyerInfo[1] == 1) {
+                return "You disputed and DAO assume that you win.";
+              }
+            } else {
+              return "Seller refunded you.";
             }
-          } else {
-            return "Seller refunded you."
-          }
-        })();
-          that.refundOrders.push(
-            {
-              id: item.contractAddress,
-              status: "refund",
-              goods: {
-                image:
-                  item.functionData.getImage.split(",")[0],
-                title: item.functionData.info[1],
-                price: (parseInt(item.functionData.info[7]) / 100).toString()
-              },
-              refundAmount: (parseInt(item.functionData.info[7]) / 100).toString(),
-              refundReason: refundReason
-            }
-          )
-          
-        })
+          })();
+          that.refundOrders.push({
+            id: item.contractAddress,
+            status: "refund",
+            goods: {
+              image: item.functionData.getImage.split(",")[0],
+              title: item.functionData.info[1],
+              price: (parseInt(item.functionData.info[7]) / 100).toString()
+            },
+            refundAmount: (
+              parseInt(item.functionData.info[7]) / 100
+            ).toString(),
+            refundReason: refundReason
+          });
+        });
       });
     }
   }

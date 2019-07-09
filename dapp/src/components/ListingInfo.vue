@@ -103,7 +103,7 @@ export default {
                     USDprice: (parseInt(r[7]) / 100).toString(),
                     seller: r[8].toString(),
                     buyerAddress: r[9].toString(),
-                    contact: r[4],
+                    contact: r[4]
                   };
                   // console.log(that.ProductInfo);
                   that.isSeller = userAddress == that.ProductInfo.seller;

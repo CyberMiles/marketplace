@@ -353,7 +353,7 @@ export default {
                   that.contact,
                   that.escrowPeriod,
                   that.crc20,
-                  parseInt(parseFloat(that.amount) * 100), // the OPB is 2 decimals,
+                  parseInt(parseFloat(that.amount) * 100) // the OPB is 2 decimals,
                 ],
                 {
                   from: userAddress,

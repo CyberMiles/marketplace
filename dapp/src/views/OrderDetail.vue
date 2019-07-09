@@ -281,7 +281,7 @@ export default {
       );
     },
     sortedMessageBoard: function() {
-      return this.messageBoard.clone().sort(compare("id"));
+      return this.messageBoard.slice(0).sort(compare("id"));
     }
   },
   methods: {
