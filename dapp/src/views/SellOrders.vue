@@ -24,7 +24,7 @@ export default {
       refundOrders: [],
       disputeOrders: [],
       sampleOrders: [],
-      userAddr: "",
+      userAddr: ""
     };
   },
   created() {

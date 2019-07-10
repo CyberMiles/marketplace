@@ -93,7 +93,7 @@
           type="number"
           class="form-control"
           id="CMTamount"
-          min="0.01"
+          min="0.0001"
           v-model="CMTamount"
         />
         <div class="price-unit-container">

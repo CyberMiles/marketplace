@@ -11,6 +11,7 @@ import SellOrdersPage from "./views/SellOrders.vue";
 import OrderDetailPage from "./views/OrderDetail.vue";
 import SellGoodsPage from "./views/SellGoods.vue";
 import RemarkPage from "./views/Remark.vue";
+import BuyCompletePage from "./views/BuyComplete.vue";
 
 Vue.use(Router);
 
@@ -57,6 +58,14 @@ export default new Router({
       component: BuyPage,
       meta: {
         title: "Pay"
+      }
+    },
+    {
+      path: "/complete/:contractAddr/:txHash",
+      name: "complete",
+      component: BuyCompletePage,
+      meta: {
+        title: "Complete"
       }
     },
     {

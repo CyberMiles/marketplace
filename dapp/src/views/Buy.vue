@@ -1,5 +1,4 @@
 <template>
-  <!-- WARNING: a temporay page! -->
   <div class="buy">
     <div class="pay-header">
       <div class="title">
@@ -15,7 +14,7 @@
     </div>
     <ul id="prices-select" class="form-control">
       <li
-        v-for="token in tokenSet"
+        v-for="token in sortToken(tokenSet)"
         :key="token.id"
         v-bind:value="token.token_crc20"
         @click="selectToken(token)"
@@ -23,15 +22,22 @@
         <span>
           {{ token.token_amount + " " + token.token_name }}
         </span>
-        <span
-          class="selected"
-          v-if="
-            (selectedCRC20 == null && token.token_crc20 == USDaddr) ||
-              (selectedCRC20 != null && selectedCRC20.addr == token.token_crc20)
-          "
-        >
-          <img src="../assets/imgs/checked.svg" />
-        </span>
+        <div v-if="isSufficient(token)" class="right">
+          <span
+            v-if="
+              (selectedCRC20 == null && token.token_crc20 == USDaddr) ||
+                (selectedCRC20 != null &&
+                  selectedCRC20.addr == token.token_crc20)
+            "
+          >
+            <img class="selected" src="../assets/imgs/checked.svg" />
+          </span>
+        </div>
+        <div class="right" v-else>
+          <span class="insufficient">
+            insufficient
+          </span>
+        </div>
         <div class="USD-tip-container">
           <span class="USD-tip" v-if="token.token_crc20 == USDaddr"
             >1 OPB ≈ 1 USD</span
@@ -80,10 +86,14 @@ export default {
       remark: "",
       contact: "",
       USDprice: null,
-      goodTitle: ""
+      goodTitle: "",
+      balance: {
+        USD: "",
+        CMT: ""
+      }
     };
   },
-  mounted() {
+  created() {
     this.initBuyPage();
   },
   computed: {
@@ -162,6 +172,31 @@ export default {
                   that.goodTitle = info[1];
                 }
               });
+
+              //check balance
+              var contractUSD = window.web3.cmt.contract(Contracts.ERC20.abi);
+              var instanceUSD = contractUSD.at(that.USDaddr);
+              instanceUSD.balanceOf(
+                userAddress,
+                {
+                  gas: "200000",
+                  gasPrice: 0
+                },
+                function(e, USDbalance) {
+                  if (e) {
+                    console.log(e);
+                  } else {
+                    that.balance.USD = USDbalance;
+                  }
+                }
+              );
+              window.web3.cmt.getBalance(userAddress, function(e, CMTbalance) {
+                if (e) {
+                  console.log(e);
+                } else {
+                  that.balance.CMT = CMTbalance;
+                }
+              });
             }
           });
         } catch (e) {
@@ -171,12 +206,20 @@ export default {
       checkWeb3(); //immediate first run
     },
     selectToken(token) {
-      this.selectedCRC20 = {
-        addr: token.token_crc20,
-        amount: token.token_real_amount
-      };
+      if (this.isSufficient(token))
+        this.selectedCRC20 = {
+          addr: token.token_crc20,
+          amount: token.token_real_amount
+        };
     },
     buy() {
+      if (
+        this.selectedCRC20.addr == this.USDaddr &&
+        this.selectedCRC20.amount.toNumber() > this.balance.USD.toNumber()
+      ) {
+        this.$swal("Please select one payment.");
+        return;
+      }
       var crc20 = this.selectedCRC20.addr;
       var amount = this.selectedCRC20.amount;
       var that = this;
@@ -195,18 +238,19 @@ export default {
             if (e) {
               console.log(e);
             } else {
-              var filter = window.web3.cmt.filter("latest");
-              filter.watch(function(error, blockhash) {
-                if (!error) {
-                  console.log(blockhash, txhash);
-                  window.web3.cmt.getBlock(blockhash, function(e, r) {
-                    console.log(blockhash, txhash, r.transactions);
-                    if (txhash.indexOf(r.transactions) != -1) {
-                      filter.stopWatching();
-                    }
-                  });
-                }
-              });
+              that.$router.push(`/complete/${that.contractAddr}/${txhash}`);
+              // var filter = window.web3.cmt.filter("latest");
+              // filter.watch(function(error, blockhash) {
+              //   if (!error) {
+              //     console.log(blockhash, txhash);
+              //     window.web3.cmt.getBlock(blockhash, function(e, r) {
+              //       console.log(blockhash, txhash, r.transactions);
+              //       if (txhash.indexOf(r.transactions) != -1) {
+              //         filter.stopWatching();
+              //       }
+              //     });
+              //   }
+              // });
             }
           }
         ); // buyWithCMT
@@ -237,19 +281,25 @@ export default {
                   if (e) {
                     console.log(e);
                   } else {
-                    var filter = window.web3.cmt.filter("latest");
-                    filter.watch(function(error, blockhash) {
-                      if (!error) {
-                        console.log(blockhash, txhash);
-                        window.web3.cmt.getBlock(blockhash, function(e, r) {
-                          console.log(blockhash, txhash, r.transactions);
-                          if (txhash.indexOf(r.transactions) != -1) {
-                            filter.stopWatching();
-                            location.href = "/order/buy/" + that.contractAddr;
-                          }
-                        });
-                      }
-                    });
+                    that.$router.push(
+                      `/complete/${that.contractAddr}/${txhash}`
+                    );
+                    // var filter = window.web3.cmt.filter("latest");
+                    // filter.watch(function(error, blockhash) {
+                    //   if (!error) {
+                    //     console.log(blockhash, txhash);
+                    //     window.web3.cmt.getBlock(blockhash, function(e, r) {
+                    //       console.log(blockhash, txhash, r.transactions);
+                    //       if (txhash.indexOf(r.transactions) != -1) {
+                    //         window.web3.cmt.getTransactionReceipt(txhash, function(e, r) {
+                    //           console.log(e, r);
+                    //         });
+                    //         filter.stopWatching();
+                    //           location.href = "/order/buy/" + that.contractAddr;
+                    //       }
+                    //     });
+                    //   }
+                    // });
                   }
                 }
               ); // buyWithCRC20
@@ -257,6 +307,30 @@ export default {
           }
         ); // approve
       }
+    },
+    isSufficient: function(token) {
+      if (token.token_crc20 == this.USDaddr)
+        return this.balance.USD.toNumber() > token.token_real_amount.toNumber();
+      else if (
+        token.token_crc20 == "0x0000000000000000000000000000000000000000"
+      )
+        return this.balance.CMT.toNumber() > token.token_real_amount.toNumber();
+      else return true;
+    },
+    sortToken: function(tokenSet) {
+      var tokenCopy = [];
+      var that = this;
+      tokenSet.forEach(function(token) {
+        if (token.token_crc20 == that.USDaddr) {
+          tokenCopy.push(token);
+        }
+      });
+      tokenSet.forEach(function(token) {
+        if (token.token_crc20 !== that.USDaddr) {
+          tokenCopy.push(token);
+        }
+      });
+      return tokenCopy;
     }
   }
 };
@@ -305,12 +379,15 @@ export default {
         color #191919
         font-weight 500
         font-size (17/16)rem
-      .selected
+      .right
         position absolute
         display block
         right (15/16)rem
-        img
+        .selected
           width (17/16)rem
+        .insufficient
+          font-size (13/16)rem
+          color red
       .USD-tip-container
         position absolute
         left (15/16)rem

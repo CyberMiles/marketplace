@@ -123,6 +123,7 @@ export default {
         url: "https://cmt-testnet.search.secondstate.io/api/es_search"
       };
       axios(options).then(r => {
+        console.log(r.data);
         var sortedData = r.data
           .sort(this.compare("blockNumber"))
           .reverse()
