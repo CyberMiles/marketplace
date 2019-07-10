@@ -1,8 +1,10 @@
+import Global from "@/global.js";
+
 export default {
   popularTags: ["white", "test", "girl"],
   USDaddr: "0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a",
   USDunit: "SMC",
-  escrowPeriod: 600
+  escrowPeriod: 60 * 60 * 24 * 7
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
@@ -42,28 +44,9 @@ function createHandler(contract, obj, bin, fromUser, that) {
       if (e) {
         console.log(e);
       } else {
-        let filter = window.web3.cmt.filter("latest");
-        var confirmed = false;
-        filter.watch(function(error, blockhash) {
-          if (!error) {
-            var txhash = instance.transactionHash;
-            console.log(blockhash, txhash, instance);
-            window.web3.cmt.getBlock(blockhash, function(e, r) {
-              if (r.transactions.indexOf(txhash) != -1) {
-                confirmed = true;
-              }
-              // console.log(confirmed, blockhash, txhash, r.transactions);
-              //The filter will watch when the state is changing. As the trasaction has been mined, the instance.address is still undefined. So we need to wait for .instance.address state changed.
-              if (instance.address != undefined && confirmed) {
-                confirmed = false; // make sure only execute onece
-                console.log(filter.stopWatching());
-                console.log("stop and redirect"); //???
-                that.$router.push({
-                  path: `/listing/${instance.address}`
-                });
-              }
-            });
-          }
+        var txhash = instance.transactionHash;
+        that.$router.push({
+          path: `/creating/${txhash}`
         });
       }
     }
@@ -185,7 +168,7 @@ function web3Callback(e, txhash, reloc) {
           console.log(blockhash, txhash, r.transactions);
           if (txhash.indexOf(r.transactions) != -1) {
             filter.stopWatching();
-            if (reloc != undefined) {
+            if (reloc != undefined && reloc != "") {
               var router = reloc.router;
               router.push(reloc.href);
               // location.href = reloc;
@@ -261,6 +244,22 @@ function compare(prop) {
   };
 }
 
+function computePayment(item) {
+  var amount = "";
+  var unit = "";
+  if (item.functionData.buyerInfo[8].toLowerCase() == Global.USDaddr) {
+    unit = Global.USDunit;
+    amount = (parseInt(item.functionData.buyerInfo[9]) / 100).toString();
+  } else if (
+    item.functionData.buyerInfo[8] ==
+    "0x0000000000000000000000000000000000000000"
+  ) {
+    unit = "CMT";
+    amount = window.web3.fromWei(item.functionData.buyerInfo[9]);
+  }
+  return amount + " " + unit;
+}
+
 export {
   createHandler,
   unlistHandler,
@@ -272,5 +271,6 @@ export {
   disputeHandler,
   makeQuery,
   queryOptions,
-  compare
+  compare,
+  computePayment
 };

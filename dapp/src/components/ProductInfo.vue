@@ -129,6 +129,7 @@
 import Contracts from "@/contracts.js";
 import axios from "axios";
 import Global from "@/global.js";
+import { createHandler } from "@/global.js";
 
 export default {
   name: "ProductInfo",
@@ -326,70 +327,21 @@ export default {
           //wait until the pics have been uploaded to the cloud
           var checkUploadImg = function() {
             if (that.imageUrls.length == that.images.length) {
-              var contract = window.web3.cmt.contract(Contracts.Listing.abi);
               var imageUrls = that.imageUrls.join(",");
-              console.log(imageUrls);
-              var data =
-                "0x" +
-                contract.new.getData(
-                  that.title,
-                  that.desc,
-                  that.tags,
-                  that.categories,
-                  imageUrls,
-                  that.contact,
-                  that.escrowPeriod,
-                  that.crc20,
-                  parseInt(parseFloat(that.amount) * 100), // the OPB is 2 decimals,
-                  { data: Contracts.Listing.bin }
-                );
-              contract.new(
-                [
-                  that.title,
-                  that.desc,
-                  that.tags,
-                  that.categories,
-                  imageUrls,
-                  that.contact,
-                  that.escrowPeriod,
-                  that.crc20,
-                  parseInt(parseFloat(that.amount) * 100) // the OPB is 2 decimals,
-                ],
-                {
-                  from: userAddress,
-                  data: data,
-                  gas: "9999000",
-                  gasPrice: 2000000000
-                },
-                function(e, instance) {
-                  if (e) {
-                    console.log(e);
-                  } else {
-                    var filter = window.web3.cmt.filter("latest");
-                    var confirmed = false;
-                    filter.watch(function(error, blockhash) {
-                      if (!error) {
-                        var txhash = instance.transactionHash;
-                        console.log(blockhash, txhash, instance);
-                        window.web3.cmt.getBlock(blockhash, function(e, r) {
-                          if (r.transactions.indexOf(txhash) != -1) {
-                            confirmed = true;
-                          }
-                          // console.log(confirmed, blockhash, txhash, r.transactions);
-                          //The filter will watch when the state is changing. As the trasaction has been mined, the instance.address is still undefined. So we need to wait for .instance.address state changed.
-                          if (instance.address != undefined && confirmed) {
-                            filter.stopWatching();
-                            console.log("stop and redirect"); //???
-                            that.$router.push({
-                              path: `/listing/${instance.address}`
-                            });
-                          }
-                        });
-                      }
-                    });
-                  }
-                }
-              );
+              var newItem = {
+                title: that.title,
+                desc: that.desc,
+                tags: that.tags,
+                categories: that.categories,
+                imageUrls: imageUrls,
+                contact: that.contact,
+                escrowPeriod: that.escrowPeriod,
+                crc20: that.crc20,
+                amount: parseInt(parseFloat(that.amount) * 100)
+              };
+              var newContract = window.web3.cmt.contract(Contracts.Listing.abi);
+              var bin = Contracts.Listing.bin;
+              createHandler(newContract, newItem, bin, userAddress, that);
             } else setTimeout(checkUploadImg, 50);
           };
           checkUploadImg(); //immediate first run

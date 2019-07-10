@@ -1,21 +1,16 @@
 <template>
   <div class="empty-list">
-    <img
-      src="https://img.icons8.com/ios/50/000000/loading.png"
-      v-if="status == 'processing'"
-      class="loading"
-    />
-    <img src="./../assets/imgs/success.svg" v-if="status == 'succeed'" />
-    <img
-      src="https://img.icons8.com/office/80/000000/multiply.png"
-      v-if="status == 'fail'"
-    />
-    <div class="text" v-if="status == 'processing'">Payment Processing</div>
-    <div class="text" v-if="status == 'succeed'">Payment Completed</div>
-    <div class="text" v-if="status == 'fail'">Payment Failed</div>
+    <div class="text strong" v-if="status == 'processing'">
+      Creating Contract......
+    </div>
+    <div class="text" v-if="status == 'processing'">{{ remaining }} s</div>
+    <div class="text" v-if="status == 'succeed'">Created!</div>
+    <div class="text" v-if="status == 'fail'">Failed.</div>
     <router-link to="/">HomePage</router-link>
-    <router-link :to="`/order/buy/${orderId}`" v-if="status == 'succeed'"
-      >Order Details</router-link
+    <router-link :to="`/listing/${goodId}`" :class="statusColor"
+      >Item Details<span v-if="status == 'processing'">
+        ({{ remaining }}s)</span
+      ></router-link
     >
   </div>
 </template>
@@ -25,11 +20,12 @@ import { setTimeout } from "timers";
 export default {
   data() {
     return {
-      status: "processing"
+      status: "processing",
+      goodId: "",
+      remaining: 20
     };
   },
   created() {
-    console.log("created");
     var that = this;
     var getReceipt = function() {
       try {
@@ -42,6 +38,7 @@ export default {
               if (receipt == null) setTimeout(getReceipt, 100);
               else {
                 if (receipt.status == 0x1) {
+                  that.goodId = receipt.contractAddress;
                   that.status = "succeed";
                 } else {
                   that.status = "fail";
@@ -56,22 +53,34 @@ export default {
       }
     };
     getReceipt();
+    var startCounting = function() {
+      setTimeout(function() {
+        that.remaining--;
+        if (that.remaining > 0) startCounting();
+        else {
+          if (that.status == "processing") {
+            that.remaining = 20;
+            startCounting();
+          }
+        }
+      }, 1000);
+    };
+    startCounting();
   },
   computed: {
     orderId: function() {
       console.log(this.$route.params.contractAddr);
       return this.$route.params.contractAddr;
+    },
+    statusColor: function() {
+      if (this.status == "succeed") return;
+      else return "disabled";
     }
   }
 };
 </script>
 
 <style lang="stylus">
-@keyframes spin
-  100%
-    -webkit-transform rotate(360deg)
-    transform rotate(360deg)
-
 .empty-list
   position absolute
   z-index -1
@@ -86,8 +95,12 @@ export default {
   img
     padding (10/16)rem
   .text
+    margin (7/16)rem
     font-size (17/16)rem
     color #191919
-  .loading
-    animation spin 1.5s linear infinite
+  .strong
+    font-weight 600
+  .disabled
+    background #c7c7c7
+    box-shadow none
 </style>
