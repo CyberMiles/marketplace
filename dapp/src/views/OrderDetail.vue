@@ -240,7 +240,7 @@ export default {
                   that.messageBoard.push({
                     id: i,
                     party: msg[0],
-                    time: new Date(1000 * msg[1]),
+                    time: new Date(1000 * msg[1]).toLocaleString(),
                     words: msg[2]
                   });
                 }

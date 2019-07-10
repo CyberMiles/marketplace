@@ -48,6 +48,7 @@
 <script>
 import OrderCard from "@/components/OrderCard.vue";
 import axios from "axios";
+import { computePayment } from "@/global.js";
 
 export default {
   name: "profileOrders",
@@ -202,7 +203,8 @@ export default {
             },
             time:
               1000 * parseInt(item.functionData.buyerInfo[1]) +
-              1000 * parseInt(item.functionData.info[5])
+              1000 * parseInt(item.functionData.info[5]),
+            payment: computePayment(item)
           });
         });
       });
@@ -218,7 +220,8 @@ export default {
               title: item.functionData.info[1],
               price: (parseInt(item.functionData.info[7]) / 100).toString()
             },
-            contract: item.contractAddress
+            contract: item.contractAddress,
+            payment: computePayment(item)
           });
         });
       });
@@ -234,7 +237,8 @@ export default {
               title: item.functionData.info[1],
               price: (parseInt(item.functionData.info[7]) / 100).toString()
             },
-            disputeReason: "Dispute."
+            disputeReason: "Dispute.",
+            payment: computePayment(item)
           });
         });
       });
@@ -264,7 +268,8 @@ export default {
             refundAmount: (
               parseInt(item.functionData.info[7]) / 100
             ).toString(),
-            refundReason: refundReason
+            refundReason: refundReason,
+            payment: computePayment(item)
           });
         });
       });

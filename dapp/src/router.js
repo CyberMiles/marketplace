@@ -12,6 +12,7 @@ import OrderDetailPage from "./views/OrderDetail.vue";
 import SellGoodsPage from "./views/SellGoods.vue";
 import RemarkPage from "./views/Remark.vue";
 import BuyCompletePage from "./views/BuyComplete.vue";
+import CreatingPage from "./views/Creating.vue";
 
 Vue.use(Router);
 
@@ -42,6 +43,14 @@ export default new Router({
       component: CreatePage,
       meta: {
         title: "Create Trading"
+      }
+    },
+    {
+      path: "/creating/:txHash",
+      name: "creating",
+      component: CreatingPage,
+      meta: {
+        title: "Creating"
       }
     },
     {

@@ -6,7 +6,7 @@
       </div>
       <div class="goods-desc">
         <div class="goods-title">{{ order.goods.title }}</div>
-        <div class="goods-price">$ {{ order.goods.price }}</div>
+        <div class="goods-price">{{ order.payment }}</div>
       </div>
     </div>
 
@@ -15,7 +15,7 @@
     <div class="order-info">
       <div class="paid-order" v-if="order.status === 'paid'">
         <div class="countdown">
-          {{ countdown(order.time) }} h
+          {{ dynCountdown(order.time) }}
           <button class="expl" @click.stop="showExplPop">?</button>
         </div>
         <div class="order-actions">
@@ -71,7 +71,7 @@
       <div class="refund-order" v-if="order.status === 'refund'">
         <div>
           <label>Refund Amount:</label>
-          <span class="refund-amount">${{ order.refundAmount }}</span>
+          <span class="refund-amount">{{ order.payment }}</span>
         </div>
         <div>
           <label>Refund Reason:</label>
@@ -118,17 +118,33 @@ export default {
   data() {
     return {
       explPopShown: false,
-      actionsPopShown: false
+      actionsPopShown: false,
+      remainTime: 0
     };
   },
   methods: {
     countdown(time) {
       const remain = time - new Date().getTime();
       if (remain > 0) {
-        return Math.ceil(remain / (60 * 60 * 1000));
+        return Math.ceil(remain / 1000);
+        // return Math.ceil(remain / (60 * 60 * 1000));
       } else {
         return 0;
       }
+    },
+    dynCountdown(time) {
+      var remainSeconds = this.countdown(time);
+      console.log(remainSeconds);
+      var days = Math.floor(remainSeconds / (3600 * 24));
+      remainSeconds = remainSeconds % (3600 * 24);
+      var hours = Math.floor(remainSeconds / 3600);
+      remainSeconds = remainSeconds % 3600;
+      var minutes = Math.floor(remainSeconds / 60);
+      var seconds = remainSeconds % 60;
+      console.log(hours, remainSeconds, minutes, seconds);
+      if (days) {
+        return `${days}d ${hours}h`;
+      } else return `${days}d ${hours}h`;
     },
     showExplPop() {
       this.explPopShown = true;
@@ -273,7 +289,7 @@ export default {
             console.log(blockhash, txhash);
             window.web3.cmt.getBlock(blockhash, function(e, r) {
               console.log(blockhash, txhash, r.transactions);
-              if (txhash.indexOf(r.transactions) != -1) {
+              if (r.transactions.indexOf(txhash) != -1) {
                 filter.stopWatching();
                 location.reload(true);
                 //TODO
@@ -312,6 +328,7 @@ export default {
         width (60/16)rem
     .goods-desc
       height (60/16)rem
+      width 100%
       overflow hidden
       position relative
       .goods-title
