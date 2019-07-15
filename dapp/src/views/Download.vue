@@ -1,0 +1,156 @@
+<template>
+  <div class="download">
+    <header>
+      <img class="logo" src="../assets/imgs/app.jpg" />
+      <span class="text">CyberMiles</span>
+    </header>
+    <div class="download-banner">
+      <a href="https://app.cybermiles.io">
+        Don't have <b>CyberMiles</b> yet? Try it now!
+      </a>
+    </div>
+    <div class="dapp">
+      <img src="" class="dapp-logo" /><span class="text">MarketPlace</span>
+      <button @click="dappReloc" class="dapp-reloc">
+        View in CyberMiles App
+      </button>
+    </div>
+    <div class="footer">
+      If you have CyberMiles App, you can view and join Dapp right away.
+    </div>
+    <div class="overmask" v-if="wxTip">
+      <span> 1. 点击右上角菜单</span>
+      <span> Click the menu button at the top right corner. </span>
+      <span> 2. 选择在浏览器中打开 </span>
+      <span> Select open in browser </span>
+    </div>
+  </div>
+</template>
+
+<style lang="stylus">
+.download
+  .overmask
+    background #121212
+    opacity 0.5
+    z-index 999
+    position absolute
+    height 100%
+    width 100%
+    top 0
+    color #fff
+    span
+      font-weight 600
+      display flex
+      font-size (16/16)rem
+      margin (40/16)rem (10/16)rem 0
+      opacity 1
+  header
+    display flex
+    background #efefef
+    height (60/16)rem
+    .logo
+      height 100%
+    .text
+      vertical-align center
+      font-weight 600
+      margin auto (20/16)rem
+  .download-banner
+    a
+      text-decoration none
+      color inherit
+    height (48/18)rem
+    background #32afed
+    color #ffffff
+    align-items center
+    display flex
+    padding (20/16)rem
+  .dapp
+    .dapp-logo
+      height (108/16)rem
+      width (108/16)rem
+      margin (20/16)rem auto
+      display flex
+    .text
+      display flex
+      justify-content center
+    .dapp-reloc
+      border-radius (12/16)rem
+      padding (12/16)rem
+      display flex
+      margin (10/16)rem auto
+      background #32afed
+      border 0
+      color #fff
+  .footer
+    padding (20/16)rem
+</style>
+
+<script>
+export default {
+  data() {
+    return {
+      wxTip: false,
+      config: {
+        localApp: "cmtwallet://dapp?url="
+      }
+    };
+  },
+  created() {
+    // alert(this.config.localApp);
+    this.reDirect();
+  },
+  methods: {
+    reDirect: function() {
+      if (this.isIOS) {
+        this._go(this.config.localApp + this.relocHref);
+      } else if (this.isAndroid) {
+        console.log("isAndroid");
+        // alert(this.config.localApp + this.relocHref);
+        this._tryCallApp(this.config.localApp + this.relocHref);
+      }
+    },
+    dappReloc: function() {
+      const agent = navigator.userAgent;
+      if (
+        agent.indexOf("iPad") != -1 ||
+        agent.indexOf("iPhone") != -1 ||
+        agent.indexOf("Android") != -1
+      ) {
+        if (this.isWx) this.wxTip = true;
+        else {
+          console.log("redirect")
+          this.reDirect();
+        }
+      } 
+    },
+    _tryCallApp: function(scheme) {
+      var aLink = document.createElement("a");
+      var body = document.body;
+      aLink.href = scheme;
+      body.appendChild(aLink);
+      aLink.click();
+    },
+    _go: function(url) {
+      window.location.href = url;
+    }
+  },
+  computed: {
+    UA: function() {
+      return navigator.userAgent || "";
+    },
+    isWx: function() {
+      return this.UA.match(/micromessenger/i) ? true : false;
+    },
+    isAndroid: function() {
+      return this.UA.match(/Android/i) ? true : false;
+    },
+    isIOS: function() {
+      return this.UA.match(/iPhone|iPad|iPod/i) ? true : false;
+    },
+    relocHref: function() {
+      console.log(decodeURIComponent(window.location.href.split("reloc?=")[1]))
+      return decodeURIComponent(window.location.href.split("reloc?=")[1]);
+    }
+  }
+}
+</script>

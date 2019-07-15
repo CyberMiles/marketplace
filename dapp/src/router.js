@@ -13,6 +13,7 @@ import SellGoodsPage from "./views/SellGoods.vue";
 import RemarkPage from "./views/Remark.vue";
 import BuyCompletePage from "./views/BuyComplete.vue";
 import CreatingPage from "./views/Creating.vue";
+import DownloadPage from "./views/Download.vue";
 
 Vue.use(Router);
 
@@ -135,6 +136,14 @@ export default new Router({
       component: RemarkPage,
       meta: {
         title: "Remark"
+      }
+    },
+    {
+      path: "/download/:reloc",
+      name: "download",
+      component: DownloadPage,
+      meta: {
+        title: "CyberMiles"
       }
     }
   ]

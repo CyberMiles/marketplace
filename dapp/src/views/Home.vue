@@ -1,15 +1,20 @@
 <template>
   <div>
     <div class="home">
-      <h1>MARKETPLACE</h1>
-      <div class="search-field">
-        <input
-          type="search"
-          placeholder="Enter a search term or #tag"
-          v-model="searchTerm"
-          v-on:keyup.enter="goSearch"
-        />
-        <span class="icon-search" @click="goSearch"></span>
+      <div class="pc-header">
+        <h1>MARKETPLACE</h1>
+        <div class="search-field">
+          <input
+            type="search"
+            placeholder="Enter a search term or #tag"
+            v-model="searchTerm"
+            v-on:keyup.enter="goSearch"
+          />
+          <span class="icon-search" @click="goSearch"></span>
+        </div>
+        <button @click="goCreate" class="create-pc">
+          Sell on MarketPlace
+        </button>
       </div>
       <div class="cate-title">
         <h2>Popular Tags</h2>
@@ -87,6 +92,7 @@ import GoodsListItem from "@/components/GoodsListItem.vue";
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
 import global from "@/global.js";
+import { web3Pass } from "@/global.js";
 
 export default {
   name: "home",
@@ -170,6 +176,9 @@ export default {
       if (this.searchTerm.slice(0, 1) == "#")
         this.$router.push("/tag/" + this.searchTerm.slice(1));
       else this.$router.push("/search/" + this.searchTerm);
+    },
+    goCreate() {
+      if (web3Pass(this)) this.$router.push("/create");
     }
   }
 };
@@ -183,7 +192,18 @@ export default {
     font-size 1rem
     letter-spacing 0.2rem
     margin 0 0 (15/16)rem
+    @media screen and (min-width: 600px)
+      margin-top (44/16)rem
+      display inline-block
+      max-width (160/16)rem;
   .search-field
+    @media screen and (min-width: 600px)
+      margin (44/16)rem (10/16)rem 0 (10/16)rem
+      display inline-block
+      button-size = (200/16)rem
+      logo-size = (160/16)rem
+      margin-size = (20/16)rem
+      width  "calc(100% - %s)" % (button-size + logo-size + margin-size )
     position relative
     input
       width 100%
@@ -197,6 +217,18 @@ export default {
       position absolute
       left (15/16)rem
       top (12/16)rem
+  .create-pc
+    @media screen and (max-width: 600px)
+      display none
+    padding (10/16)rem
+    font-weight 600
+    text-decoration none
+    border-radius (8/16)rem
+    box-shadow 0 0 7px 0 rgba(255, 63, 15, 0.3)
+    background-image linear-gradient(to left, #ff7777, #ff3f0f)
+    color #fff
+    max-width (200/16)rem
+    border 0
   .cate-title
     display flex
     justify-content space-between
