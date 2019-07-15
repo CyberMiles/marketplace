@@ -4,9 +4,12 @@
       Creating Contract......
     </div>
     <div class="text" v-if="status == 'processing'">{{ remaining }} s</div>
-    <div class="text" v-if="status == 'succeed'">Created!</div>
-    <div class="text" v-if="status == 'fail'">Failed.</div>
+    <div class="text" v-if="status == 'succeed'">
+      Contract Creation Succeed!
+    </div>
+    <div class="text" v-if="status == 'fail'">Contract Creation Failed.</div>
     <router-link to="/">HomePage</router-link>
+    <router-link to="/create">Create a New One</router-link>
     <router-link :to="`/listing/${goodId}`" :class="statusColor"
       >Item Details<span v-if="status == 'processing'">
         ({{ remaining }}s)</span

@@ -38,7 +38,7 @@
             <template v-if="actionsPopShown">
               <div class="others-pop" v-if="role === 'sell'">
                 <button v-on:touchstart="cancelOrder">Cancel Order</button>
-                <button>Contact Buyer</button>
+                <button  v-on:touchstart="showBuyer">Contact Buyer</button>
                 <button
                   v-on:touchstart="receiveFund"
                   v-if="countdown(order.time) == 0"
@@ -49,7 +49,9 @@
               </div>
               <div class="others-pop" v-else>
                 <button v-on:touchstart="confirm">Confirm Receipt</button>
-                <button>Contact Seller</button>
+                <button v-on:touchstart="showSeller">
+                  Contact Seller
+                </button>
                 <button
                   v-on:touchstart="dispute"
                   v-if="countdown(order.time) > 0"
@@ -302,6 +304,18 @@ export default {
     createInstance(addr) {
       var contract = window.web3.cmt.contract(Contracts.Listing.abi);
       return contract.at(addr);
+    },
+    showSeller() {
+      this.$swal({
+        title: this.order.goods.title,
+        text: `seller contact information: ${this.order.sellerContact}`
+      });
+    },
+    showBuyer() {
+      this.$swal({
+        title: this.order.goods.title,
+        text: `buyer contact information: ${this.order.buyerContact}`
+      });
     }
   }
 };

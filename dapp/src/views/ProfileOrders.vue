@@ -204,7 +204,9 @@ export default {
             time:
               1000 * parseInt(item.functionData.buyerInfo[1]) +
               1000 * parseInt(item.functionData.info[5]),
-            payment: computePayment(item)
+            payment: computePayment(item),
+            sellerContact: item.functionData.info[4],
+            buyerContact: item.functionData.buyerInfo[6]
           });
         });
       });
@@ -287,6 +289,7 @@ export default {
     padding 0
     list-style none
     display flex
+    overflow-x scroll
     li
       margin-right (15/16)rem
       &:last-child

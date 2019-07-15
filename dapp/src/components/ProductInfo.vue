@@ -9,6 +9,7 @@
           class="preview-container"
         >
           <img class="preview" v-bind:src="url" />
+          <span @click="rmSelf(url, 'uploadedImgs')" class="delete">x</span>
         </div>
       </div>
       <div
@@ -17,6 +18,7 @@
         class="preview-container"
       >
         <img class="preview" v-bind:ref="'image' + parseInt(key)" />
+        <span @click="rmSelf(image, 'images')" class="delete">x</span>
       </div>
       <div
         v-if="uploadedImgs.length + images.length < 4"
@@ -56,7 +58,7 @@
         type="text"
         class="form-control"
         id="tags"
-        placeholder="Such as BTC; Space out"
+        placeholder="Such as #rolex#watch"
         v-model="tags"
       />
     </div>
@@ -82,8 +84,9 @@
           v-model="amount"
         />
         <div class="price-unit-container">
-          <span class="price-unit">USD</span>
+          <span class="price-unit">{{ USDunit }}</span>
         </div>
+        <span class="price-tip">1 {{ USDunit }} ≈ 1 USD</span>
       </div>
     </div>
     <div class="form-group" v-if="edit">
@@ -110,6 +113,9 @@
         placeholder="Email. Buyer contacts you."
         v-model="contact"
       />
+      <small class="alert" v-if="contactIsEmpty">
+        contact info cannot be empty
+      </small>
     </div>
     <div v-if="edit">
       <a @click="$router.go(-1)" class="create-btn left-btn"
@@ -144,13 +150,14 @@ export default {
       crc20: Global.USDaddr,
       categories: "",
       escrowPeriod: Global.escrowPeriod,
+      uploadedImgs: [],
       images: [],
       imageUrls: [],
-      uploadedImgs: [],
       editModeInfo: {
         instance: null,
         userAddress: ""
-      }
+      },
+      contactIsEmpty: false
     };
   },
   props: ["edit", "contractAddr"],
@@ -233,6 +240,7 @@ export default {
         });
         return;
       }
+      this.imageUrls.length = 0;
       for (var i = 0; i < selectedFiles.length; i++) {
         this.images.push(selectedFiles[i]);
       }
@@ -254,6 +262,7 @@ export default {
               .then(function(result) {
                 console.log(result);
                 that.imageUrls.push(result.data["secure_url"]);
+                // console.log(that.imageUrls)
               });
           }.bind(this),
           false
@@ -261,22 +270,34 @@ export default {
         reader.readAsDataURL(this.images[i]);
       }
     },
-
+    rmSelf(url, images) {
+      var id = this[`${images}`].indexOf(url);
+      this[`${images}`] = this[`${images}`].filter(function(item) {
+        return item !== url;
+      });
+      if (images == "images") {
+        this.imageUrls.splice(id, 1);
+      }
+    },
     updateTrading() {
       var that = this;
-      console.log(that.imageUrls.length, that.images.length);
+      if (this.contact.trim() == "") {
+        this.contactIsEmpty = true;
+        return;
+      }
+      // console.log(that.imageUrls.length, that.images.length, that.imageUrls);
       //wait until the pics have been uploaded to the cloud
       var checkUploadImg = function() {
         if (that.imageUrls.length == that.images.length) {
           var imageUrls = that.uploadedImgs.concat(that.imageUrls).join(",");
-          console.log(imageUrls);
+          // console.log(imageUrls);
           var amount2Addr = that.crc20;
           var amount2 = parseInt(parseFloat(that.amount) * 100); // the OPB is 2 decimals,
           if (that.CMTamount > 0) {
             amount2Addr = "0x0000000000000000000000000000000000000000";
             amount2 = window.web3.toWei(that.CMTamount);
           }
-          console.log(that.CMTamount, amount2Addr, parseInt(amount2));
+          // console.log(that.CMTamount, amount2Addr, parseInt(amount2));
           that.editModeInfo.instance.updateListing(
             that.title,
             that.desc,
@@ -318,6 +339,10 @@ export default {
     },
     createTrading() {
       var that = this;
+      if (this.contact.trim() == "") {
+        this.contactIsEmpty = true;
+        return;
+      }
       window.web3.cmt.getAccounts(function(e, addr) {
         if (e) {
           console.log(e);
@@ -347,6 +372,11 @@ export default {
           checkUploadImg(); //immediate first run
         }
       });
+    }
+  },
+  computed: {
+    USDunit: function() {
+      return Global.USDunit;
     }
   }
 };
@@ -383,6 +413,13 @@ export default {
         height (100/16)rem
         border-radius 8px
         display inline-block
+      .delete
+        position relative
+        bottom (92/16)rem
+        right (4/16)rem
+    .alert
+      color red
+      padding (5/16)rem
     input
       width 100%
       padding 0 (10/16)rem
@@ -406,6 +443,12 @@ export default {
       .price-unit
         position absolute
         right (25/16)rem
+    .price-tip
+      position absolute
+      font-size (11/16)rem
+      right (25/16)rem
+      color #999
+      padding (5/16)rem
   .create-btn
     display flex
     border-radius 4px;

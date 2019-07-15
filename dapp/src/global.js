@@ -1,10 +1,13 @@
 import Global from "@/global.js";
+import appLogo from "./assets/imgs/app.jpg";
+import appQrcode from "./assets/imgs/appQrcode.png";
 
 export default {
   popularTags: ["white", "test", "girl"],
   USDaddr: "0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a",
   USDunit: "SMC",
-  escrowPeriod: 60 * 60 * 24 * 7
+  escrowPeriod: 60 * 60 * 24 * 7,
+  HttpProvider: "https://testnet-rpc.cybermiles.io:8545"
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
@@ -260,6 +263,59 @@ function computePayment(item) {
   return amount + " " + unit;
 }
 
+function web3Pass(that) {
+  try {
+    window.web3.cmt;
+    if (window.web3.currentProvider.host !== Global.HttpProvider) return true;
+    else throw "NoWeb3";
+  } catch (e) {
+    if (_isMobile())
+      that
+        .$swal({
+          html:
+            "<strong>Please use CyberMiles APP to finish your order</strong>",
+          // text: 'Modal with a custom image.',
+          imageUrl: appLogo,
+          imageWidth: 48,
+          imageHeight: 48,
+          animation: false,
+          width: 300,
+          confirmButtonText: "Use OPENBAY in App"
+        })
+        .then(function(result) {
+          if (result.value) {
+            that.$router.push(`/download/reloc?=${window.location.href}`);
+            // const webBrowser = new Browser.AppLink();
+            // webBrowser.openBrowser();
+          }
+        });
+    else
+      that
+        .$swal({
+          html:
+            "<b>Download and scan the bar code with CyberMiles APP to finish your order</b>",
+          // text: 'Modal with a custom image.',
+          imageUrl: appQrcode,
+          imageWidth: 200,
+          imageHeight: 200,
+          animation: false,
+          width: 400,
+          confirmButtonText: "Download CyberMiles APP"
+        })
+        .then(function(result) {
+          if (result.value) location.href = "https://app.cybermiles.io";
+        });
+    return false;
+  }
+}
+
+function _isMobile() {
+  let flag = navigator.userAgent.match(
+    /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+  );
+  return flag;
+}
+
 export {
   createHandler,
   unlistHandler,
@@ -272,5 +328,6 @@ export {
   makeQuery,
   queryOptions,
   compare,
-  computePayment
+  computePayment,
+  web3Pass
 };

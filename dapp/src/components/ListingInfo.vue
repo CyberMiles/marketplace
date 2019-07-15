@@ -19,7 +19,7 @@
           <RespImg v-bind:src="image" />
         </div>
       </div>
-      <h1>{{ ProductInfo.title }}</h1>
+      <h1 class="wrap-text">{{ ProductInfo.title }}</h1>
       <ul class="tags" v-if="ProductInfo.tags.length > 0">
         <li v-for="tag in ProductInfo.tags" :key="tag.id">
           <a href="" class="tag-link">{{ tag.trim() }}</a>
@@ -28,7 +28,7 @@
     </section>
     <section>
       <h3>Description</h3>
-      <p>{{ ProductInfo.desc }}</p>
+      <p class="wrap-text">{{ ProductInfo.desc }}</p>
     </section>
     <section>
       <h3>Seller</h3>
@@ -92,12 +92,13 @@ export default {
                 if (e) {
                   console.log(e);
                 } else {
+                  console.log(r)
                   // console.log(r[3]);
                   that.ProductInfo = {
                     status: r[0],
                     title: r[1],
                     desc: r[2],
-                    tags: r[3].split(",").filter(obj => obj.trim() != ""),
+                    tags: r[3].split("#").filter(obj => obj.trim() != ""),
                     escrowDuration: r[5],
                     images: r[6].split(","),
                     USDprice: (parseInt(r[7]) / 100).toString(),
@@ -110,7 +111,8 @@ export default {
                   that.$emit("tradingInfo", {
                     isSeller: that.isSeller,
                     status: that.ProductInfo.status,
-                    instance: instance
+                    instance: instance,
+                    sellerInfo: that.ProductInfo.contact
                   });
                   that.getCompletedOrder(that.ProductInfo.seller);
                 }
@@ -205,6 +207,7 @@ export default {
     font-size (17/16)rem
     font-weight 500
     line-height 1.4
+    word-break break-word
     margin (12/16)rem 0
   .tags
     margin 0
@@ -237,6 +240,7 @@ export default {
       font-size (15/16)rem
       line-height 1.5
       margin 0
+      word-break break-word
     dl
       margin 0
       dt
