@@ -1,5 +1,6 @@
 <template>
   <div>
+    <LoadingMask v-if="loading"></LoadingMask>
     <div class="catalog-goods-list">
       <ul class="tags" v-if="tag !== undefined">
         <li v-for="popularTag in popularTags" :key="popularTag.key">
@@ -7,11 +8,17 @@
             :to="`/tag/` + popularTag"
             class="tag-link active"
             v-if="popularTag == tag"
+            replace
             >{{ popularTag }}</router-link
           >
-          <router-link :to="`/tag/` + popularTag" class="tag-link" v-else>{{
-            popularTag
-          }}</router-link>
+          <router-link
+            :to="`/tag/` + popularTag"
+            class="tag-link"
+            replace
+            v-else
+          >
+            {{ popularTag }}
+          </router-link>
         </li>
       </ul>
       <div class="search-field" v-if="search !== undefined">
@@ -54,6 +61,7 @@
 // @ is an alias to /src
 import Footer from "@/components/Footer.vue";
 import GoodsListItem from "@/components/GoodsListItem.vue";
+import LoadingMask from "@/components/LoadingMask.vue";
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
 import global from "@/global.js";
@@ -62,6 +70,7 @@ export default {
   name: "home",
   data() {
     return {
+      loading: true,
       tag: this.$route.params.tag,
       cata: this.$route.params.cata,
       search: this.$route.params.search,
@@ -73,10 +82,12 @@ export default {
   components: {
     Footer,
     GoodsListItem,
-    RespImg
+    RespImg,
+    LoadingMask
   },
-  mounted() {
+  created() {
     this.initGoodList();
+    this.searchTerm = this.search;
   },
   methods: {
     initGoodList() {
@@ -137,8 +148,9 @@ export default {
         url: "https://cmt-testnet.search.secondstate.io/api/es_search"
       };
       axios(options).then(r => {
+        that.loading = false;
         var sortedData = r.data
-          .sort(this.compare("blockNumber"))
+          .sort(that.compare("blockNumber"))
           .reverse()
           .filter(obj => {
             //remove those whose usd price is 0 or the img url is empty or ulisted
@@ -181,13 +193,14 @@ export default {
     goSearch() {
       if (this.searchTerm.trim() == "" || this.searchTerm.trim() == "#") return;
       if (this.searchTerm.slice(0, 1) == "#")
-        this.$router.push("/tag/" + this.searchTerm.slice(1));
-      else this.$router.push("/search/" + this.searchTerm);
+        this.$router.replace("/tag/" + this.searchTerm.slice(1));
+      else this.$router.replace("/search/" + this.searchTerm);
     }
   },
   watch: {
     $route(to) {
       // console.log("change",from.params.search,to.params.search)
+      // console.log(this.$router)
       this.search = to.params.search;
       this.tag = to.params.tag;
       this.goodList.length = 0;
@@ -239,10 +252,15 @@ export default {
       border solid 1px #e5e5e5
       background-color #ffffff
       padding-left (10/16)rem
+    input::-webkit-input-placeholder
+      color #c7c7c7
+      font-size (15/16)rem
     button
       font-size (17/16)rem
       font-weight 500
       color #ff3f0f
+      background transparent
+      border none
   .search-result
     margin (15/16)rem 0 (20/16)rem
     font-size (22/16)rem

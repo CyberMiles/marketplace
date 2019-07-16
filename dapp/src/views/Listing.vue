@@ -1,5 +1,6 @@
 <template>
   <div class="listing">
+    <LoadingMask v-if="loading"></LoadingMask>
     <ListingInfo v-on:tradingInfo="setNav" />
     <component
       v-bind="{
@@ -17,6 +18,7 @@
 import ListingInfo from "@/components/ListingInfo.vue";
 import SellerNav from "@/components/SellerNav.vue";
 import BuyerNav from "@/components/BuyerNav.vue";
+import LoadingMask from "@/components/LoadingMask.vue";
 import Global from "@/global.js";
 
 export default {
@@ -24,10 +26,12 @@ export default {
   components: {
     ListingInfo,
     SellerNav,
-    BuyerNav
+    BuyerNav,
+    LoadingMask
   },
   data() {
     return {
+      loading: true,
       FooterNav: null,
       contractAddr: this.$route.params.contractAddr,
       status: null,
@@ -47,6 +51,7 @@ export default {
   },
   methods: {
     setNav: function(tradingInfo) {
+      this.loading = false;
       console.log(tradingInfo);
       if (tradingInfo.isSeller) {
         this.FooterNav = "SellerNav";
@@ -65,3 +70,9 @@ export default {
   }
 };
 </script>
+
+<style lang="stylus">
+.listing
+  @media screen and (min-width: 600px)
+    margin 0 0 (420/16)rem
+</style>

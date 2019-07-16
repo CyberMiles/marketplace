@@ -1,16 +1,30 @@
 <template>
   <div>
+    <LoadingMask v-if="loading"></LoadingMask>
     <div class="home">
       <div class="pc-header">
         <h1>MARKETPLACE</h1>
         <div class="search-field">
-          <input
-            type="search"
-            placeholder="Enter a search term or #tag"
-            v-model="searchTerm"
-            v-on:keyup.enter="goSearch"
-          />
-          <span class="icon-search" @click="goSearch"></span>
+          <div class="onsearch-field">
+            <input
+              type="search"
+              placeholder="Enter a search term or #tag"
+              v-model="searchTerm"
+              v-on:keyup.enter="goSearch"
+              @focus="onSearch = true"
+              @blur="onSearch = false"
+            />
+            <span
+              class="icon-delete"
+              @mousedown="searchTerm = ''"
+              v-if="onSearch"
+            >
+              <img src="../assets/imgs/clear-button.svg" />
+            </span>
+          </div>
+          <button @mousedown="goSearch" v-if="onSearch">Go</button>
+
+          <span class="icon-search"></span>
         </div>
         <button @click="goCreate" class="create-pc">
           Sell on MarketPlace
@@ -42,7 +56,7 @@
             .filter(obj => {
               return !obj.sold;
             })
-            .slice(0, 4)"
+            .slice(0, maxDisplayItems)"
           :key="good.key"
         >
           <GoodsListItem v-bind:contractAddr="good.contractAddr">
@@ -69,7 +83,7 @@
             .filter(obj => {
               return obj.sold;
             })
-            .slice(0, 4)"
+            .slice(0, maxDisplayItems)"
           :key="good.key"
         >
           <GoodsListItem sold="true" v-bind:contractAddr="good.contractAddr">
@@ -90,6 +104,7 @@
 import Footer from "@/components/Footer.vue";
 import GoodsListItem from "@/components/GoodsListItem.vue";
 import RespImg from "@/components/RespImg.vue";
+import LoadingMask from "@/components/LoadingMask.vue";
 import axios from "axios";
 import global from "@/global.js";
 import { web3Pass } from "@/global.js";
@@ -98,15 +113,18 @@ export default {
   name: "home",
   data() {
     return {
+      loading: true,
       goodList: [],
       popularTags: global.popularTags,
-      searchTerm: ""
+      searchTerm: "",
+      onSearch: false
     };
   },
   components: {
     Footer,
     GoodsListItem,
-    RespImg
+    RespImg,
+    LoadingMask
   },
   created() {
     this.initGoodList();
@@ -130,8 +148,9 @@ export default {
       };
       axios(options).then(r => {
         console.log(r.data);
+        that.loading = false;
         var sortedData = r.data
-          .sort(this.compare("blockNumber"))
+          .sort(that.compare("blockNumber"))
           .reverse()
           .filter(obj => {
             //remove those whose usd price is 0 or the img url is empty or ulisted
@@ -180,6 +199,13 @@ export default {
     goCreate() {
       if (web3Pass(this)) this.$router.push("/create");
     }
+  },
+  computed: {
+    maxDisplayItems: function() {
+      if (window.innerWidth > 1000) return 6;
+      else if (window.innerWidth > 600) return 5;
+      else return 4;
+    }
   }
 };
 </script>
@@ -187,6 +213,12 @@ export default {
 <style lang="stylus">
 .home
   padding 0 (15/16)rem (60/16)rem
+  @media screen and (min-width: 600px)
+    margin 0 0 (420/16)rem
+    padding 0 (60/16)rem
+  @media screen and (min-width: 1200px)
+    margin 0 0 (420/16)rem
+    padding 0 (120/16)rem
   h1
     line-height (44/16)rem
     font-size 1rem
@@ -204,19 +236,40 @@ export default {
       logo-size = (160/16)rem
       margin-size = (20/16)rem
       width  "calc(100% - %s)" % (button-size + logo-size + margin-size )
+    display flex
     position relative
-    input
+    .onsearch-field
+      position relative
       width 100%
-      padding 0 0 0 (42/16)rem
-      height (40/16)rem
-      line-height (38/16)rem
-      border-radius (8/16)rem
-      border solid 1px #e5e5e5
-      background-color #ffffff
+      input
+        width 100%
+        padding 0 (42/16)rem 0 (42/16)rem
+        height (40/16)rem
+        line-height (38/16)rem
+        border-radius (8/16)rem
+        border solid 1px #e5e5e5
+        background-color #ffffff
+        transition all 3s
+      input::-webkit-input-placeholder
+        color #c7c7c7
+        font-size (15/16)rem
+      .icon-delete
+        position absolute
+        top (12/16)rem
+        right (15/16)rem
+        img
+          height (12/16)rem
     .icon-search
       position absolute
       left (15/16)rem
       top (12/16)rem
+      color #c7c7c7
+    button
+      font-size (17/16)rem
+      font-weight 500
+      color #ff3f0f
+      background transparent
+      border none
   .create-pc
     @media screen and (max-width: 600px)
       display none

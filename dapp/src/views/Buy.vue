@@ -45,7 +45,12 @@
         </div>
       </li>
     </ul>
-    <a href="" class="recharge">Recharge OPB with a credit card</a>
+    <a
+      href="https://www.sanmarcoscoin.com/dapp/stripe/checkout_t.html"
+      class="recharge"
+    >
+      Recharge OPB with a credit card
+    </a>
     <div class="form-group">
       <label for="contact">Contact Info</label>
       <input

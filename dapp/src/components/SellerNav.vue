@@ -149,6 +149,7 @@ export default {
 .wide
   width 100% !important
 .listing-info-nav
+  box-shadow 0 -1px 0 0 #e5e5e5;
   position fixed
   bottom 0
   width 100vw

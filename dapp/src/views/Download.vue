@@ -18,11 +18,15 @@
     <div class="footer">
       If you have CyberMiles App, you can view and join Dapp right away.
     </div>
-    <div class="overmask" v-if="wxTip">
-      <span> 1. 点击右上角菜单</span>
-      <span> Click the menu button at the top right corner. </span>
-      <span> 2. 选择在浏览器中打开 </span>
-      <span> Select open in browser </span>
+    <div class="overmask" v-if="wxTip" @click="wxTip = false">
+      <div class="text-group">
+        <span> 1. 点击右上角菜单</span>
+        <span> Click the menu button at the top right corner. </span>
+      </div>
+      <div class="text-group">
+        <span> 2. 选择在浏览器中打开 </span>
+        <span> Select open in browser. </span>
+      </div>
     </div>
   </div>
 </template>
@@ -31,19 +35,21 @@
 .download
   .overmask
     background #121212
-    opacity 0.5
+    opacity 0.7
     z-index 999
     position absolute
     height 100%
     width 100%
     top 0
     color #fff
-    span
-      font-weight 600
-      display flex
-      font-size (16/16)rem
+    .text-group
       margin (40/16)rem (10/16)rem 0
-      opacity 1
+      span
+        font-weight 600
+        display flex
+        font-size (16/16)rem
+        padding (10/16)rem
+        opacity 1
   header
     display flex
     background #efefef
@@ -118,10 +124,9 @@ export default {
       ) {
         if (this.isWx) this.wxTip = true;
         else {
-          console.log("redirect")
           this.reDirect();
         }
-      } 
+      }
     },
     _tryCallApp: function(scheme) {
       var aLink = document.createElement("a");
