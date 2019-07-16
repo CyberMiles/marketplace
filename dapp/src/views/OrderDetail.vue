@@ -131,7 +131,6 @@ import {
   closeBySellerHandler,
   refundHandler,
   disputeHandler,
-  remarkHandler,
   compare
 } from "@/global.js";
 import { setTimeout } from "timers";
@@ -159,7 +158,8 @@ export default {
           closedReason: ""
         },
         seller: {
-          addr: ""
+          addr: "",
+          contact: ""
         },
         escrow_time: ""
       },
@@ -304,14 +304,7 @@ export default {
       return speaker;
     },
     async remark() {
-      const { value: text } = await this.$swal({
-        input: "textarea",
-        inputPlaceholder: "Type your remark here...",
-        showCancelButton: true
-      });
-      if (text) {
-        remarkHandler(this.instance, text);
-      }
+      this.$router.push(`/remark/${this.contractAddr}`);
     }
   }
 };

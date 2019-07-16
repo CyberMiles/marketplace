@@ -59,6 +59,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       role: "buy",
       userAddr: ""
     };
@@ -97,6 +98,8 @@ export default {
 
 <style lang="stylus">
 .profile
+  @media screen and (min-width: 600px)
+    margin 0 0 (420/16)rem
   .account
     background-color #ffffff
     height (57/16)rem

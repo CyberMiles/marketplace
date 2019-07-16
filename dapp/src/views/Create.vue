@@ -1,5 +1,5 @@
 <template>
-  <div class="create">
+  <div>
     <ProductInfo />
   </div>
 </template>
@@ -14,7 +14,3 @@ export default {
   }
 };
 </script>
-<style lang="stylus">
-.create
-  background-color #fafafa
-</style>

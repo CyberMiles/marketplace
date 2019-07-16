@@ -1,27 +1,148 @@
 <template>
   <div class="remark-page">
     <div class="all-remark">
-      <dl>
-        <dt>Seller, 19:59 Jun 01th</dt>
-        <dd>I Know!</dd>
-      </dl>
-      <dl>
-        <dt>Seller, 19:59 Jun 01th</dt>
-        <dd>I hope you can deliver the goods as soon as possible</dd>
+      <div class="empty-remark-tips" v-if="sortedMessageBoard.length == 0">
+        No remarks yet.
+      </div>
+      <dl v-for="msg in sortedMessageBoard" v-bind:key="msg.id">
+        <dt>{{ recognizeSpeaker(msg.party) }}, {{ msg.time }}</dt>
+        <dd>{{ msg.words }}</dd>
       </dl>
     </div>
 
     <div class="remark-field">
-      <textarea placeholder="Remarks will be stored in the contract"></textarea>
+      <textarea
+        placeholder="Remarks will be stored in the contract"
+        v-model="remarks"
+        :disabled="processing == true"
+      ></textarea>
     </div>
+    <span class="count-words">{{ remarks.length }}/120</span>
 
-    <button class="new-remark">
+    <button class="new-remark" @click="remark" :disabled="processing == true">
       <span>Add A New Remark</span>
     </button>
   </div>
 </template>
 
-<script></script>
+<script>
+import Contracts from "@/contracts.js";
+import { setTimeout } from "timers";
+import { compare, remarkHandler } from "@/global.js";
+
+export default {
+  data() {
+    return {
+      messageBoard: [],
+      remarks: "",
+      processing: false,
+      order: {
+        seller: {
+          addr: ""
+        },
+        buyer: {
+          addr: ""
+        }
+      },
+      instance: null
+    };
+  },
+  created() {
+    this.contractAddr = this.$route.params.orderId;
+    var that = this;
+    var instance = "";
+    var checkWeb3 = function() {
+      try {
+        var contract = window.web3.cmt.contract(Contracts.Listing.abi);
+        instance = contract.at(that.contractAddr);
+        that.instance = instance;
+        instance.info(function(e, r) {
+          if (e) {
+            console.log(e);
+          } else {
+            that.order.seller = {
+              addr: r[8]
+            };
+          }
+        });
+        instance.buyerInfo(function(e, b_r) {
+          if (e) {
+            console.log(e);
+          } else {
+            that.order.buyer = {
+              addr: b_r[0]
+            };
+          }
+        });
+        instance.getMessagesCount(function(e, r) {
+          if (e) {
+            console.log(e);
+          } else {
+            for (let i = 0; i < r; i++) {
+              instance.showMessageBoard(i, function(e, msg) {
+                if (e) {
+                  console.log(e);
+                } else {
+                  that.messageBoard.push({
+                    id: i,
+                    party: msg[0],
+                    time: new Date(1000 * msg[1]).toLocaleString(),
+                    words: msg[2]
+                  });
+                }
+              });
+            }
+          }
+        });
+      } catch (e) {
+        setTimeout(checkWeb3, 50);
+      }
+    };
+    checkWeb3();
+  },
+  computed: {
+    sortedMessageBoard: function() {
+      return this.messageBoard.slice(0).sort(compare("id"));
+    }
+  },
+  methods: {
+    recognizeSpeaker: function(addr) {
+      var speaker = addr;
+      if (addr == this.order.seller.addr) speaker = "seller";
+      else if (addr == this.order.buyer.addr) speaker = "buyer";
+      return speaker;
+    },
+    remark() {
+      if (this.remarks) {
+        this.processing = true;
+        remarkHandler(this.instance, this.remarks);
+        var that = this;
+        this.$swal({
+          title: "Processing",
+          html: "Remark is being confirmed on chain......",
+          timer: 60 * 60 * 1000,
+          backdrop: false,
+          onBeforeOpen: () => {
+            that.$swal.showLoading();
+          },
+          onClose: () => {
+            this.$router.go();
+          }
+        });
+      }
+    }
+  },
+  watch: {
+    remarks: function(newVal, oldVal) {
+      console.log(newVal.length, oldVal.length);
+      if (newVal.length > 120) {
+        this.remarks =
+          oldVal + newVal.slice(oldVal.length, 120 - oldVal.length);
+      }
+    }
+  }
+};
+</script>
 
 <style lang="stylus">
 .remark-page
@@ -74,4 +195,9 @@
     background-image linear-gradient(to left, #ff7777, #ff3f0f)
     font-size (17/16)rem
     color #ffffff
+  .count-words
+    float right
+    padding (10/16)rem
+    font-size (12/16)rem
+    color gray
 </style>

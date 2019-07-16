@@ -73,6 +73,7 @@ export default {
 
 <style lang="stylus">
 footer
+  opacity 1
   position fixed
   bottom 0
   z-index 99
@@ -81,8 +82,8 @@ footer
     display flex
     justify-content space-around
     height (49/16)rem
-    box-shadow 0 -0.5px 0 0 #e5e5e5;
-    background-color rgba(250, 250, 250, 0.9);
+    box-shadow 0 -1px 0 0 #e5e5e5;
+    background-color rgba(250, 250, 250, 1);
     .entry
       position relative
       height (49/16)rem

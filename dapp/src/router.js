@@ -43,7 +43,8 @@ export default new Router({
       name: "create",
       component: CreatePage,
       meta: {
-        title: "Create Trading"
+        title: "Create Trading",
+        transitionName: "slideY"
       }
     },
     {
@@ -89,7 +90,10 @@ export default new Router({
     {
       path: "/tag/:tag",
       name: "tag",
-      component: CatalogPage
+      component: CatalogPage,
+      meta: {
+        transitionName: "slideX"
+      }
     },
     {
       path: "/cata/:cata",
@@ -131,7 +135,7 @@ export default new Router({
       component: SellGoodsPage
     },
     {
-      path: "/remark",
+      path: "/remark/:orderId",
       name: "remark",
       component: RemarkPage,
       meta: {

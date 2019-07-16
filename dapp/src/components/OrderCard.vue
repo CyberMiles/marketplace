@@ -38,7 +38,7 @@
             <template v-if="actionsPopShown">
               <div class="others-pop" v-if="role === 'sell'">
                 <button v-on:touchstart="cancelOrder">Cancel Order</button>
-                <button  v-on:touchstart="showBuyer">Contact Buyer</button>
+                <button v-on:touchstart="showBuyer">Contact Buyer</button>
                 <button
                   v-on:touchstart="receiveFund"
                   v-if="countdown(order.time) == 0"
@@ -110,7 +110,7 @@
 <script>
 import RespImg from "@/components/RespImg.vue";
 import Contracts from "@/contracts.js";
-import { closeByBuyerHandler, remarkHandler } from "@/global.js";
+import { closeByBuyerHandler } from "@/global.js";
 
 export default {
   props: ["order", "role"],
@@ -267,19 +267,7 @@ export default {
       this.$router.push(`/order/${this.role}/${id}`);
     },
     async remark(id) {
-      const { value: text } = await this.$swal({
-        input: "textarea",
-        inputPlaceholder: "Type your remark here...",
-        showCancelButton: true
-      });
-      if (text) {
-        var instance = this.createInstance(id);
-        var reloc = {
-          router: this.$router,
-          href: `/order/${this.role}/${this.order.id}`
-        };
-        remarkHandler(instance, text, reloc);
-      }
+      this.$router.push(`remark/${id}`);
     },
     web3Callback(e, txhash) {
       if (e) {
