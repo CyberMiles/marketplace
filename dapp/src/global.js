@@ -11,8 +11,7 @@ export default {
   USDunit: "SMC",
   escrowPeriod: 60 * 60 * 24 * 7,
   HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
-  DAOaddr: "0x5dDC817cf4Ed5EE01E3CabAa4689787Ff5618768"
-  // DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1"
+  DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1"
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
