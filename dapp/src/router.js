@@ -14,6 +14,7 @@ import RemarkPage from "./views/Remark.vue";
 import BuyCompletePage from "./views/BuyComplete.vue";
 import CreatingPage from "./views/Creating.vue";
 import DownloadPage from "./views/Download.vue";
+import DisputePage from "./views/DisputeBoard.vue";
 
 Vue.use(Router);
 
@@ -156,6 +157,14 @@ export default new Router({
       component: DownloadPage,
       meta: {
         title: "CyberMiles"
+      }
+    },
+    {
+      path: "/dispute-board",
+      name: "dispute-board",
+      component: DisputePage,
+      meta: {
+        title: "Dispute Board"
       }
     }
   ]

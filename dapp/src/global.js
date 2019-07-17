@@ -4,10 +4,15 @@ import appQrcode from "./assets/imgs/appQrcode.png";
 
 export default {
   popularTags: ["white", "test", "girl"],
+  abiShaList:
+    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1",
+  eeEndpoint: "https://cmt-testnet.search.secondstate.io/api/es_search",
   USDaddr: "0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a",
   USDunit: "SMC",
   escrowPeriod: 60 * 60 * 24 * 7,
-  HttpProvider: "https://testnet-rpc.cybermiles.io:8545"
+  HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
+  DAOaddr: "0x5dDC817cf4Ed5EE01E3CabAa4689787Ff5618768"
+  // DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1"
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
@@ -191,8 +196,7 @@ function makeQuery(statusArr, userAddress = null) {
         must: [
           {
             match: {
-              abiShaList:
-                "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
+              abiShaList: Global.abiShaList
             }
           },
           {
@@ -226,7 +230,7 @@ function queryOptions(query) {
     method: "POST",
     headers: { "content-type": "application/json" },
     data: JSON.stringify(query),
-    url: "https://cmt-testnet.search.secondstate.io/api/es_search"
+    url: Global.eeEndpoint
   };
 }
 

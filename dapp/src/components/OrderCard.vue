@@ -1,109 +1,106 @@
 <template>
-  <div class="order-card" @click="viewOrder(order.id)">
-    <div class="order-goods-info">
-      <div class="goods-img">
-        <RespImg v-bind:src="order.goods.image" alt="" />
-      </div>
-      <div class="goods-desc">
-        <div class="goods-title">{{ order.goods.title }}</div>
-        <div class="goods-price">{{ order.payment }}</div>
-      </div>
-    </div>
-
-    <hr />
-
-    <div class="order-info">
-      <div class="paid-order" v-if="order.status === 'paid'">
-        <div class="countdown">
-          {{ dynCountdown(order.time) }}
-          <button class="expl" @click.stop="showExplPop">?</button>
+  <div>
+    <div class="order-card" @click="viewOrder(order.id)">
+      <div class="order-goods-info">
+        <div class="goods-img">
+          <RespImg v-bind:src="order.goods.image" alt="" />
         </div>
-        <div class="order-actions">
-          <button
-            class="main-action"
-            @click.stop="cancelOrder"
-            v-if="role === 'sell'"
-          >
-            Cancel Order
-          </button>
-          <button class="main-action" @click.stop="confirm" v-else>
-            Confirm Receipt
-          </button>
-          <div class="other-actions">
-            <button class="others-trigger" @click.stop="showActionsPop">
-              <span></span>
-              <span></span>
-              <span></span>
+        <div class="goods-desc">
+          <div class="goods-title">{{ order.goods.title }}</div>
+          <div class="goods-price">{{ order.payment }}</div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="order-info">
+        <div class="paid-order" v-if="order.status === 'paid'">
+          <div class="countdown">
+            {{ dynCountdown(order.time) }}
+            <button class="expl" @click.stop="showExplPop">?</button>
+          </div>
+          <div class="order-actions">
+            <button
+              class="main-action"
+              @click.stop="cancelOrder"
+              v-if="role === 'sell'"
+            >
+              Cancel Order
             </button>
-            <template v-if="actionsPopShown">
-              <div class="others-pop" v-if="role === 'sell'">
-                <button v-on:touchstart="cancelOrder">Cancel Order</button>
-                <button v-on:touchstart="showBuyer">Contact Buyer</button>
-                <button
-                  v-on:touchstart="receiveFund"
-                  v-if="countdown(order.time) == 0"
-                >
-                  Receive Fund
-                </button>
-                <button v-on:touchstart="remark(order.id)">Remark</button>
-              </div>
-              <div class="others-pop" v-else>
-                <button v-on:touchstart="confirm">Confirm Receipt</button>
-                <button v-on:touchstart="showSeller">
-                  Contact Seller
-                </button>
-                <button
-                  v-on:touchstart="dispute"
-                  v-if="countdown(order.time) > 0"
-                >
-                  Dispute
-                </button>
-                <button v-on:touchstart="remark(order.id)">Remark</button>
-              </div>
-            </template>
+            <button class="main-action" @click.stop="confirm" v-else>
+              Confirm Receipt
+            </button>
+            <div class="other-actions">
+              <button class="others-trigger" @click.stop="showActionsPop">
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="completed-order" v-if="order.status === 'completed'">
+          <label>Contract:</label>
+          <span class="contract-addr">{{ order.contract }}</span>
+        </div>
+
+        <div class="refund-order" v-if="order.status === 'refund'">
+          <div>
+            <label>Refund Amount:</label>
+            <span class="refund-amount">{{ order.payment }}</span>
+          </div>
+          <div>
+            <label>Refund Reason:</label>
+            <span class="refund-reason">{{ order.refundReason }}</span>
+          </div>
+        </div>
+
+        <div class="dispute-order" v-if="order.status === 'dispute'">
+          <div>
+            <label>Dispute Reason:</label>
+            <span class="dispute-reason">{{ order.disputeReason }}</span>
+          </div>
+          <div class="order-actions">
+            <button
+              class="main-action"
+              @click.stop="cancelOrder"
+              v-if="role === 'sell'"
+            >
+              Cancel Order
+            </button>
           </div>
         </div>
       </div>
-
-      <div class="completed-order" v-if="order.status === 'completed'">
-        <label>Contract:</label>
-        <span class="contract-addr">{{ order.contract }}</span>
-      </div>
-
-      <div class="refund-order" v-if="order.status === 'refund'">
-        <div>
-          <label>Refund Amount:</label>
-          <span class="refund-amount">{{ order.payment }}</span>
-        </div>
-        <div>
-          <label>Refund Reason:</label>
-          <span class="refund-reason">{{ order.refundReason }}</span>
-        </div>
-      </div>
-
-      <div class="dispute-order" v-if="order.status === 'dispute'">
-        <div>
-          <label>Dispute Reason:</label>
-          <span class="dispute-reason">{{ order.disputeReason }}</span>
-        </div>
-        <div class="order-actions">
-          <button
-            class="main-action"
-            @click.stop="cancelOrder"
-            v-if="role === 'sell'"
-          >
-            Cancel Order
-          </button>
-        </div>
+      <div class="countdown-expl-pop" v-if="explPopShown">
+        After payment, the digital currency is locked into an intelligent
+        contract for 10 days, and the seller delivers the goods within 10 days;
+        Smart contracts will automatically transfer digital money to the seller
+        after 10 days; If the seller fails to deliver the goods, please apply
+        for arbitration refund within 10 days
       </div>
     </div>
-    <div class="countdown-expl-pop" v-if="explPopShown">
-      After payment, the digital currency is locked into an intelligent contract
-      for 10 days, and the seller delivers the goods within 10 days; Smart
-      contracts will automatically transfer digital money to the seller after 10
-      days; If the seller fails to deliver the goods, please apply for
-      arbitration refund within 10 days
-    </div>
+    <template v-if="actionsPopShown">
+      <div class="others-mask"></div>
+      <div class="others-pop" v-if="role === 'sell'">
+        <button v-on:mousedown="cancelOrder">Cancel Order</button>
+        <button v-on:mousedown="showBuyer">Contact Buyer</button>
+        <button v-on:mousedown="receiveFund" v-if="countdown(order.time) == 0">
+          Receive Fund
+        </button>
+        <button v-on:mousedown="remark(order.id)">Remark</button>
+      </div>
+      <div class="others-pop" v-else>
+        <button v-on:mousedown="confirm">Confirm Receipt</button>
+        <button v-on:mousedown="showSeller">
+          Contact Seller
+        </button>
+        <button v-on:mousedown="dispute" v-if="countdown(order.time) > 0">
+          Dispute
+        </button>
+        <button v-on:mousedown="remark(order.id)">Remark</button>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -166,7 +163,7 @@ export default {
       document.removeEventListener("touchstart", this.hideActionsPop);
       setTimeout(() => {
         this.actionsPopShown = false;
-      }, 100);
+      }, 300);
     },
     confirm() {
       let that = this;
@@ -392,37 +389,6 @@ export default {
           height (3/16)rem
           border-radius 50%
           background-color #666666
-      .others-pop
-        position absolute
-        margin-top (10/16)rem
-        right 0
-        border-radius (8/16)rem
-        background-color rgba(0, 0, 0, 0.7)
-        padding 0 (12/16)rem
-        z-index 1
-        display flex
-        flex-direction column
-        justify-content space-around
-        height (75/16)rem
-        &:after
-          content ""
-          box-sizing border-box
-          position absolute
-          top (-10/16)rem
-          right (10/16)rem
-          width (10/16)rem
-          height (10/16)rem
-          border-width 0 (5/16)rem (5/16)rem (5/16)rem
-          border-style solid
-          border-color transparent transparent rgba(0, 0, 0, 0.7) transparent
-        button
-          display block
-          height auto
-          padding 0
-          white-space nowrap
-          font-size (13/16)rem
-          color rgba(255, 255, 255, 0.8)
-          border 0
   .completed-order
     font-size (13/16)rem
     label
@@ -473,4 +439,35 @@ export default {
       border-width 0 (5/16)rem (5/16)rem (5/16)rem
       border-style solid
       border-color transparent transparent rgba(0, 0, 0, 0.7) transparent
+.others-pop
+  position fixed
+  bottom 0
+  left 0
+  border-radius (8/16)rem (8/16)rem
+  background-color rgba(0, 0, 0, 0.7)
+  padding 0 (12/16)rem
+  z-index 999
+  display flex
+  flex-direction column
+  justify-content space-around
+  height (150/16)rem
+  width 100%
+  button
+    display block
+    height auto
+    padding 0
+    white-space nowrap
+    background rgba(0, 0, 0, 0.7)
+    font-size (18/16)rem
+    color rgba(255, 255, 255, 0.8)
+    border 0
+.others-mask
+  transition all .3s
+  position fixed
+  top 0
+  left 0
+  z-index 998
+  background-color rgba(0, 0, 0, 0.7)
+  height 100%
+  width 100%
 </style>
