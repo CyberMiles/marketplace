@@ -6,10 +6,7 @@
       class="loading"
     />
     <img src="./../assets/imgs/success.svg" v-if="status == 'succeed'" />
-    <img
-      src="https://img.icons8.com/office/80/000000/multiply.png"
-      v-if="status == 'fail'"
-    />
+    <img src="./../assets/imgs/error.png" v-if="status == 'fail'" />
     <div class="text" v-if="status == 'processing'">Payment Processing</div>
     <div class="text" v-if="status == 'succeed'">Payment Completed</div>
     <div class="text" v-if="status == 'fail'">Payment Failed</div>

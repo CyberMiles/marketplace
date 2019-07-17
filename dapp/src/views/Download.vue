@@ -1,16 +1,17 @@
 <template>
   <div class="download">
     <header>
-      <img class="logo" src="../assets/imgs/app.jpg" />
+      <img @click="$router.go(-1)" class="back" src="../assets/imgs/back.svg" />
       <span class="text">CyberMiles</span>
     </header>
     <div class="download-banner">
       <a href="https://app.cybermiles.io">
-        Don't have <b>CyberMiles</b> yet? Try it now!
+        Don't have <b>CyberMiles App</b> yet? Try it now!
       </a>
     </div>
     <div class="dapp">
-      <img src="" class="dapp-logo" /><span class="text">MarketPlace</span>
+      <img src="../assets/imgs/logo.png" class="dapp-logo" />
+      <span class="text">MarketPlace</span>
       <button @click="dappReloc" class="dapp-reloc">
         View in CyberMiles App
       </button>
@@ -33,6 +34,9 @@
 
 <style lang="stylus">
 .download
+  position absolute
+  background #f4f4f4
+  height 100%
   .overmask
     background #121212
     opacity 0.7
@@ -52,20 +56,22 @@
         opacity 1
   header
     display flex
-    background #efefef
-    height (60/16)rem
-    .logo
-      height 100%
+    background #fff
+    height (39/16)rem
+    .back
+      position absolute
+      height (13/16)rem
+      margin (13/16)rem
     .text
       vertical-align center
       font-weight 600
-      margin auto (20/16)rem
+      margin auto
   .download-banner
     a
       text-decoration none
       color inherit
-    height (48/18)rem
-    background #32afed
+    height (36/18)rem
+    background #03a9f4
     color #ffffff
     align-items center
     display flex
@@ -74,21 +80,24 @@
     .dapp-logo
       height (108/16)rem
       width (108/16)rem
-      margin (20/16)rem auto
+      margin (50/16)rem auto
       display flex
     .text
       display flex
       justify-content center
     .dapp-reloc
-      border-radius (12/16)rem
-      padding (12/16)rem
+      border-radius (22/16)rem
+      padding (13/16)rem
       display flex
       margin (10/16)rem auto
       background #32afed
       border 0
       color #fff
   .footer
-    padding (20/16)rem
+    padding (15/16)rem (74/16)rem
+    font-size 13px
+    color #666
+    text-align center
 </style>
 
 <script>

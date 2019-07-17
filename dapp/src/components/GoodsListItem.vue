@@ -24,15 +24,15 @@ export default {
 <style lang="stylus">
 .goods-list-item
   position relative
-  width (165/16)rem
-  height (165/16)rem
+  width 100%
+  height @width
   border-radius (8/16)rem
   background-color #f0f0f0
   overflow hidden
   margin-bottom (15/16)rem
   img
-    width (165/16)rem
-    height (165/16)rem
+    width 100%
+    height @width
   .goods-price
     display flex
     align-items center

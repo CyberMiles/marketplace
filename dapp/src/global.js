@@ -162,19 +162,18 @@ function remarkHandler(instance, text, reloc = "") {
 function web3Callback(e, txhash, reloc) {
   if (e) {
     console.log(e);
+    location.reload(true);
   } else {
     var filter = window.web3.cmt.filter("latest");
     filter.watch(function(error, blockhash) {
       if (!error) {
         console.log(blockhash, txhash);
         window.web3.cmt.getBlock(blockhash, function(e, r) {
-          console.log(blockhash, txhash, r.transactions);
-          if (txhash.indexOf(r.transactions) != -1) {
-            filter.stopWatching();
+          if (r.transactions.indexOf(txhash) != -1) {
+            // filter.stopWatching(); mobile will be stuck here
             if (reloc != undefined && reloc != "") {
               var router = reloc.router;
               router.push(reloc.href);
-              // location.href = reloc;
             } else {
               location.reload(true);
             }
@@ -185,7 +184,7 @@ function web3Callback(e, txhash, reloc) {
   }
 }
 
-function makeQuery(statusArr, userAddress) {
+function makeQuery(statusArr, userAddress = null) {
   var queryPayload = {
     query: {
       bool: {
@@ -197,11 +196,6 @@ function makeQuery(statusArr, userAddress) {
             }
           },
           {
-            match: {
-              "functionDataList.0.functionData.info.8": userAddress
-            }
-          },
-          {
             bool: {
               should: []
             }
@@ -210,8 +204,15 @@ function makeQuery(statusArr, userAddress) {
       }
     }
   };
+  if (userAddress != null) {
+    queryPayload.query.bool.must.push({
+      match: {
+        "functionDataList.0.functionData.info.8": userAddress
+      }
+    });
+  }
   statusArr.forEach(function(status) {
-    queryPayload.query.bool.must["2"].bool.should.push({
+    queryPayload.query.bool.must["1"].bool.should.push({
       match: {
         "functionDataList.0.functionData.info.0": status
       }

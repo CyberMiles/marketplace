@@ -19,7 +19,13 @@
         </dl>
         <dl>
           <dt>Contract</dt>
-          <dd class="goods-contract">{{ contractAddr }}</dd>
+          <dd class="goods-contract">
+            <a
+              v-bind:href="'https://www.cmttracking.io/address/' + contractAddr"
+            >
+              {{ contractAddr }}
+            </a>
+          </dd>
         </dl>
       </div>
     </section>
@@ -373,7 +379,9 @@ export default {
             color #ff3f0f
             font-weight bold
           &.goods-contract
-            color #00a0ff
+            a
+              text-decoration none
+              color #00a0ff
       &.remark
         dl
           display block

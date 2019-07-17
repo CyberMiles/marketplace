@@ -2,6 +2,15 @@
   <div>
     <LoadingMask v-if="loading"></LoadingMask>
     <div class="catalog-goods-list">
+      <div class="search-field">
+        <input
+          type="search"
+          placeholder="Enter a search term or #tag"
+          v-model="searchTerm"
+          v-on:keyup.enter="goSearch"
+        />
+        <button @click="goSearch">Go</button>
+      </div>
       <ul class="tags" v-if="tag !== undefined">
         <li v-for="popularTag in popularTags" :key="popularTag.key">
           <router-link
@@ -21,21 +30,15 @@
           </router-link>
         </li>
       </ul>
-      <div class="search-field" v-if="search !== undefined">
-        <input
-          type="search"
-          placeholder="Enter a search term or #tag"
-          v-model="searchTerm"
-          v-on:keyup.enter="goSearch"
-        />
-        <button @click="goSearch">Go</button>
-      </div>
-      <div class="search-result" v-if="search !== undefined">
+      <div
+        class="search-result"
+        v-if="search !== undefined || all !== undefined"
+      >
         Total "<em>{{ goodList.length }}</em
         >" result
       </div>
       <div class="goods-list">
-        <div v-for="good in goodList" :key="good.key">
+        <div v-for="good in goodList" :key="good.key" class="good-container">
           <GoodsListItem
             v-bind:contractAddr="good.contractAddr"
             :sold="good.sold ? true : ``"
@@ -65,6 +68,7 @@ import LoadingMask from "@/components/LoadingMask.vue";
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
 import global from "@/global.js";
+import { queryOptions, makeQuery } from "@/global.js";
 
 export default {
   name: "home",
@@ -73,6 +77,7 @@ export default {
       loading: true,
       tag: this.$route.params.tag,
       cata: this.$route.params.cata,
+      all: this.$route.params.all,
       search: this.$route.params.search,
       goodList: [],
       popularTags: global.popularTags,
@@ -87,12 +92,13 @@ export default {
   },
   created() {
     this.initGoodList();
-    this.searchTerm = this.search;
+    this.searchTerm = this.search || (this.tag ? "#" + this.tag : this.tag);
   },
   methods: {
     initGoodList() {
       var that = this;
       var queryMarketplaceABI = "";
+      console.log(this.$route.params)
       if (this.$route.params.tag !== undefined) {
         queryMarketplaceABI = {
           query: {
@@ -140,14 +146,14 @@ export default {
             }
           }
         };
+      } else if (this.$route.params.all !== undefined) {
+        if (this.$route.params.all == "sold") {
+          queryMarketplaceABI = makeQuery([2, 3, 4, 5]);
+        } else if (this.$route.params.all == "unsold") {
+          queryMarketplaceABI = makeQuery([1]);
+        }
       }
-      const options = {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        data: JSON.stringify(queryMarketplaceABI),
-        url: "https://cmt-testnet.search.secondstate.io/api/es_search"
-      };
-      axios(options).then(r => {
+      axios(queryOptions(queryMarketplaceABI)).then(r => {
         that.loading = false;
         var sortedData = r.data
           .sort(that.compare("blockNumber"))
@@ -239,6 +245,20 @@ export default {
     display flex
     flex-wrap wrap
     justify-content space-between
+    .good-container
+      good-margin = (15/16) rem
+      height fit-content
+      margin-bottom (15/16)rem
+      width w = "calc((100% - %s)/2)" % good-margin
+      @media screen and (min-width: 600px)
+        good-margin = (25/16) rem
+        width "calc((100% - %s)/3)" % good-margin
+      @media screen and (min-width: 800px)
+        good-margin = (55/16) rem
+        width "calc((100% - %s)/4)" % good-margin
+      @media screen and (min-width: 1000px)
+        good-margin = (80/16) rem
+        width "calc((100% - %s)/5)" % good-margin
   .search-field
     position relative
     margin-top (15/16)rem

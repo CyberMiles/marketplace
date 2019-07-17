@@ -243,19 +243,7 @@ export default {
             if (e) {
               console.log(e);
             } else {
-              that.$router.push(`/complete/${that.contractAddr}/${txhash}`);
-              // var filter = window.web3.cmt.filter("latest");
-              // filter.watch(function(error, blockhash) {
-              //   if (!error) {
-              //     console.log(blockhash, txhash);
-              //     window.web3.cmt.getBlock(blockhash, function(e, r) {
-              //       console.log(blockhash, txhash, r.transactions);
-              //       if (txhash.indexOf(r.transactions) != -1) {
-              //         filter.stopWatching();
-              //       }
-              //     });
-              //   }
-              // });
+              that.$router.replace(`/complete/${that.contractAddr}/${txhash}`);
             }
           }
         ); // buyWithCMT
@@ -286,25 +274,9 @@ export default {
                   if (e) {
                     console.log(e);
                   } else {
-                    that.$router.push(
+                    that.$router.replace(
                       `/complete/${that.contractAddr}/${txhash}`
                     );
-                    // var filter = window.web3.cmt.filter("latest");
-                    // filter.watch(function(error, blockhash) {
-                    //   if (!error) {
-                    //     console.log(blockhash, txhash);
-                    //     window.web3.cmt.getBlock(blockhash, function(e, r) {
-                    //       console.log(blockhash, txhash, r.transactions);
-                    //       if (txhash.indexOf(r.transactions) != -1) {
-                    //         window.web3.cmt.getTransactionReceipt(txhash, function(e, r) {
-                    //           console.log(e, r);
-                    //         });
-                    //         filter.stopWatching();
-                    //           location.href = "/order/buy/" + that.contractAddr;
-                    //       }
-                    //     });
-                    //   }
-                    // });
                   }
                 }
               ); // buyWithCRC20
