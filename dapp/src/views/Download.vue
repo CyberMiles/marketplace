@@ -1,5 +1,5 @@
 <template>
-  <div class="download">
+  <div class="download-wx">
     <header>
       <img @click="$router.go(-1)" class="back" src="../assets/imgs/back.svg" />
       <span class="text">CyberMiles</span>
@@ -33,7 +33,7 @@
 </template>
 
 <style lang="stylus">
-.download
+.download-wx
   position absolute
   background #f4f4f4
   height 100%
