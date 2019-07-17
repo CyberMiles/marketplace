@@ -109,6 +109,14 @@ export default new Router({
       }
     },
     {
+      path: "/all/:all",
+      name: "all",
+      component: CatalogPage,
+      meta: {
+        title: "Search Result"
+      }
+    },
+    {
       path: "/profile",
       name: "profile",
       component: ProfilePage,

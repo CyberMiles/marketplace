@@ -1,32 +1,36 @@
 <template>
-  <div class="remark-page">
-    <div class="all-remark">
-      <div class="empty-remark-tips" v-if="sortedMessageBoard.length == 0">
-        No remarks yet.
+  <div>
+    <div class="remark-page">
+      <div class="all-remark">
+        <div class="empty-remark-tips" v-if="sortedMessageBoard.length == 0">
+          No remarks yet.
+        </div>
+        <dl v-for="msg in sortedMessageBoard" v-bind:key="msg.id">
+          <dt>{{ recognizeSpeaker(msg.party) }}, {{ msg.time }}</dt>
+          <dd>{{ msg.words }}</dd>
+        </dl>
       </div>
-      <dl v-for="msg in sortedMessageBoard" v-bind:key="msg.id">
-        <dt>{{ recognizeSpeaker(msg.party) }}, {{ msg.time }}</dt>
-        <dd>{{ msg.words }}</dd>
-      </dl>
-    </div>
 
-    <div class="remark-field">
-      <textarea
-        placeholder="Remarks will be stored in the contract"
-        v-model="remarks"
-        :disabled="processing == true"
-      ></textarea>
-    </div>
-    <span class="count-words">{{ remarks.length }}/120</span>
+      <div class="remark-field">
+        <textarea
+          placeholder="Remarks will be stored in the contract"
+          v-model="remarks"
+          :disabled="processing == true"
+        ></textarea>
+      </div>
+      <span class="count-words">{{ remarks.length }}/120</span>
 
-    <button class="new-remark" @click="remark" :disabled="processing == true">
-      <span>Add A New Remark</span>
-    </button>
+      <button class="new-remark" @click="remark" :disabled="processing == true">
+        <span>Add A New Remark</span>
+      </button>
+    </div>
+    <ProcessingMask v-if="processing"></ProcessingMask>
   </div>
 </template>
 
 <script>
 import Contracts from "@/contracts.js";
+import ProcessingMask from "@/components/ProcessingMask.vue";
 import { setTimeout } from "timers";
 import { compare, remarkHandler } from "@/global.js";
 
@@ -46,6 +50,9 @@ export default {
       },
       instance: null
     };
+  },
+  components: {
+    ProcessingMask
   },
   created() {
     this.contractAddr = this.$route.params.orderId;
@@ -114,21 +121,8 @@ export default {
     },
     remark() {
       if (this.remarks) {
-        this.processing = true;
         remarkHandler(this.instance, this.remarks);
-        var that = this;
-        this.$swal({
-          title: "Processing",
-          html: "Remark is being confirmed on chain......",
-          timer: 60 * 60 * 1000,
-          backdrop: false,
-          onBeforeOpen: () => {
-            that.$swal.showLoading();
-          },
-          onClose: () => {
-            this.$router.go();
-          }
-        });
+        this.processing = true;
       }
     }
   },

@@ -1,138 +1,142 @@
 <template>
-  <div class="create-info">
-    <label for="file">Image {{ uploadedImgs.length + images.length }}/4</label>
-    <div class="form-group">
-      <div class="uploaded-img-container" v-if="edit">
+  <div>
+    <div class="create-info">
+      <label for="file">Image {{ uploadedImgs.length + images.length }}/4</label>
+      <div class="form-group">
+        <div class="uploaded-img-container" v-if="edit">
+          <div
+            v-for="url in uploadedImgs"
+            :key="url.key"
+            class="preview-container"
+          >
+            <img class="preview" v-bind:src="url" />
+            <span @click="rmSelf(url, 'uploadedImgs')" class="delete">x</span>
+          </div>
+        </div>
         <div
-          v-for="url in uploadedImgs"
-          :key="url.key"
+          v-for="(image, key) in images"
+          :key="image.key"
           class="preview-container"
         >
-          <img class="preview" v-bind:src="url" />
-          <span @click="rmSelf(url, 'uploadedImgs')" class="delete">x</span>
+          <img class="preview" v-bind:ref="'image' + parseInt(key)" />
+          <span @click="rmSelf(image, 'images')" class="delete">x</span>
         </div>
-      </div>
-      <div
-        v-for="(image, key) in images"
-        :key="image.key"
-        class="preview-container"
-      >
-        <img class="preview" v-bind:ref="'image' + parseInt(key)" />
-        <span @click="rmSelf(image, 'images')" class="delete">x</span>
-      </div>
-      <div
-        v-if="uploadedImgs.length + images.length < 4"
-        class="upload-container"
-        @click="$refs.myFiles.click()"
-      >
-        <input
-          type="file"
-          id="file"
-          ref="myFiles"
-          class="custom-file-input"
-          accept="image/*"
-          @change="previewFiles($event)"
-          multiple
+        <div
+          v-if="uploadedImgs.length + images.length < 4"
+          class="upload-container"
+          @click="$refs.myFiles.click()"
+        >
+          <input
+            type="file"
+            id="file"
+            ref="myFiles"
+            class="custom-file-input"
+            accept="image/*"
+            @change="previewFiles($event)"
+            multiple
+          />
+        </div>
+        <img
+          v-if="uploadedImgs.length + images.length < 4"
+          src="../assets/imgs/plus.svg"
+          @click="$refs.myFiles.click()"
+          class="plus-btn"
         />
       </div>
-      <img
-        v-if="uploadedImgs.length + images.length < 4"
-        src="../assets/imgs/plus.svg"
-        @click="$refs.myFiles.click()"
-        class="plus-btn"
-      />
-    </div>
-    <div class="form-group">
-      <label for="title">Name</label>
-      <input
-        type="text"
-        class="form-control"
-        id="title"
-        placeholder="What are you selling"
-        v-model="title"
-      />
-    </div>
-    <div class="form-group">
-      <label for="tags">Tags</label>
-      <input
-        type="text"
-        class="form-control"
-        id="tags"
-        placeholder="Such as #rolex#watch"
-        v-model="tags"
-      />
-    </div>
-    <div class="form-group">
-      <label for="desc">Description</label>
-      <textarea
-        rows="3"
-        type="text"
-        class="form-control"
-        id="desc"
-        placeholder="Describe your product in as much detail as possible"
-        v-model="desc"
-      />
-    </div>
-    <div class="form-group">
-      <label for="amount">Price</label>
-      <div>
+      <div class="form-group">
+        <label for="title">Name</label>
         <input
-          type="number"
+          type="text"
           class="form-control"
-          id="amount"
-          min="0.01"
-          v-model="amount"
+          id="title"
+          placeholder="What are you selling"
+          v-model="title"
         />
-        <div class="price-unit-container">
-          <span class="price-unit">{{ USDunit }}</span>
-        </div>
-        <span class="price-tip">1 {{ USDunit }} ≈ 1 USD</span>
       </div>
-    </div>
-    <div class="form-group" v-if="edit">
-      <label for="CMTamount">Price2(optional)</label>
-      <div>
+      <div class="form-group">
+        <label for="tags">Tags</label>
         <input
-          type="number"
+          type="text"
           class="form-control"
-          id="CMTamount"
-          min="0.0001"
-          v-model="CMTamount"
+          id="tags"
+          placeholder="Such as #rolex#watch"
+          v-model="tags"
         />
-        <div class="price-unit-container">
-          <span class="price-unit">CMT</span>
+      </div>
+      <div class="form-group">
+        <label for="desc">Description</label>
+        <textarea
+          rows="3"
+          type="text"
+          class="form-control"
+          id="desc"
+          placeholder="Describe your product in as much detail as possible"
+          v-model="desc"
+        />
+      </div>
+      <div class="form-group">
+        <label for="amount">Price</label>
+        <div>
+          <input
+            type="number"
+            class="form-control"
+            id="amount"
+            min="0.01"
+            v-model="amount"
+          />
+          <div class="price-unit-container">
+            <span class="price-unit">{{ USDunit }}</span>
+          </div>
+          <span class="price-tip">1 {{ USDunit }} ≈ 1 USD</span>
         </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label for="contact">Contact Info</label>
-      <input
-        type="text"
-        class="form-control"
-        id="contact"
-        placeholder="Email. Buyer contacts you."
-        v-model="contact"
-      />
-      <small class="alert" v-if="contactIsEmpty">
-        contact info cannot be empty
-      </small>
-    </div>
-    <div v-if="edit">
-      <a @click="$router.go(-1)" class="create-btn left-btn"
-        ><span>Cancel</span></a
+      <div class="form-group" v-if="edit">
+        <label for="CMTamount">Price2(optional)</label>
+        <div>
+          <input
+            type="number"
+            class="form-control"
+            id="CMTamount"
+            min="0.0001"
+            v-model="CMTamount"
+          />
+          <div class="price-unit-container">
+            <span class="price-unit">CMT</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="contact">Contact Info</label>
+        <input
+          type="text"
+          class="form-control"
+          id="contact"
+          placeholder="Email. Buyer contacts you."
+          v-model="contact"
+        />
+        <small class="alert" v-if="contactIsEmpty">
+          contact info cannot be empty
+        </small>
+      </div>
+      <div v-if="edit">
+        <a @click="$router.go(-1)" class="create-btn left-btn"
+          ><span>Cancel</span></a
+        >
+        <a href="#" class="create-btn right-btn" @click="updateTrading"
+          ><span>Update</span></a
+        >
+      </div>
+      <a href="#" class="create-btn" @click="createTrading" v-else
+        ><span>List</span></a
       >
-      <a href="#" class="create-btn right-btn" @click="updateTrading"
-        ><span>Update</span></a
-      >
     </div>
-    <a href="#" class="create-btn" @click="createTrading" v-else
-      ><span>List</span></a
-    >
+    <ProcessingMask v-if="processing"></ProcessingMask>
   </div>
 </template>
 
 <script>
 import Contracts from "@/contracts.js";
+import ProcessingMask from "@/components/ProcessingMask.vue";
 import axios from "axios";
 import Global from "@/global.js";
 import { createHandler } from "@/global.js";
@@ -141,9 +145,10 @@ export default {
   name: "ProductInfo",
   data() {
     return {
+      processing: false,
       title: "",
       desc: "",
-      amount: 10,
+      amount: null,
       CMTamount: null,
       tags: "",
       contact: "",
@@ -163,6 +168,9 @@ export default {
   props: ["edit", "contractAddr"],
   created() {
     this.initProductInfo();
+  },
+  components: {
+    ProcessingMask
   },
   methods: {
     initProductInfo() {
@@ -316,6 +324,7 @@ export default {
               if (e) {
                 console.log(e);
               } else {
+                that.processing = true;
                 var filter = window.web3.cmt.filter("latest");
                 filter.watch(function(error, blockhash) {
                   if (!error) {
@@ -323,7 +332,7 @@ export default {
                     window.web3.cmt.getBlock(blockhash, function(e, r) {
                       console.log(blockhash, txhash, r.transactions);
                       if (r.transactions.indexOf(txhash) != -1) {
-                        filter.stopWatching();
+                        // filter.stopWatching(); mobile will be stuck here
                         console.log("stop and redirect");
                         that.$router.push("/listing/" + that.contractAddr);
                       }

@@ -42,12 +42,12 @@
       </ul>
       <div class="cate-title">
         <h2>Latest</h2>
-        <a class="more"
+        <router-link to="/all/unsold" class="more"
           >View all ({{
             goodList.filter(obj => {
               return !obj.sold;
             }).length
-          }})></a
+          }})></router-link
         >
       </div>
       <div class="goods-list">
@@ -58,6 +58,7 @@
             })
             .slice(0, maxDisplayItems)"
           :key="good.key"
+          class="good-container"
         >
           <GoodsListItem v-bind:contractAddr="good.contractAddr">
             <RespImg v-bind:src="good.image" alt="" />
@@ -69,12 +70,12 @@
       </div>
       <div class="cate-title">
         <h2>Just Sold</h2>
-        <a class="more"
+        <router-link to="/all/sold" class="more"
           >View all ({{
             goodList.filter(obj => {
               return obj.sold;
             }).length
-          }})></a
+          }})></router-link
         >
       </div>
       <div class="goods-list">
@@ -85,6 +86,7 @@
             })
             .slice(0, maxDisplayItems)"
           :key="good.key"
+          class="good-container"
         >
           <GoodsListItem sold="true" v-bind:contractAddr="good.contractAddr">
             <RespImg v-bind:src="good.image" alt="" />
@@ -107,7 +109,7 @@ import RespImg from "@/components/RespImg.vue";
 import LoadingMask from "@/components/LoadingMask.vue";
 import axios from "axios";
 import global from "@/global.js";
-import { web3Pass } from "@/global.js";
+import { web3Pass, queryOptions, makeQuery } from "@/global.js";
 
 export default {
   name: "home",
@@ -132,21 +134,8 @@ export default {
   methods: {
     initGoodList() {
       var that = this;
-      const queryMarketplaceABI = {
-        query: {
-          match: {
-            abiShaList:
-              "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
-          }
-        }
-      };
-      const options = {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        data: JSON.stringify(queryMarketplaceABI),
-        url: "https://cmt-testnet.search.secondstate.io/api/es_search"
-      };
-      axios(options).then(r => {
+      const queryMarketplaceABI = makeQuery([1, 2, 3, 4, 5]);
+      axios(queryOptions(queryMarketplaceABI)).then(r => {
         console.log(r.data);
         that.loading = false;
         var sortedData = r.data
@@ -203,7 +192,7 @@ export default {
   computed: {
     maxDisplayItems: function() {
       if (window.innerWidth > 1000) return 6;
-      else if (window.innerWidth > 600) return 5;
+      else if (window.innerWidth > 800) return 5;
       else return 4;
     }
   }
@@ -270,6 +259,8 @@ export default {
       color #ff3f0f
       background transparent
       border none
+      @media screen and (min-width: 600px)
+        display none
   .create-pc
     @media screen and (max-width: 600px)
       display none
@@ -293,6 +284,8 @@ export default {
       font-weight bold
     .more
       font-size (15/16)rem
+    a
+      text-decoration none
   .tags
     margin 0
     padding 0
@@ -316,4 +309,18 @@ export default {
     display flex
     flex-wrap wrap
     justify-content space-between
+    .good-container
+      good-margin = (15/16) rem
+      height fit-content
+      margin-bottom (15/16)rem
+      width w = "calc((100% - %s)/2)" % good-margin
+      @media screen and (min-width: 600px)
+        good-margin = (25/16) rem
+        width "calc((100% - %s)/3)" % good-margin
+      @media screen and (min-width: 800px)
+        good-margin = (55/16) rem
+        width "calc((100% - %s)/4)" % good-margin
+      @media screen and (min-width: 1000px)
+        good-margin = (80/16) rem
+        width "calc((100% - %s)/5)" % good-margin
 </style>
