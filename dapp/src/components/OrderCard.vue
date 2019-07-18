@@ -81,7 +81,7 @@
       </div>
     </div>
     <template v-if="actionsPopShown">
-      <div class="others-mask"></div>
+      <div class="others-mask" @mousedown="actionsPopShown = false"></div>
       <div class="others-pop" v-if="role === 'sell'">
         <button v-on:mousedown="cancelOrder">Cancel Order</button>
         <button v-on:mousedown="showBuyer">Contact Buyer</button>

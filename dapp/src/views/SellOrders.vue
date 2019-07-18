@@ -10,8 +10,7 @@
 import OrderCard from "@/components/OrderCard.vue";
 import Footer from "@/components/Footer.vue";
 import axios from "axios";
-import Global from "@/global.js";
-import { computePayment } from "@/global.js";
+import { computePayment, compare, makeQuery, queryOptions } from "@/global.js";
 
 export default {
   name: "sellOrders",
@@ -62,193 +61,105 @@ export default {
     setOrders() {
       if (this.userAddr == "") return;
       var that = this;
-      var queryPaid = {
-        query: {
-          bool: {
-            must: [
-              {
-                match: {
-                  abiShaList:
-                    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
-                }
-              },
-              {
-                match: {
-                  "functionDataList.0.functionData.info.0": "2"
-                }
-              },
-              {
-                match: {
-                  "functionDataList.0.functionData.info.8": this.userAddr
-                }
-              }
-            ]
-          }
-        }
-      };
-      var queryCompleted = {
-        query: {
-          bool: {
-            must: [
-              {
-                match: {
-                  abiShaList:
-                    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
-                }
-              },
-              {
-                match: {
-                  "functionDataList.0.functionData.info.0": "4"
-                }
-              },
-              {
-                match: {
-                  "functionDataList.0.functionData.info.8": this.userAddr
-                }
-              }
-            ]
-          }
-        }
-      };
-      var queryRefund = {
-        query: {
-          bool: {
-            must: [
-              {
-                match: {
-                  abiShaList:
-                    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
-                }
-              },
-              {
-                match: {
-                  "functionDataList.0.functionData.info.0": "5"
-                }
-              },
-              {
-                match: {
-                  "functionDataList.0.functionData.info.8": this.userAddr
-                }
-              }
-            ]
-          }
-        }
-      };
-      var queryDispute = {
-        query: {
-          bool: {
-            must: [
-              {
-                match: {
-                  abiShaList:
-                    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
-                }
-              },
-              {
-                match: {
-                  "functionDataList.0.functionData.info.0": "3"
-                }
-              },
-              {
-                match: {
-                  "functionDataList.0.functionData.info.8": this.userAddr
-                }
-              }
-            ]
-          }
-        }
-      };
-      const options = query => {
-        return {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          data: JSON.stringify(query),
-          url: "https://cmt-testnet.search.secondstate.io/api/es_search"
-        };
-      };
-      axios(options(queryPaid)).then(r => {
-        console.log(r.data);
+      var queryPaid = makeQuery([2], this.userAddr);
+      var queryCompleted = makeQuery([4], this.userAddr);
+      var queryRefund = makeQuery([5], this.userAddr);
+      var queryDispute = makeQuery([3], this.userAddr);
+
+      axios(queryOptions(queryPaid)).then(r => {
         that.paidOrders.length = 0;
-        r.data.forEach(function(item) {
-          that.paidOrders.push({
-            id: item.contractAddress,
-            status: "paid",
-            goods: {
-              image: item.functionData.getImage.split(",")[0],
-              title: item.functionData.info[1],
-              price: (parseInt(item.functionData.info[7]) / 100).toString()
-            },
-            time:
-              1000 * parseInt(item.functionData.buyerInfo[1]) +
-              1000 * parseInt(item.functionData.info[5]),
-            payment: computePayment(item)
+        r.data
+          .sort(compare("functionData.buyerInfo.1"))
+          .reverse()
+          .forEach(function(item) {
+            that.paidOrders.push({
+              id: item.contractAddress,
+              status: "paid",
+              goods: {
+                image: item.functionData.getImage.split(",")[0],
+                title: item.functionData.info[1],
+                price: (parseInt(item.functionData.info[7]) / 100).toString()
+              },
+              time:
+                1000 * parseInt(item.functionData.buyerInfo[1]) +
+                1000 * parseInt(item.functionData.info[5]),
+              payment: computePayment(item)
+            });
           });
-        });
       });
-      axios(options(queryCompleted)).then(r => {
+      axios(queryOptions(queryCompleted)).then(r => {
         console.log(r.data);
         that.completedOrders.length = 0;
-        r.data.forEach(function(item) {
-          that.completedOrders.push({
-            id: item.contractAddress,
-            status: "completed",
-            goods: {
-              image: item.functionData.getImage.split(",")[0],
-              title: item.functionData.info[1],
-              price: (parseInt(item.functionData.info[7]) / 100).toString()
-            },
-            contract: item.contractAddress,
-            payment: computePayment(item)
+        r.data
+          .sort(compare("functionData.buyerInfo.1"))
+          .reverse()
+          .forEach(function(item) {
+            that.completedOrders.push({
+              id: item.contractAddress,
+              status: "completed",
+              goods: {
+                image: item.functionData.getImage.split(",")[0],
+                title: item.functionData.info[1],
+                price: (parseInt(item.functionData.info[7]) / 100).toString()
+              },
+              contract: item.contractAddress,
+              payment: computePayment(item)
+            });
           });
-        });
       });
-      axios(options(queryDispute)).then(r => {
+      axios(queryOptions(queryDispute)).then(r => {
         console.log(r.data);
         that.disputeOrders.length = 0;
-        r.data.forEach(function(item) {
-          that.disputeOrders.push({
-            id: item.contractAddress,
-            status: "dispute",
-            goods: {
-              image: item.functionData.getImage.split(",")[0],
-              title: item.functionData.info[1],
-              price: (parseInt(item.functionData.info[7]) / 100).toString()
-            },
-            disputeReason: "Dispute.",
-            payment: computePayment(item)
+        r.data
+          .sort(compare("functionData.buyerInfo.1"))
+          .reverse()
+          .forEach(function(item) {
+            that.disputeOrders.push({
+              id: item.contractAddress,
+              status: "dispute",
+              goods: {
+                image: item.functionData.getImage.split(",")[0],
+                title: item.functionData.info[1],
+                price: (parseInt(item.functionData.info[7]) / 100).toString()
+              },
+              disputeReason: "Dispute.",
+              payment: computePayment(item)
+            });
           });
-        });
       });
-      axios(options(queryRefund)).then(r => {
+      axios(queryOptions(queryRefund)).then(r => {
         console.log(r.data);
         that.refundOrders.length = 0;
-        r.data.forEach(function(item) {
-          var refundReason = (function() {
-            if (item.functionData.buyerInfo[3] === "True") {
-              if (item.functionData.secondaryBuyerInfo[1] == 0) {
-                return "Buyer disputed and you refunded.";
-              } else if (item.functionData.secondaryBuyerInfo[1] == 1) {
-                return "Buyer disputed and DAO assumes buyer won.";
+        r.data
+          .sort(compare("functionData.buyerInfo.1"))
+          .reverse()
+          .forEach(function(item) {
+            var refundReason = (function() {
+              if (item.functionData.buyerInfo[3] === "True") {
+                if (item.functionData.secondaryBuyerInfo[1] == 0) {
+                  return "Buyer disputed and you refunded.";
+                } else if (item.functionData.secondaryBuyerInfo[1] == 1) {
+                  return "Buyer disputed and DAO assumes buyer won.";
+                }
+              } else {
+                return "You refunded.";
               }
-            } else {
-              return "You refunded.";
-            }
-          })();
-          that.refundOrders.push({
-            id: item.contractAddress,
-            status: "refund",
-            goods: {
-              image: item.functionData.getImage.split(",")[0],
-              title: item.functionData.info[1],
-              price: (parseInt(item.functionData.info[7]) / 100).toString()
-            },
-            refundAmount: (
-              parseInt(item.functionData.info[7]) / 100
-            ).toString(),
-            refundReason: refundReason,
-            payment: computePayment(item)
+            })();
+            that.refundOrders.push({
+              id: item.contractAddress,
+              status: "refund",
+              goods: {
+                image: item.functionData.getImage.split(",")[0],
+                title: item.functionData.info[1],
+                price: (parseInt(item.functionData.info[7]) / 100).toString()
+              },
+              refundAmount: (
+                parseInt(item.functionData.info[7]) / 100
+              ).toString(),
+              refundReason: refundReason,
+              payment: computePayment(item)
+            });
           });
-        });
       });
     }
   }

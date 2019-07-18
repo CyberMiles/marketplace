@@ -6,7 +6,14 @@
       class="loading"
     />
     <img src="./../assets/imgs/success.svg" v-if="status == 'succeed'" />
-    <img src="./../assets/imgs/error.png" v-if="status == 'fail'" />
+    <img
+      src="./../assets/imgs/error.png"
+      srcset="
+        ./../assets/imgs/error@2x.png 2x,
+        ./../assets/imgs/error@3x.png 3x
+      "
+      v-if="status == 'fail'"
+    />
     <div class="text" v-if="status == 'processing'">Payment Processing</div>
     <div class="text" v-if="status == 'succeed'">Payment Completed</div>
     <div class="text" v-if="status == 'fail'">Payment Failed</div>
