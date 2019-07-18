@@ -8,7 +8,7 @@ before_script:
   - cd dapp
   - npm install
 
-script: bash deploy.sh
+script: npm run build
 
 deploy:
  provider: pages
