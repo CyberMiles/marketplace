@@ -4,6 +4,9 @@ node_js:
 
 cache: npm
 
+before_script:
+  npm install
+
 script: bash deploy.sh
 
 deploy:
