@@ -42,7 +42,8 @@ import {
   queryOptions,
   unlistHandler,
   relistHandler,
-  createHandler
+  createHandler,
+  compare
 } from "@/global.js";
 import Global from "@/global.js";
 import Contracts from "@/contracts.js";
@@ -72,14 +73,19 @@ export default {
             ).then(r => {
               that.goods.length = 0;
               document.title = `${that.$route.params.type} (${r.data.length})`;
-              r.data.forEach(function(item) {
-                that.goods.push({
-                  id: item.contractAddress,
-                  status: that.$route.params.type,
-                  image: item.functionData.getImage.split(",")[0],
-                  price: (parseInt(item.functionData.info[7]) / 100).toString()
+              r.data
+                .sort(compare("blockNumber"))
+                .reverse()
+                .forEach(function(item) {
+                  that.goods.push({
+                    id: item.contractAddress,
+                    status: that.$route.params.type,
+                    image: item.functionData.getImage.split(",")[0],
+                    price: (
+                      parseInt(item.functionData.info[7]) / 100
+                    ).toString()
+                  });
                 });
-              });
             });
           }
         });

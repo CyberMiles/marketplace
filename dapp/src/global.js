@@ -1,5 +1,5 @@
 import Global from "@/global.js";
-import appLogo from "./assets/imgs/app.jpg";
+import appLogo from "./assets/imgs/app@3x.jpg";
 import appQrcode from "./assets/imgs/appQrcode.png";
 
 export default {
@@ -11,7 +11,8 @@ export default {
   USDunit: "SMC",
   escrowPeriod: 60 * 60 * 24 * 7,
   HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
-  DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1"
+  DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",
+  ProductName: "Market Place"
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
@@ -188,7 +189,7 @@ function web3Callback(e, txhash, reloc) {
   }
 }
 
-function makeQuery(statusArr, userAddress = null) {
+function makeQuery(statusArr, sellerAddress = null, buyerAddress = null) {
   var queryPayload = {
     query: {
       bool: {
@@ -207,10 +208,16 @@ function makeQuery(statusArr, userAddress = null) {
       }
     }
   };
-  if (userAddress != null) {
+  if (sellerAddress != null) {
     queryPayload.query.bool.must.push({
       match: {
-        "functionDataList.0.functionData.info.8": userAddress
+        "functionDataList.0.functionData.info.8": sellerAddress
+      }
+    });
+  } else if (buyerAddress != null) {
+    queryPayload.query.bool.must.push({
+      match: {
+        "functionDataList.0.functionData.info.9": buyerAddress
       }
     });
   }
@@ -235,8 +242,13 @@ function queryOptions(query) {
 
 function compare(prop) {
   return function(obj1, obj2) {
-    var val1 = obj1[prop];
-    var val2 = obj2[prop];
+    const props = prop.split(".");
+    var val1 = obj1;
+    var val2 = obj2;
+    props.forEach(function(key) {
+      val1 = val1[key];
+      val2 = val2[key];
+    });
     if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
       val1 = Number(val1);
       val2 = Number(val2);
@@ -284,7 +296,7 @@ function web3Pass(that) {
           imageHeight: 48,
           animation: false,
           width: 300,
-          confirmButtonText: "Use OPENBAY in App"
+          confirmButtonText: `Use ${Global.ProductName} in App`
         })
         .then(function(result) {
           if (result.value) {

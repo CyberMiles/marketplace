@@ -10,8 +10,12 @@
       </a>
     </div>
     <div class="dapp">
-      <img src="../assets/imgs/logo.png" class="dapp-logo" />
-      <span class="text">MarketPlace</span>
+      <img
+        src="../assets/imgs/logo.png"
+        srcset="../assets/imgs/logo@2x.png 2x, ../assets/imgs/logo@3x.png 3x"
+        class="dapp-logo"
+      />
+      <span class="text">{{ DAppName }}</span>
       <button @click="dappReloc" class="dapp-reloc">
         View in CyberMiles App
       </button>
@@ -34,7 +38,7 @@
 
 <style lang="stylus">
 .download-wx
-  position absolute
+  position fixed
   background #f4f4f4
   height 100%
   .overmask
@@ -80,16 +84,18 @@
     .dapp-logo
       height (108/16)rem
       width (108/16)rem
-      margin (50/16)rem auto
+      margin (50/16)rem auto (7/16)rem
       display flex
     .text
       display flex
       justify-content center
+      font-size (17/16)rem
+      font-weight 500
     .dapp-reloc
       border-radius (22/16)rem
       padding (13/16)rem
       display flex
-      margin (10/16)rem auto
+      margin (40/16)rem auto (10/16)rem
       background #32afed
       border 0
       color #fff
@@ -101,6 +107,8 @@
 </style>
 
 <script>
+import Global from "@/global.js";
+
 export default {
   data() {
     return {
@@ -149,6 +157,9 @@ export default {
     }
   },
   computed: {
+    DAppName: function() {
+      return Global.ProductName;
+    },
     UA: function() {
       return navigator.userAgent || "";
     },

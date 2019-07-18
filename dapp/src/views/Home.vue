@@ -3,7 +3,7 @@
     <LoadingMask v-if="loading"></LoadingMask>
     <div class="home">
       <div class="pc-header">
-        <h1>MARKETPLACE</h1>
+        <h1>{{ DAppName }}</h1>
         <div class="search-field">
           <div class="onsearch-field">
             <input
@@ -27,7 +27,7 @@
           <span class="icon-search"></span>
         </div>
         <button @click="goCreate" class="create-pc">
-          Sell on MarketPlace
+          Sell on {{ DAppName }}
         </button>
       </div>
       <div class="cate-title">
@@ -108,8 +108,8 @@ import GoodsListItem from "@/components/GoodsListItem.vue";
 import RespImg from "@/components/RespImg.vue";
 import LoadingMask from "@/components/LoadingMask.vue";
 import axios from "axios";
-import global from "@/global.js";
-import { web3Pass, queryOptions, makeQuery } from "@/global.js";
+import Global from "@/global.js";
+import { web3Pass, queryOptions, makeQuery, compare } from "@/global.js";
 
 export default {
   name: "home",
@@ -117,7 +117,7 @@ export default {
     return {
       loading: true,
       goodList: [],
-      popularTags: global.popularTags,
+      popularTags: Global.popularTags,
       searchTerm: "",
       onSearch: false
     };
@@ -139,7 +139,7 @@ export default {
         console.log(r.data);
         that.loading = false;
         var sortedData = r.data
-          .sort(that.compare("blockNumber"))
+          .sort(compare("blockNumber"))
           .reverse()
           .filter(obj => {
             //remove those whose usd price is 0 or the img url is empty or ulisted
@@ -162,23 +162,6 @@ export default {
         console.log(this.goodList);
       });
     },
-    compare(prop) {
-      return function(obj1, obj2) {
-        var val1 = obj1[prop];
-        var val2 = obj2[prop];
-        if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
-          val1 = Number(val1);
-          val2 = Number(val2);
-        }
-        if (val1 < val2) {
-          return -1;
-        } else if (val1 > val2) {
-          return 1;
-        } else {
-          return 0;
-        }
-      };
-    },
     goSearch() {
       if (this.searchTerm.trim() == "" || this.searchTerm.trim() == "#") return;
       if (this.searchTerm.slice(0, 1) == "#")
@@ -194,6 +177,9 @@ export default {
       if (window.innerWidth > 1000) return 6;
       else if (window.innerWidth > 800) return 5;
       else return 4;
+    },
+    DAppName: function() {
+      return Global.ProductName;
     }
   }
 };
@@ -213,6 +199,7 @@ export default {
     font-size 1rem
     letter-spacing 0.2rem
     margin 0 0 (15/16)rem
+    text-transform uppercase
     @media screen and (min-width: 600px)
       margin-top (44/16)rem
       display inline-block

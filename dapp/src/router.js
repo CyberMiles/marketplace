@@ -15,6 +15,7 @@ import BuyCompletePage from "./views/BuyComplete.vue";
 import CreatingPage from "./views/Creating.vue";
 import DownloadPage from "./views/Download.vue";
 import DisputePage from "./views/DisputeBoard.vue";
+import Global from "@/global.js";
 
 Vue.use(Router);
 
@@ -27,7 +28,7 @@ export default new Router({
       name: "home",
       component: Home,
       meta: {
-        title: "Market Place"
+        title: `${Global.ProductName}`
       }
     },
     {
