@@ -14,6 +14,9 @@ interface ICRC20 {
 
 contract Listing {
 
+    address public DAO_ADDR = 0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1;
+    address public USD_ADDR = 0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a;
+
     address public owner;
     
     enum ClosedReasons { Refund, ResolveByDAO, ResolveByBuyer, Succeed }
@@ -75,8 +78,8 @@ contract Listing {
         _;
     }
 
-    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20, uint _amount) public {
-        require(_amount > 0);
+    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2) public {
+        require(_amount_1 > 0);
 
         owner = msg.sender;
         title = _title;
@@ -86,7 +89,8 @@ contract Listing {
         seller_contact = _seller_contact;
         image_urls = _image_urls;
         escrow_period = _escrow_period;
-        prices.push(Price(_crc20, _amount));
+        setPrice(_crc20_1, _amount_1);
+        setPrice(_crc20_2, _amount_2);
 
         status = TradingStatus.Listing;
     }
@@ -297,7 +301,7 @@ contract Listing {
     function resolveByDAO (bool buyer_wins) public {
         require (status == TradingStatus.Dispute);
         require (buyer.amount > 0);
-        require (msg.sender == 0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1);
+        require (msg.sender == DAO_ADDR);
         
         ICRC20 token = ICRC20(buyer.crc20);
         if (buyer_wins) {
@@ -336,7 +340,7 @@ contract Listing {
         //fetch USD price
         uint USD_amount;
         for (uint i = 0; i<prices.length; i++) {
-            if (prices[i].crc20 == 0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a) {
+            if (prices[i].crc20 == USD_ADDR) {
                 USD_amount = prices[i].amount;
             }
         }

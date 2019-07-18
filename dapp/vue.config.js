@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: "/marketplace/dapp/dist/"
+  publicPath: process.env.NODE_ENV === "production" ? "/marketplace/" : "/"
 };
