@@ -16,6 +16,7 @@ export default {
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
+  var redirected = false;
   var data =
     "0x" +
     contract.new.getData(
@@ -61,9 +62,12 @@ function createHandler(contract, obj, bin, fromUser, that) {
         console.log(e);
       } else {
         var txhash = instance.transactionHash;
-        that.$router.push({
-          path: `/creating/${txhash}`
-        });
+        if (!redirected) {
+          that.$router.push({
+            path: `/creating/${txhash}`
+          });
+          redirected = true;
+        }
       }
     }
   );
