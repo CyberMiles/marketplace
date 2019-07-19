@@ -14,9 +14,6 @@ interface ICRC20 {
 
 contract Listing {
 
-    address public DAO_ADDR = 0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1;
-    address public USD_ADDR = 0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a;
-
     address public owner;
     
     enum ClosedReasons { Refund, ResolveByDAO, ResolveByBuyer, Succeed }
@@ -52,10 +49,13 @@ contract Listing {
         uint tmstp;
         string content;
     }
-
+    
+    address private USD_ADDR;
+    address private DAO_ADDR;
+    
     MsgPiece[] messageBoard;
 
-    enum TradingStatus {Unlisting, Listing, LockedByBuyer, Dispute, BuyerPaid, BuyerRefunded}
+    enum TradingStatus {Processing, Unlisting, Listing, LockedByBuyer, Dispute, BuyerPaid, BuyerRefunded}
 
     TradingStatus private status;
     string private title;
@@ -66,8 +66,6 @@ contract Listing {
     string private seller_contact;
     string image_urls;
     
-    // string private seller_mesg;
-
     modifier onlyOwner() {
         assert(msg.sender == owner);
         _;
@@ -78,7 +76,7 @@ contract Listing {
         _;
     }
 
-    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2) public {
+    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2, address _DAO_ADDR, address _USD_ADDR) public {
         require(_amount_1 > 0);
 
         owner = msg.sender;
@@ -89,12 +87,22 @@ contract Listing {
         seller_contact = _seller_contact;
         image_urls = _image_urls;
         escrow_period = _escrow_period;
-        setPrice(_crc20_1, _amount_1);
-        setPrice(_crc20_2, _amount_2);
-
+        
+        prices.push(Price(_crc20_1, _amount_1));
+        
         status = TradingStatus.Listing;
+        
+        setPrice(_crc20_2, _amount_2);
+        
+        USD_ADDR = _USD_ADDR;
+        DAO_ADDR = _DAO_ADDR;
+        
+        
     }
     
+    /*
+    Setters
+    */
     function updateListing (string _title, string _desc, string _tags, string _image_urls, string _contact, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2) external onlyOwner {
         require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);
         title = _title;
@@ -130,32 +138,6 @@ contract Listing {
         require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
         escrow_period = _escrow_period;
     }
-    
-    // function setSellerMesg (string _seller_mesg) external onlyOwner {
-    //     seller_mesg = _seller_mesg;
-    // }
-
-    // function getSellerMesg () public view returns(string) {
-    //     return seller_mesg;
-    // }
-
-    // function addImage (string _image_url) external onlyOwner {
-    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-    //     image_urls.push(_image_url);
-    // }
-
-    // function getImagesCount() public view returns(uint) {
-    //     return image_urls.length;
-    // }
-
-    function getImage() public view returns(string) {
-        return (image_urls);
-    }
-    
-    // function setImage ( uint index, string _image_url) public onlyOwner {
-    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-    //     image_urls[index] = _image_url;
-    // }
 
     function setPrice (address _crc20, uint _amount) public onlyOwner {
         require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
@@ -174,18 +156,61 @@ contract Listing {
         }
     }
 
-    function getPricesCount() public view returns(uint) {
-        return prices.length;
-    }
-
-    function getPrice(uint index) public view returns(address, uint) {
-        return (prices[index].crc20, prices[index].amount);
-    }
-
     function pushMsg(string words) public {
         
         messageBoard.push(MsgPiece(msg.sender, now, words));
     }
+    
+    /*
+        Seller Actions
+    */
+    
+
+    function closeBySeller () external onlyOwner {
+        require (status == TradingStatus.LockedByBuyer);
+        require (buyer.amount > 0);
+        require (buyer.ts_escrow + escrow_period < now);
+        if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
+            owner.transfer(buyer.amount);
+        } else {
+            ICRC20 token = ICRC20(buyer.crc20);
+            token.transfer(owner, buyer.amount);
+        }
+        buyer.ts_sold = now;
+        buyer.closedReason = ClosedReasons.Succeed;
+        status = TradingStatus.BuyerPaid;
+    }
+    
+
+
+    function refund () external onlyOwner {
+        require (status == TradingStatus.LockedByBuyer || status == TradingStatus.Dispute);
+        require (buyer.amount > 0);
+        if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
+            buyer.addr.transfer(buyer.amount);
+        } else {
+            ICRC20 token = ICRC20(buyer.crc20);
+            token.transfer(buyer.addr, buyer.amount);
+        }
+        buyer.closedReason = ClosedReasons.Refund;
+        status = TradingStatus.BuyerRefunded;
+    }
+
+    
+    function pause () public onlyOwner {
+        require (status == TradingStatus.Listing);
+        require (buyer.addr == 0);
+        status = TradingStatus.Unlisting;
+    }
+
+    function resume () public onlyOwner {
+        require (status == TradingStatus.Unlisting);
+        status = TradingStatus.Listing;
+    }
+
+    /*
+        Buyer Actions
+    */
 
     function buyWithCMT (string _name, string _contact, string _mesg) payable public {
         require(status == TradingStatus.Listing);
@@ -223,29 +248,6 @@ contract Listing {
 
         status = TradingStatus.LockedByBuyer;
     }
-
-    function updateBuyer(string _name, string _contact, string _mesg) public onlyBuyer {
-        require (status == TradingStatus.LockedByBuyer);
-        
-        buyer.name = _name;
-        buyer.contact = _contact;
-        buyer.mesg = _mesg;
-    }
-
-    function closeBySeller () external onlyOwner {
-        require (status == TradingStatus.LockedByBuyer);
-        require (buyer.amount > 0);
-        require (buyer.ts_escrow + escrow_period < now);
-        if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
-            owner.transfer(buyer.amount);
-        } else {
-            ICRC20 token = ICRC20(buyer.crc20);
-            token.transfer(owner, buyer.amount);
-        }
-        buyer.ts_sold = now;
-        buyer.closedReason = ClosedReasons.Succeed;
-        status = TradingStatus.BuyerPaid;
-    }
     
     function closeByBuyer () public onlyBuyer{
         require (status == TradingStatus.LockedByBuyer);
@@ -260,19 +262,7 @@ contract Listing {
         buyer.closedReason = ClosedReasons.Succeed;
         status = TradingStatus.BuyerPaid;
     }
-
-    function refund () external onlyOwner {
-        require (status == TradingStatus.LockedByBuyer || status == TradingStatus.Dispute);
-        require (buyer.amount > 0);
-        if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
-            buyer.addr.transfer(buyer.amount);
-        } else {
-            ICRC20 token = ICRC20(buyer.crc20);
-            token.transfer(buyer.addr, buyer.amount);
-        }
-        buyer.closedReason = ClosedReasons.Refund;
-        status = TradingStatus.BuyerRefunded;
-    }
+   
 
     function dispute (string _reason) public {
         require (status == TradingStatus.LockedByBuyer);
@@ -297,6 +287,11 @@ contract Listing {
         buyer.closedReason = ClosedReasons.ResolveByBuyer;
         status = TradingStatus.BuyerPaid;
     }
+
+    
+    /*
+        DAO actions
+    */
 
     function resolveByDAO (bool buyer_wins) public {
         require (status == TradingStatus.Dispute);
@@ -324,16 +319,36 @@ contract Listing {
             status = TradingStatus.BuyerRefunded;
         }
     }
-
-    function pause () public onlyOwner {
-        require (status == TradingStatus.Listing);
-        require (buyer.addr == 0);
-        status = TradingStatus.Unlisting;
+    
+    function processedByDAO() public {
+        require (status == TradingStatus.Listing || status == TradingStatus.Unlisting);
+        require (msg.sender == DAO_ADDR);
+        
+        status = TradingStatus.Processing;
     }
 
-    function resume () public onlyOwner {
-        require (status == TradingStatus.Unlisting);
+    function issuedByDAO() public {
+        require (status == TradingStatus.Processing);
+        require (msg.sender == DAO_ADDR);
+        
         status = TradingStatus.Listing;
+    }
+
+    /*
+        Getters
+    */
+
+
+    function getImage() public view returns(string) {
+        return (image_urls);
+    }
+
+    function getPricesCount() public view returns(uint) {
+        return prices.length;
+    }
+
+    function getPrice(uint index) public view returns(address, uint) {
+        return (prices[index].crc20, prices[index].amount);
     }
 
     function info () view public returns (uint, string, string, string, string, uint, string, uint, address, address) {
