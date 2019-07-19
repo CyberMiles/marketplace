@@ -47,6 +47,7 @@
 import Contracts from "@/contracts.js";
 import RespImg from "@/components/RespImg";
 import axios from "axios";
+import Global from "@/global.js";
 
 export default {
   name: "ListingInfo",
@@ -133,8 +134,7 @@ export default {
             must: [
               {
                 match: {
-                  abiShaList:
-                    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1"
+                  abiShaList: Global.abiShaList
                 }
               },
               {

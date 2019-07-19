@@ -5,7 +5,7 @@ import appQrcode from "./assets/imgs/appQrcode.png";
 export default {
   popularTags: ["white", "test", "girl"],
   abiShaList:
-    "0xca44fb82aad28d1d2c373a2934e8bc280cd418352b2c0e077d8dd715112434f1",
+    "0x0b1484e6858db412db97bae491c78de7a8f5f781c5a9eea478c4f070651c601d",
   eeEndpoint: "https://cmt-testnet.search.secondstate.io/api/es_search",
   USDaddr: "0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a",
   USDunit: "SMC",
@@ -28,6 +28,10 @@ function createHandler(contract, obj, bin, fromUser, that) {
       obj.escrowPeriod,
       obj.crc20,
       obj.amount, // the OPB is 2 decimals,
+      obj.crc20_2,
+      obj.amount_2,
+      Global.DAOaddr,
+      Global.USDaddr,
       { data: bin }
     );
   contract.new(
@@ -40,7 +44,11 @@ function createHandler(contract, obj, bin, fromUser, that) {
       obj.contact,
       obj.escrowPeriod,
       obj.crc20,
-      obj.amount
+      obj.amount,
+      obj.crc20_2,
+      obj.amount_2,
+      Global.DAOaddr,
+      Global.USDaddr
     ],
     {
       from: fromUser,

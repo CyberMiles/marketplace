@@ -371,7 +371,9 @@ export default {
                 contact: that.contact,
                 escrowPeriod: that.escrowPeriod,
                 crc20: that.crc20,
-                amount: parseInt(parseFloat(that.amount) * 100)
+                amount: parseInt(parseFloat(that.amount) * 100),
+                crc20_2: that.crc20,
+                amount_2: parseInt(parseFloat(that.amount) * 100)
               };
               var newContract = window.web3.cmt.contract(Contracts.Listing.abi);
               var bin = Contracts.Listing.bin;

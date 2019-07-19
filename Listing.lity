@@ -55,7 +55,7 @@ contract Listing {
     
     MsgPiece[] messageBoard;
 
-    enum TradingStatus {Processing, Unlisting, Listing, LockedByBuyer, Dispute, BuyerPaid, BuyerRefunded}
+    enum TradingStatus {Unlisting, Listing, LockedByBuyer, Dispute, BuyerPaid, BuyerRefunded, Processing}
 
     TradingStatus private status;
     string private title;

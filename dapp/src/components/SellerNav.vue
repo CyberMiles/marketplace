@@ -114,28 +114,54 @@ export default {
       var that = this;
       var instance = this.instance;
       instance.info(function(e, r) {
-        if (e) {
-          console.log(e);
-        } else {
-          var newItem = {
-            title: r[1],
-            desc: r[2],
-            tags: r[3],
-            categories: "",
-            imageUrls: r[6],
-            contact: r[4],
-            escrowPeriod: r[5],
-            crc20: Global.USDaddr,
-            amount: r[7]
-          };
-          var newContract = window.web3.cmt.contract(Contracts.Listing.abi);
-          window.web3.cmt.getAccounts(function(e, addr) {
-            if (e) {
-              console.log(e);
-            } else {
-              var userAddress = addr.toString();
-              var bin = Contracts.Listing.bin;
-              createHandler(newContract, newItem, bin, userAddress, that);
+        if (!e) {
+          instance.getPricesCount(function(e, pricesCount) {
+            if (!e) {
+              var newItem = {
+                title: r[1],
+                desc: r[2],
+                tags: r[3],
+                categories: "",
+                imageUrls: r[6],
+                contact: r[4],
+                escrowPeriod: r[5],
+                crc20: Global.USDaddr,
+                amount: r[7],
+                crc20_2: Global.USDaddr,
+                amount_2: r[7]
+              };
+              var newContract = window.web3.cmt.contract(Contracts.Listing.abi);
+              if (pricesCount == 1) {
+                window.web3.cmt.getAccounts(function(e, addr) {
+                  if (!e) {
+                    var userAddress = addr.toString();
+                    var bin = Contracts.Listing.bin;
+                    createHandler(newContract, newItem, bin, userAddress, that);
+                  }
+                });
+              } else {
+                for (let i = 0; i < pricesCount; i++) {
+                  instance.getPrice(i, function(e_price, r_price) {
+                    if (!e_price) {
+                      var token_crc20 = r_price[0].toString();
+                      if (
+                        token_crc20 ==
+                        "0x0000000000000000000000000000000000000000"
+                      ) {
+                        newItem.crc20_2 = token_crc20;
+                        newItem.amount_2 = r_price[1];
+                        window.web3.cmt.getAccounts(function(e, addr) {
+                          if (!e) {
+                            var userAddress = addr.toString();
+                            var bin = Contracts.Listing.bin;
+                            createHandler(newContract, newItem, bin, userAddress, that);
+                          }
+                        });
+                      }
+                    }
+                  });
+                }
+              }
             }
           });
         }
