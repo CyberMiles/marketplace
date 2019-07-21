@@ -5,7 +5,9 @@
       <button class="action" @click="goBuy()" v-if="status == 1">
         Buy Now
       </button>
+      <button class="link gray" v-else-if="status == 2 && isBuyer" @click="goOrder">Sold</button>
       <button class="link gray" v-else>Sold</button>
+
     </div>
     <DownloadBanner v-if="!_isMobile"></DownloadBanner>
   </div>
@@ -22,7 +24,8 @@ export default {
   props: {
     contractAddr: String,
     status: Number,
-    sellerInfo: String
+    sellerInfo: String,
+    isBuyer: Boolean
   },
   methods: {
     contact() {
@@ -33,6 +36,9 @@ export default {
     },
     goBuy() {
       if (web3Pass(this)) this.$router.push(`/buy/${this.contractAddr}`);
+    },
+    goOrder() {
+      this.$router.push(`/order/buy/${this.contractAddr}`);
     }
   },
   computed: {

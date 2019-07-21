@@ -7,7 +7,8 @@
         contractAddr: contractAddr,
         status: status,
         instance: instance,
-        sellerInfo: sellerInfo
+        sellerInfo: sellerInfo,
+        isBuyer: isBuyer
       }"
       :is="footerComponent"
       class="nav"
@@ -36,7 +37,8 @@ export default {
       contractAddr: this.$route.params.contractAddr,
       status: null,
       instance: null,
-      sellerInfo: null
+      sellerInfo: null,
+      isBuyer: false
     };
   },
   created() {
@@ -61,6 +63,7 @@ export default {
       this.status = parseInt(tradingInfo.status);
       this.instance = tradingInfo.instance;
       this.sellerInfo = tradingInfo.sellerInfo;
+      this.isBuyer = tradingInfo.isBuyer;
     }
   },
   computed: {

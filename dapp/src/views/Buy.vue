@@ -175,6 +175,9 @@ export default {
                   console.log(e);
                 } else {
                   that.goodTitle = info[1];
+                  if(info[0] !== 1) {
+                    that.$router.push(`/listing/${that.contractAddr}`)
+                  }
                 }
               });
 

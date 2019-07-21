@@ -57,6 +57,7 @@ export default {
   data() {
     return {
       isSeller: false,
+      isBuyer: false,
       sellerCompletedNumber: 0,
       ProductInfo: {
         images: [],
@@ -109,8 +110,10 @@ export default {
                   };
                   // console.log(that.ProductInfo);
                   that.isSeller = userAddress == that.ProductInfo.seller;
+                  that.isBuyer = userAddress == that.ProductInfo.buyerAddress;
                   that.$emit("tradingInfo", {
                     isSeller: that.isSeller,
+                    isBuyer: that.isBuyer,
                     status: that.ProductInfo.status,
                     instance: instance,
                     sellerInfo: that.ProductInfo.contact

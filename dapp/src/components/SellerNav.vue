@@ -14,12 +14,18 @@
         >Edit</router-link
       >
       <button
-        class="link gray wide"
+        class="link gray"
         @click="reCreate"
         v-if="status != 0 && status != 1"
       >
         Relist a New One
       </button>
+      <router-link
+        class="action"
+        :to="`/order/sell/${contractAddr}`"
+        v-if="status != 0 && status != 1"
+        >Order</router-link
+      >
     </div>
   </div>
 </template>
