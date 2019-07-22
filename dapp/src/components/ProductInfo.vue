@@ -177,7 +177,7 @@ export default {
       if (this.edit) {
         var contract_address = this.contractAddr;
         if (!window.web3.isAddress(contract_address)) {
-          this.$router.push(`/`)
+          this.$router.push(`/`);
         }
         var that = this;
         //set timeout to check web3, because sometimes once mounted, the web3 hasn't been injected
@@ -197,7 +197,7 @@ export default {
                 instance.info(function(e, r) {
                   if (e) {
                     console.log(e);
-                    that.$router.push(`/`)
+                    that.$router.push(`/`);
                   } else {
                     console.log(r[3]);
                     that.title = r[1];

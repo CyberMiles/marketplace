@@ -77,7 +77,7 @@ export default {
     initProductInfo() {
       var contract_address = this.$route.params.contractAddr;
       if (!window.web3.isAddress(contract_address)) {
-        this.$router.push(`/`)
+        this.$router.push(`/`);
       }
       // console.log(contract_address);
       var that = this;
@@ -96,7 +96,7 @@ export default {
               instance.info(function(e, r) {
                 if (e) {
                   console.log(e);
-                  that.$router.push(`/`)
+                  that.$router.push(`/`);
                 } else {
                   console.log(r)
                   // console.log(r[3]);

@@ -130,7 +130,7 @@ export default {
   },
   created() {
     this.initGoodList();
-    this.$ga.page('/');
+    this.$ga.page("/");
   },
   methods: {
     initGoodList() {

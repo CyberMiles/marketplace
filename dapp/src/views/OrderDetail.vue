@@ -177,7 +177,7 @@ export default {
     var contract_address = this.$route.params.orderId;
     this.contractAddr = contract_address;
     if (!window.web3.isAddress(contract_address)) {
-      this.$router.push(`/`)
+      this.$router.push(`/`);
     }
     var that = this;
     var instance = "";
@@ -199,7 +199,7 @@ export default {
         instance.info(function(e, r) {
           if (e) {
             console.log(e);
-            that.$router.push(`/`)
+            that.$router.push(`/`);
           } else {
             if (r[0] == 2) that.order.status = "paid";
             else if (r[0] == 3) that.order.status = "dispute";
@@ -281,7 +281,7 @@ export default {
       }
     };
     checkWeb3();
-    this.$ga.page('/order');
+    this.$ga.page("/order");
   },
   computed: {
     refundReason: function() {

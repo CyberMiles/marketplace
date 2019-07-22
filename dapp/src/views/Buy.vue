@@ -100,7 +100,7 @@ export default {
   },
   created() {
     this.initBuyPage();
-    this.$ga.page('/buy');
+    this.$ga.page("/buy");
   },
   computed: {
     USDaddr: function() {
@@ -112,7 +112,7 @@ export default {
       var contract_address = this.$route.params.contractAddr;
       this.contractAddr = contract_address;
       if (!window.web3.isAddress(contract_address)) {
-        this.$router.push(`/`)
+        this.$router.push(`/`);
       }
       console.log(contract_address);
       var that = this;
@@ -131,7 +131,7 @@ export default {
               instance.getPricesCount(function(e, pricesCount) {
                 if (e) {
                   console.log(e);
-                  that.$router.push(`/`)
+                  that.$router.push(`/`);
                 } else {
                   for (let i = 0; i < pricesCount; i++) {
                     instance.getPrice(i, function(e_price, r_price) {
@@ -180,8 +180,8 @@ export default {
                   console.log(e);
                 } else {
                   that.goodTitle = info[1];
-                  if(info[0] !== 1) {
-                    that.$router.push(`/listing/${that.contractAddr}`)
+                  if (info[0] !== 1) {
+                    that.$router.push(`/listing/${that.contractAddr}`);
                   }
                 }
               });
