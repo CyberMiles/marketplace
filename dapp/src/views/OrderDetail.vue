@@ -176,14 +176,14 @@ export default {
     this.role = this.$route.params.role;
     var contract_address = this.$route.params.orderId;
     this.contractAddr = contract_address;
-    if (!window.web3.isAddress(contract_address)) {
-      this.$router.push(`/`);
-    }
     var that = this;
     var instance = "";
     var checkWeb3 = function() {
       var userAddress = "";
       try {
+        if (!window.web3.isAddress(contract_address)) {
+          that.$router.push(`/`);
+        }
         window.web3.cmt.getAccounts(function(e, address) {
           if (e) {
             console.log(e);
