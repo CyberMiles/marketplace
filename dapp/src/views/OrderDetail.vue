@@ -174,7 +174,8 @@ export default {
   },
   created() {
     this.role = this.$route.params.role;
-    this.contractAddr = this.$route.params.orderId;
+    var contract_address = this.$route.params.orderId;
+    this.contractAddr = contract_address;
     if (!window.web3.isAddress(contract_address)) {
       this.$router.push(`/`)
     }
