@@ -1,6 +1,12 @@
 import Global from "@/global.js";
 import appLogo from "./assets/imgs/app@3x.jpg";
 import appQrcode from "./assets/imgs/appQrcode.png";
+import Vue from 'vue';
+import VueAnalytics from 'vue-analytics';
+
+Vue.use(VueAnalytics, {
+  id: 'UA-120065893-20'
+})
 
 export default {
   popularTags: ["white", "test", "girl"],

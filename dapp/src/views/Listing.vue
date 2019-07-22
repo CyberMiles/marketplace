@@ -50,6 +50,7 @@ export default {
         new Web3.providers.HttpProvider(Global.HttpProvider)
       );
     }
+    this.$ga.page('/listing');
   },
   methods: {
     setNav: function(tradingInfo) {

@@ -24,7 +24,7 @@
         class="action"
         :to="`/order/sell/${contractAddr}`"
         v-if="status != 0 && status != 1"
-        >Order</router-link
+        >Order Status</router-link
       >
     </div>
   </div>

@@ -175,16 +175,30 @@ export default {
   created() {
     this.role = this.$route.params.role;
     this.contractAddr = this.$route.params.orderId;
+    if (!window.web3.isAddress(contract_address)) {
+      this.$router.push(`/`)
+    }
     var that = this;
     var instance = "";
     var checkWeb3 = function() {
+      var userAddress = "";
       try {
+        window.web3.cmt.getAccounts(function(e, address) {
+          if (e) {
+            console.log(e);
+          } else {
+            // This method should return much faster than network methods
+            userAddress = address.toString();
+          }
+        });
+
         var contract = window.web3.cmt.contract(Contracts.Listing.abi);
         instance = contract.at(that.contractAddr);
         that.instance = instance;
         instance.info(function(e, r) {
           if (e) {
             console.log(e);
+            that.$router.push(`/`)
           } else {
             if (r[0] == 2) that.order.status = "paid";
             else if (r[0] == 3) that.order.status = "dispute";
@@ -201,6 +215,9 @@ export default {
               contact: r[4]
             };
             that.order.escrow_time = parseInt(r[5]);
+          }
+          if (that.role == "sell" && that.order.seller.addr != userAddress) {
+            that.$router.push(`/listing/${that.contractAddr}`);
           }
         });
         instance.buyerInfo(function(e, b_r) {
@@ -225,6 +242,9 @@ export default {
               disputed: b_r[3],
               closedReason: that.order.buyer.closedReason
             };
+          }
+          if (that.role == "buy" && that.order.buyer.addr != userAddress) {
+            that.$router.push(`/listing/${that.contractAddr}`);
           }
         });
         instance.secondaryBuyerInfo(function(e, s_r) {
@@ -260,6 +280,7 @@ export default {
       }
     };
     checkWeb3();
+    this.$ga.page('/order');
   },
   computed: {
     refundReason: function() {

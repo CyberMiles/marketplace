@@ -5,7 +5,12 @@
       <button class="action" @click="goBuy()" v-if="status == 1">
         Buy Now
       </button>
-      <button class="link gray" v-else-if="status == 2 && isBuyer" @click="goOrder">Sold</button>
+      <router-link
+        class="action"
+        :to="`/order/buy/${contractAddr}`"
+        v-if="isBuyer"
+        >Order Status</router-link
+      >
       <button class="link gray" v-else>Sold</button>
 
     </div>
@@ -36,9 +41,6 @@ export default {
     },
     goBuy() {
       if (web3Pass(this)) this.$router.push(`/buy/${this.contractAddr}`);
-    },
-    goOrder() {
-      this.$router.push(`/order/buy/${this.contractAddr}`);
     }
   },
   computed: {

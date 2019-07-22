@@ -76,6 +76,9 @@ export default {
   methods: {
     initProductInfo() {
       var contract_address = this.$route.params.contractAddr;
+      if (!window.web3.isAddress(contract_address)) {
+        this.$router.push(`/`)
+      }
       // console.log(contract_address);
       var that = this;
       //set timeout to check web3, because sometimes once mounted, the web3 hasn't been injected
@@ -93,6 +96,7 @@ export default {
               instance.info(function(e, r) {
                 if (e) {
                   console.log(e);
+                  that.$router.push(`/`)
                 } else {
                   console.log(r)
                   // console.log(r[3]);
