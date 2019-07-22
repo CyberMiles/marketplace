@@ -2,6 +2,11 @@
   <div class="listing">
     <LoadingMask v-if="loading"></LoadingMask>
     <ListingInfo v-on:tradingInfo="setNav" />
+    <div style="text-align:center;margin-top:20px;">
+      <router-link to="/">Home</router-link>
+      |
+      <router-link to="/profile">Profile</router-link>
+    </a>
     <component
       v-bind="{
         contractAddr: contractAddr,

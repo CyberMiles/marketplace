@@ -126,9 +126,14 @@
           ><span>Update</span></a
         >
       </div>
-      <a href="#" class="create-btn" @click="createTrading" v-else
-        ><span>List</span></a
-      >
+      <div v-else>
+        <a @click="$router.go(-1)" class="create-btn left-btn"
+          ><span>Cancel</span></a
+        >
+        <a href="#" class="create-btn right-btn" @click="createTrading"
+          ><span>List</span></a
+        >
+      </div>
     </div>
     <ProcessingMask v-if="processing"></ProcessingMask>
   </div>

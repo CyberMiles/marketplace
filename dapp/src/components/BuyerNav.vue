@@ -8,7 +8,7 @@
       <router-link
         class="action"
         :to="`/order/buy/${contractAddr}`"
-        v-if="isBuyer"
+        v-else-if="isBuyer"
         >Order Status</router-link
       >
       <button class="link gray" v-else>Sold</button>

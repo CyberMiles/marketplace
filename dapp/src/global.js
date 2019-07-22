@@ -14,7 +14,7 @@ export default {
     "0x0b1484e6858db412db97bae491c78de7a8f5f781c5a9eea478c4f070651c601d",
   eeEndpoint: "https://cmt-testnet.search.secondstate.io/api/es_search",
   USDaddr: "0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a",
-  USDunit: "SMC",
+  USDunit: "USDO",
   escrowPeriod: 60 * 60 * 24 * 7,
   HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
   DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",

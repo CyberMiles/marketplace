@@ -73,6 +73,9 @@
       />
     </div>
     <a class="buy-btn" @click="buy"><span>Buy</span></a>
+    <div style="text-align:center;margin-top:20px;">
+      <a @click="$router.go(-1)">Cancel</a>
+    </a>
   </div>
 </template>
 

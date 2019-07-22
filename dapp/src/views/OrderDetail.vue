@@ -125,6 +125,11 @@
     >
       <span>Dispute</span>
     </button>
+    <div style="text-align:center;margin-top:20px;">
+      <router-link to="/">Home</router-link>
+      |
+      <router-link to="/profile">Profile</router-link>
+    </a>
   </div>
 </template>
 

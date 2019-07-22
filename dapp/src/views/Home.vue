@@ -3,7 +3,8 @@
     <LoadingMask v-if="loading"></LoadingMask>
     <div class="home">
       <div class="pc-header">
-        <h1>{{ DAppName }}</h1>
+        <h1><img :src="logoImg" style="width:160px"/></h1>
+        <!-- <h1>{{ DAppName }}</h1> -->
         <div class="search-field">
           <div class="onsearch-field">
             <input
@@ -116,6 +117,7 @@ export default {
   data() {
     return {
       loading: true,
+      logoImg: require('@/assets/logo.png'),
       goodList: [],
       popularTags: Global.popularTags,
       searchTerm: "",
