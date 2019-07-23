@@ -75,7 +75,7 @@
     <a class="buy-btn" @click="buy"><span>Buy</span></a>
     <div style="text-align:center;margin-top:20px;">
       <a @click="$router.go(-1)">Cancel</a>
-    </a>
+    </div>
   </div>
 </template>
 
@@ -183,7 +183,7 @@ export default {
                   console.log(e);
                 } else {
                   that.goodTitle = info[1];
-                  if (info[0] !== 1) {
+                  if (info[0].toNumber() !== 1) {
                     that.$router.push(`/listing/${that.contractAddr}`);
                   }
                 }
