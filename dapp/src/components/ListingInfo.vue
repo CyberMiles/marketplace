@@ -98,7 +98,7 @@ export default {
                   console.log(e);
                   that.$router.push(`/`);
                 } else {
-                  console.log(r)
+                  console.log(r);
                   // console.log(r[3]);
                   that.ProductInfo = {
                     status: r[0],
@@ -118,7 +118,7 @@ export default {
                   that.$emit("tradingInfo", {
                     isSeller: that.isSeller,
                     isBuyer: that.isBuyer,
-                    status: that.ProductInfo.status,
+                    status: that.ProductInfo.status.toNumber(),
                     instance: instance,
                     sellerInfo: that.ProductInfo.contact
                   });
