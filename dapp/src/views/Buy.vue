@@ -40,16 +40,16 @@
         </div>
         <div class="USD-tip-container">
           <span class="USD-tip" v-if="token.token_crc20 == USDaddr"
-            >1 OPB ≈ 1 USD</span
+            >1 {{ USDunit }} ≈ 1 USD</span
           >
         </div>
       </li>
     </ul>
     <a
-      href="https://www.sanmarcoscoin.com/dapp/stripe/checkout_t.html"
+      href="{{ USDBuyLink }}"
       class="recharge"
     >
-      Recharge OPB with a credit card
+      Recharge {{ USDunit }} with a credit card
     </a>
     <div class="form-group">
       <label for="contact">Contact Info</label>
@@ -108,6 +108,12 @@ export default {
   computed: {
     USDaddr: function() {
       return global.USDaddr;
+    },
+    USDunit: function() {
+      return global.USDunit;
+    },
+    USDBuyLink: function() {
+      return global.USDBuyLink + "?addr=" + this.contractAddr;
     }
   },
   methods: {
@@ -155,7 +161,7 @@ export default {
                             tokens[token_crc20]
                           );
                         } else if (token_crc20 == global.USDaddr) {
-                          token_name = "OPB";
+                          token_name = "{{ USDunit }}";
                           token_amount = (
                             parseInt(tokens[token_crc20]) / 100
                           ).toString();
