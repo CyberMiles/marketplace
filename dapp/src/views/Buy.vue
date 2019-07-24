@@ -94,6 +94,7 @@ export default {
       remark: "",
       contact: "",
       USDprice: null,
+      USDRealPrice: null,
       goodTitle: "",
       balance: {
         USD: "",
@@ -113,7 +114,7 @@ export default {
       return global.USDunit;
     },
     USDBuyLink: function() {
-      return global.USDBuyLink + "?addr=" + this.contractAddr;
+      return global.USDBuyLink + this.contractAddr + "&amount=" + this.USDRealPrice;
     }
   },
   methods: {
@@ -170,6 +171,7 @@ export default {
                             amount: tokens[token_crc20]
                           };
                           that.USDprice = token_amount;
+                          that.USDRealPrice = tokens[token_crc20];
                         }
                         that.tokenSet.push({
                           token_name,
