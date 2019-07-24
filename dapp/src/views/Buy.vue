@@ -46,7 +46,7 @@
       </li>
     </ul>
     <a
-      href="{{ USDBuyLink }}"
+      :href="USDBuyLink"
       class="recharge"
     >
       Recharge {{ USDunit }} with a credit card
@@ -161,7 +161,7 @@ export default {
                             tokens[token_crc20]
                           );
                         } else if (token_crc20 == global.USDaddr) {
-                          token_name = "{{ USDunit }}";
+                          token_name = global.USDunit;
                           token_amount = (
                             parseInt(tokens[token_crc20]) / 100
                           ).toString();
