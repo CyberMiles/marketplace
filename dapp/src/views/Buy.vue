@@ -306,11 +306,11 @@ export default {
     },
     isSufficient: function(token) {
       if (token.token_crc20 == this.USDaddr)
-        return this.balance.USD.toNumber() > token.token_real_amount.toNumber();
+        return this.balance.USD.toNumber() >= token.token_real_amount.toNumber();
       else if (
         token.token_crc20 == "0x0000000000000000000000000000000000000000"
       )
-        return this.balance.CMT.toNumber() > token.token_real_amount.toNumber();
+        return this.balance.CMT.toNumber() >= token.token_real_amount.toNumber();
       else return true;
     },
     sortToken: function(tokenSet) {
