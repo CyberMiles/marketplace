@@ -12,7 +12,7 @@ export default {
   popularTags: ["white", "test", "girl"],
   abiShaList:
     "0x0b1484e6858db412db97bae491c78de7a8f5f781c5a9eea478c4f070651c601d",
-  eeEndpoint: "https://cmt-testnet.search.secondstate.io/api/es_search",
+  eeEndpoint: "https://marketplace.search.secondstate.io/api/es_search",
   USDaddr: "0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a",
   USDunit: "USDO",
   USDBuyLink: "http://stripe-stablecoin.ufn3g4prnu.ap-northeast-1.elasticbeanstalk.com/checkout?currency=usd&desc=test&contract_addr=",
