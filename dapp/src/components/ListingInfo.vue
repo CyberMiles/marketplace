@@ -1,10 +1,7 @@
 <template>
   <div class="listing-info">
     <div class="main">
-      <RespImg
-        v-bind:src="ProductInfo.images[0]"
-        v-bind:alt="ProductInfo.desc"
-      />
+      <RespImg v-bind:src="headImg" v-bind:alt="ProductInfo.desc" />
       <div class="goods-price">
         <span>$ {{ ProductInfo.USDprice }}</span>
       </div>
@@ -15,6 +12,7 @@
           class="goods-thumb"
           v-for="image in ProductInfo.images"
           :key="image.key"
+          @click="headImg = image"
         >
           <RespImg v-bind:src="image" />
         </div>
@@ -59,6 +57,7 @@ export default {
       isSeller: false,
       isBuyer: false,
       sellerCompletedNumber: 0,
+      headImg: "",
       ProductInfo: {
         images: [],
         title: null,
@@ -113,6 +112,7 @@ export default {
                     contact: r[4]
                   };
                   // console.log(that.ProductInfo);
+                  that.headImg = that.ProductInfo.images[0];
                   that.isSeller = userAddress == that.ProductInfo.seller;
                   that.isBuyer = userAddress == that.ProductInfo.buyerAddress;
                   that.$emit("tradingInfo", {
