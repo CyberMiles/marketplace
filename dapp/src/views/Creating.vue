@@ -8,13 +8,14 @@
       Contract Creation Succeed!
     </div>
     <div class="text" v-if="status == 'fail'">Contract Creation Failed.</div>
-    <router-link to="/">HomePage</router-link>
-    <router-link to="/create">Create a New One</router-link>
     <router-link :to="`/listing/${goodId}`" :class="statusColor"
-      >Item Details<span v-if="status == 'processing'">
+      >See my item<span v-if="status == 'processing'">
         ({{ remaining }}s)</span
       ></router-link
     >
+    <div class="text">Or, you can</div>
+    <router-link to="/">Browse Listings</router-link>
+    <router-link to="/create">Create a New One</router-link>
   </div>
 </template>
 <script>
