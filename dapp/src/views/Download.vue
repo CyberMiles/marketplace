@@ -6,7 +6,7 @@
     </header>
     <div class="download-banner">
       <a href="https://app.cybermiles.io">
-        Don't have <b>CyberMiles App</b> yet? Try it now!
+        Don't have the <b>CyberMiles App</b> yet? Get it now!
       </a>
     </div>
     <div class="dapp">
@@ -17,7 +17,7 @@
       />
       <span class="text">{{ DAppName }}</span>
       <button @click="dappReloc" class="dapp-reloc">
-        View in CyberMiles App
+        Continue in CyberMiles App
       </button>
     </div>
     <div class="footer">
@@ -114,7 +114,7 @@ export default {
     return {
       wxTip: false,
       config: {
-        localApp: "cmtwallet://dapp?url="
+        localApp: "cmtwallettest://dapp?url="
       }
     };
   },

@@ -11,9 +11,9 @@ Vue.use(VueAnalytics, {
 export default {
   popularTags: ["white", "test", "girl"],
   abiShaList:
-    "0x0b1484e6858db412db97bae491c78de7a8f5f781c5a9eea478c4f070651c601d",
+    "0x63d59476a40629e93dfa53c4604fa726cfade0be70be6129a1add52dc2561903",
   eeEndpoint: "https://marketplace.search.secondstate.io/api/es_search",
-  USDaddr: "0xce9a6ec5f153b87ad0f05915c85dbd3a0f6ed99a",
+  USDaddr: "0x08bcb145e174e59e033d2d9c4bc4d0fe49a82613",
   USDunit: "USDO",
   USDBuyLink: "http://stripe-stablecoin.ufn3g4prnu.ap-northeast-1.elasticbeanstalk.com/checkout?currency=usd&desc=test&contract_addr=",
   escrowPeriod: 60 * 60 * 24 * 7,
