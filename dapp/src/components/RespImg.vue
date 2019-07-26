@@ -22,15 +22,16 @@ export default {
     ) {
       this.newSrc = this.src
         .split("upload/")
-        .join("upload/w_150,h_150,c_scale/");
+        .join("upload/w_"+window.innerWidth*2+",h_"+window.innerWidth*2+",c_scale/");
     }
   },
   watch: {
     src: function() {
+      console.log(window.innerWidth*2)
       if (this.src.slice(0, 27) == "https://res.cloudinary.com/") {
         this.newSrc = this.src
           .split("upload/")
-          .join("upload/w_150,h_150,c_scale/");
+          .join("upload/w_"+window.innerWidth*2+",h_"+window.innerWidth*2+",c_scale/");
       }
     }
   }

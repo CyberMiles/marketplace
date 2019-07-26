@@ -214,15 +214,20 @@ function makeQuery(statusArr, sellerAddress = null, buyerAddress = null) {
       bool: {
         must: [
           {
+            bool: {
+              should: []
+            }
+          },
+          {
             match: {
               abiShaList: Global.abiShaList
             }
           },
-          {
-            bool: {
-              should: []
-            }
-          }
+          // {
+          //   match: {
+          //     "functionDataList.0.functionData.DAO_ADDR": Global.DAOaddr
+          //   }
+          // }
         ]
       }
     }
@@ -241,7 +246,7 @@ function makeQuery(statusArr, sellerAddress = null, buyerAddress = null) {
     });
   }
   statusArr.forEach(function(status) {
-    queryPayload.query.bool.must["1"].bool.should.push({
+    queryPayload.query.bool.must["0"].bool.should.push({
       match: {
         "functionDataList.0.functionData.info.0": status
       }
