@@ -51,7 +51,7 @@ contract Listing {
     }
     
     address private USD_ADDR;
-    address private DAO_ADDR;
+    address public DAO_ADDR;
     
     MsgPiece[] messageBoard;
 
@@ -66,6 +66,8 @@ contract Listing {
     string private seller_contact;
     string image_urls;
     
+    event TransferCMT (address indexed to, uint256 value);
+
     modifier onlyOwner() {
         assert(msg.sender == owner);
         _;
@@ -172,6 +174,7 @@ contract Listing {
         require (buyer.ts_escrow + escrow_period < now);
         if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
             owner.transfer(buyer.amount);
+            emit TransferCMT(owner, buyer.amount);
         } else {
             ICRC20 token = ICRC20(buyer.crc20);
             token.transfer(owner, buyer.amount);
@@ -188,6 +191,7 @@ contract Listing {
         require (buyer.amount > 0);
         if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
             buyer.addr.transfer(buyer.amount);
+            emit TransferCMT(buyer.addr, buyer.amount);
         } else {
             ICRC20 token = ICRC20(buyer.crc20);
             token.transfer(buyer.addr, buyer.amount);
@@ -254,6 +258,7 @@ contract Listing {
         require (buyer.amount > 0);
         if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
             owner.transfer(buyer.amount);
+            emit TransferCMT(owner, buyer.amount);
         } else {
             ICRC20 token = ICRC20(buyer.crc20);
             token.transfer(owner, buyer.amount);
@@ -280,6 +285,7 @@ contract Listing {
         // Transfer fund to seller now
         if (buyer.crc20 == address(0)) {
             address(this).transfer(buyer.amount);
+            emit TransferCMT(address(this), buyer.amount);
         } else {
             ICRC20 token = ICRC20(buyer.crc20);
             token.transfer(address(this), buyer.amount);
@@ -303,6 +309,7 @@ contract Listing {
             // Transfer fund to buyer now
             if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
                 buyer.addr.transfer(buyer.amount);
+                emit TransferCMT(buyer.addr, buyer.amount);
             } else {
                 token.transfer(buyer.addr, buyer.amount);
             }
@@ -312,6 +319,7 @@ contract Listing {
             // Transfer fund to seller now
             if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
                 owner.transfer(buyer.amount);
+                emit TransferCMT(owner, buyer.amount);
             } else {
                 token.transfer(owner, buyer.amount);
             }
