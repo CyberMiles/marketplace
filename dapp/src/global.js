@@ -11,9 +11,7 @@ Vue.use(VueAnalytics, {
 export default {
   popularTags: ["white", "test", "girl"],
   abiShaList:
-    // This is the correct hash for the current ABI. But, we have to use the old hash to get around a bug in the ES
     "0x63d59476a40629e93dfa53c4604fa726cfade0be70be6129a1add52dc2561903",
-    // "0x0b1484e6858db412db97bae491c78de7a8f5f781c5a9eea478c4f070651c601d",
   eeEndpoint: "https://marketplace.search.secondstate.io/api/es_search",
   USDaddr: "0x08bcb145e174e59e033d2d9c4bc4d0fe49a82613",
   USDunit: "USDO",

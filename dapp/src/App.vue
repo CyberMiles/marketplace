@@ -1,19 +1,17 @@
 <template>
   <div id="app">
     <transition-page>
-    <router-view />
+      <router-view />
     </transition-page>
   </div>
 </template>
 
 <script>
-import normalize from "normalize-styl";
-import iconfont from "@/components/Icofont.vue";
 import TransitionPage from "@/components/Transition.vue";
 
 export default {
   components: {
-    TransitionPage,
+    TransitionPage
   }
 };
 </script>
