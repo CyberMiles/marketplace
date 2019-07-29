@@ -1,80 +1,82 @@
 <template>
-  <div class="buy">
-    <div class="pay-header">
-      <div class="title">
-        {{ goodTitle }}
+  <div>
+    <LoadingMask v-if="loading"></LoadingMask>
+    <div class="buy">
+      <div class="pay-header">
+        <div class="title">
+          {{ goodTitle }}
+        </div>
+        <div class="price">
+          <span class="price-tag">price</span>
+          <span class="price-value"> $ {{ USDprice }} </span>
+        </div>
       </div>
-      <div class="price">
-        <span class="price-tag">price</span>
-        <span class="price-value"> $ {{ USDprice }} </span>
+      <div>
+        <p>You need to pay</p>
       </div>
-    </div>
-    <div>
-      <p>You need to pay</p>
-    </div>
-    <ul id="prices-select" class="form-control">
-      <li
-        v-for="token in sortToken(tokenSet)"
-        :key="token.id"
-        v-bind:value="token.token_crc20"
-        @click="selectToken(token)"
-      >
-        <span>
-          {{ token.token_amount + " " + token.token_name }}
-        </span>
-        <div v-if="isSufficient(token)" class="right">
-          <span
-            v-if="
-              (selectedCRC20 == null && token.token_crc20 == USDaddr) ||
-                (selectedCRC20 != null &&
-                  selectedCRC20.addr == token.token_crc20)
-            "
-          >
-            <img class="selected" src="../assets/imgs/checked.svg" />
+      <ul id="prices-select" class="form-control">
+        <li
+          v-for="token in sortToken(tokenSet)"
+          :key="token.id"
+          v-bind:value="token.token_crc20"
+          @click="selectToken(token)"
+        >
+          <span>
+            {{ token.token_amount + " " + token.token_name }}
           </span>
-        </div>
-        <div class="right" v-else>
-          <span class="insufficient">
-            insufficient
-          </span>
-        </div>
-        <div class="USD-tip-container">
-          <span class="USD-tip" v-if="token.token_crc20 == USDaddr"
-            >1 {{ USDunit }} ≈ 1 USD</span
-          >
-        </div>
-      </li>
-    </ul>
-    <a
-      :href="USDBuyLink"
-      class="recharge"
-    >
-      Recharge {{ USDunit }} with a credit card
-    </a>
-    <div class="form-group">
-      <label for="contact">Contact Info</label>
-      <input
-        type="text"
-        class="form-control"
-        id="contact"
-        placeholder="Email. Seller contacts you."
-        v-model="contact"
-      />
-    </div>
-    <div class="form-group">
-      <label for="remark">Remark</label>
-      <textarea
-        rows="3"
-        type="text"
-        class="form-control"
-        id="remark"
-        placeholder="Note information"
-        v-model="remark"
-      />
-    </div>
-    <a class="buy-btn" @click="buy"><span>Buy</span></a>
-    <div style="text-align:center;margin-top:20px;">
-      <router-link :to="`/listing/${contractAddr}`">Cancel</router-link>
+          <div v-if="isSufficient(token)" class="right">
+            <span
+              v-if="
+                (selectedCRC20 == null && token.token_crc20 == USDaddr) ||
+                  (selectedCRC20 != null &&
+                    selectedCRC20.addr == token.token_crc20)
+              "
+            >
+              <img class="selected" src="../assets/imgs/checked.svg" />
+            </span>
+          </div>
+          <div class="right" v-else>
+            <span class="insufficient">
+              insufficient
+            </span>
+          </div>
+          <div class="USD-tip-container">
+            <span class="USD-tip" v-if="token.token_crc20 == USDaddr"
+              >1 {{ USDunit }} ≈ 1 USD</span
+            >
+          </div>
+        </li>
+      </ul>
+      <a :href="USDBuyLink" class="recharge" @click="loading = true">
+        Recharge {{ USDunit }} with a credit card
+      </a>
+      <div class="form-group">
+        <label for="contact">Contact Info</label>
+        <input
+          autocorrect="off"
+          autocapitalize="off"
+          type="text"
+          class="form-control"
+          id="contact"
+          placeholder="Email. Seller contacts you."
+          v-model="contact"
+        />
+      </div>
+      <div class="form-group">
+        <label for="remark">Remark</label>
+        <textarea
+          rows="3"
+          type="text"
+          class="form-control"
+          id="remark"
+          placeholder="Note information"
+          v-model="remark"
+        />
+      </div>
+      <a class="buy-btn" @click="buy"><span>Buy</span></a>
+      <div style="text-align:center;margin-top:20px;">
+        <router-link :to="`/listing/${contractAddr}`">Cancel</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -82,11 +84,16 @@
 <script>
 import Contracts from "@/contracts.js";
 import global from "@/global.js";
+import LoadingMask from "@/components/LoadingMask.vue";
 
 export default {
   name: "Buy",
+  components: {
+    LoadingMask
+  },
   data() {
     return {
+      loading: true,
       contractAddr: null,
       tokenSet: [],
       selectedCRC20: null,
@@ -114,7 +121,9 @@ export default {
       return global.USDunit;
     },
     USDBuyLink: function() {
-      return global.USDBuyLink + this.contractAddr + "&amount=" + this.USDRealPrice;
+      return (
+        global.USDBuyLink + this.contractAddr + "&amount=" + this.USDRealPrice
+      );
     }
   },
   methods: {
@@ -179,6 +188,7 @@ export default {
                           token_amount,
                           token_real_amount: tokens[token_crc20]
                         });
+                        that.loading = false;
                         console.log(that.tokenSet);
                       }
                     });
@@ -306,11 +316,15 @@ export default {
     },
     isSufficient: function(token) {
       if (token.token_crc20 == this.USDaddr)
-        return this.balance.USD.toNumber() >= token.token_real_amount.toNumber();
+        return (
+          this.balance.USD.toNumber() >= token.token_real_amount.toNumber()
+        );
       else if (
         token.token_crc20 == "0x0000000000000000000000000000000000000000"
       )
-        return this.balance.CMT.toNumber() >= token.token_real_amount.toNumber();
+        return (
+          this.balance.CMT.toNumber() >= token.token_real_amount.toNumber()
+        );
       else return true;
     },
     sortToken: function(tokenSet) {

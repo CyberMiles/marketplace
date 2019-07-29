@@ -2,7 +2,7 @@
   <div class="sell-goods">
     <div class="goods-items">
       <div class="sell-goods-item" v-for="g in goods" :key="g.id">
-        <div class="goods-info">
+        <div class="goods-info" @click="$router.push('/listing/' + g.id)">
           <RespImg v-bind:src="g.image" alt="" />
           <div class="goods-price">
             <span>$ {{ g.price }}</span>

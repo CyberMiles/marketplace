@@ -13,7 +13,7 @@ import TransitionPage from "@/components/Transition.vue";
 
 export default {
   components: {
-    TransitionPage
+    TransitionPage,
   }
 };
 </script>

@@ -83,7 +83,9 @@ export default {
               time:
                 1000 * parseInt(item.functionData.buyerInfo[1]) +
                 1000 * parseInt(item.functionData.info[5]),
-              payment: computePayment(item)
+              payment: computePayment(item),
+              sellerContact: item.functionData.info[4],
+              buyerContact: item.functionData.buyerInfo[6]
             });
           });
       });

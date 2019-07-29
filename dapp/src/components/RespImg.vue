@@ -1,5 +1,8 @@
 <template>
-  <img v-bind:srcset="srcset" v-bind:src="newSrc" v-bind:alt="alt" />
+  <div>
+    <img v-bind:srcset="srcset" v-bind:src="newSrc" v-bind:alt="alt" />
+    <div v-if="src == undefined" class="prePic"></div>
+  </div>
 </template>
 
 <script>
@@ -37,3 +40,12 @@ export default {
   }
 };
 </script>
+
+<style lang="stylus">
+img
+  display block
+  max-width 100%
+.prePic
+  background #f2f2f2
+  width 200px
+</style>

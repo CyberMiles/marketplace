@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="create-info">
-      <label for="file">Image {{ uploadedImgs.length + images.length }}/4</label>
+      <label for="file">
+        Image {{ uploadedImgs.length + images.length }}/4
+      </label>
       <div class="form-group">
         <div class="uploaded-img-container" v-if="edit">
           <div
@@ -110,6 +112,8 @@
         <input
           type="text"
           class="form-control"
+          autocorrect="off"
+          autocapitalize="off"
           id="contact"
           placeholder="Email. Buyer contacts you."
           v-model="contact"

@@ -14,9 +14,10 @@
     "normalize-styl": "^4.1.1",
     "v-clipboard": "^2.2.2",
     "vue": "^2.6.10",
+    "vue-analytics": "^5.17.0",
+    "vue-markdown": "^2.2.4",
     "vue-router": "^3.0.3",
     "vue-sweetalert2": "^2.1.1",
-    "vue-analytics": "^5.17.0",
     "web3-cmt": "^0.1.0"
   },
   "devDependencies": {

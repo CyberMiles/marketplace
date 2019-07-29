@@ -1,9 +1,12 @@
 <template>
   <div class="order-detail">
     <div class="order-status">- {{ order.status }} -</div>
+    <span class="buy-again" v-if="role === 'buy'" @click="$router.push('/')">
+      Buy Again
+    </span>
     <section>
       <h3>Goods Info</h3>
-      <div class="info-panel">
+      <div class="info-panel" @click="$router.push('/listing/' + contractAddr)">
         <div class="order-goods-info">
           <div class="goods-img">
             <RespImg v-bind:src="order.goods.image" alt="" />
@@ -20,11 +23,9 @@
         <dl>
           <dt>Contract</dt>
           <dd class="goods-contract">
-            <a
-              v-bind:href="'https://www.cmttracking.io/address/' + contractAddr"
-            >
+            <div>
               {{ contractAddr }}
-            </a>
+            </div>
           </dd>
         </dl>
       </div>
@@ -351,6 +352,15 @@ export default {
     font-weight 500
     text-transform capitalize
     text-align center
+  .buy-again
+    top (12/16)rem
+    right 0
+    position absolute
+    border-radius (16/16)rem 0 0 (16/16)rem
+    padding (8/16)rem (12/16)rem
+    box-shadow 0 0 7px 0 rgba(255, 63, 15, 0.3)
+    background-image linear-gradient(to left, #ff7777, #ff3f0f)
+    color #fafafa
   section
     h3
       font-size (22/16)rem

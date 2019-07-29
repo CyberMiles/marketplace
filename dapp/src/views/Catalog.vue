@@ -50,7 +50,7 @@
           </GoodsListItem>
         </div>
       </div>
-      <div class="end">~ No More ~</div>
+      <div class="end" v-if="goodList.length">~ No More ~</div>
     </div>
     <div class="empty-list" v-if="goodList.length === 0">
       <div class="text">Sorry, we can’t find it</div>
@@ -68,7 +68,7 @@ import LoadingMask from "@/components/LoadingMask.vue";
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
 import global from "@/global.js";
-import { queryOptions, makeQuery } from "@/global.js";
+import { queryOptions, makeQuery, compare } from "@/global.js";
 
 export default {
   name: "home",
@@ -154,7 +154,7 @@ export default {
       axios(queryOptions(queryMarketplaceABI)).then(r => {
         that.loading = false;
         var sortedData = r.data
-          .sort(that.compare("blockNumber"))
+          .sort(compare("blockNumber"))
           .reverse()
           .filter(obj => {
             //remove those whose usd price is 0 or the img url is empty or ulisted
@@ -177,23 +177,6 @@ export default {
         console.log(this.goodList);
       });
     },
-    compare(prop) {
-      return function(obj1, obj2) {
-        var val1 = obj1[prop];
-        var val2 = obj2[prop];
-        if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
-          val1 = Number(val1);
-          val2 = Number(val2);
-        }
-        if (val1 < val2) {
-          return -1;
-        } else if (val1 > val2) {
-          return 1;
-        } else {
-          return 0;
-        }
-      };
-    },
     goSearch() {
       if (this.searchTerm.trim() == "" || this.searchTerm.trim() == "#") return;
       if (this.searchTerm.slice(0, 1) == "#")
@@ -207,6 +190,7 @@ export default {
       // console.log(this.$router)
       this.search = to.params.search;
       this.tag = to.params.tag;
+      this.searchTerm = this.search || (this.tag ? "#" + this.tag : this.tag);
       this.goodList.length = 0;
       this.initGoodList();
     }

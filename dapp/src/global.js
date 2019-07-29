@@ -12,13 +12,14 @@ export default {
   popularTags: ["white", "test", "girl"],
   abiShaList:
     // This is the correct hash for the current ABI. But, we have to use the old hash to get around a bug in the ES
-    // "0x63d59476a40629e93dfa53c4604fa726cfade0be70be6129a1add52dc2561903",
-    "0x0b1484e6858db412db97bae491c78de7a8f5f781c5a9eea478c4f070651c601d",
+    "0x63d59476a40629e93dfa53c4604fa726cfade0be70be6129a1add52dc2561903",
+    // "0x0b1484e6858db412db97bae491c78de7a8f5f781c5a9eea478c4f070651c601d",
   eeEndpoint: "https://marketplace.search.secondstate.io/api/es_search",
   USDaddr: "0x08bcb145e174e59e033d2d9c4bc4d0fe49a82613",
   USDunit: "USDO",
-  USDBuyLink: "http://stripe-stablecoin.ufn3g4prnu.ap-northeast-1.elasticbeanstalk.com/checkout?currency=usd&desc=test&contract_addr=",
-  escrowPeriod: 60 * 60 * 24 * 7,
+  USDBuyLink:
+    "http://stripe-stablecoin.ufn3g4prnu.ap-northeast-1.elasticbeanstalk.com/checkout?currency=usd&desc=test&contract_addr=",
+  escrowPeriod: 60 * 60 * 24 * 10,
   HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
   DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",
   ProductName: "Market Place"
@@ -305,7 +306,7 @@ function computePayment(item) {
   return amount + " " + unit;
 }
 
-function web3Pass(that) {
+function web3Pass(that, targetUrl = null) {
   try {
     window.web3.cmt;
     if (window.web3.currentProvider.host !== Global.HttpProvider) return true;
@@ -326,7 +327,11 @@ function web3Pass(that) {
         })
         .then(function(result) {
           if (result.value) {
-            that.$router.push(`/download/reloc?=${window.location.href}`);
+            if (targetUrl !== null)
+              that.$router.push(
+                `/download/reloc?=${window.location.origin + "/#" + targetUrl}`
+              );
+            else that.$router.push(`/download/reloc?=${window.location.href}`);
             // const webBrowser = new Browser.AppLink();
             // webBrowser.openBrowser();
           }

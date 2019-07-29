@@ -12,7 +12,6 @@
         >Order Status</router-link
       >
       <button class="link gray" v-else>Sold</button>
-
     </div>
     <DownloadBanner v-if="!_isMobile"></DownloadBanner>
   </div>
@@ -40,7 +39,8 @@ export default {
         });
     },
     goBuy() {
-      if (web3Pass(this)) this.$router.push(`/buy/${this.contractAddr}`);
+      if (web3Pass(this, `/buy/${this.contractAddr}`))
+        this.$router.push(`/buy/${this.contractAddr}`);
     }
   },
   computed: {

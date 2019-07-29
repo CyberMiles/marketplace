@@ -3,7 +3,6 @@ import App from "./App.vue";
 import router from "./router";
 import Contracts from "./contracts";
 import VueSweetalert2 from "vue-sweetalert2";
-import Global from "@/global.js";
 
 const options = {
   confirmButtonColor: "#41b882",

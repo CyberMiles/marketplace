@@ -20,13 +20,17 @@
       <h1 class="wrap-text">{{ ProductInfo.title }}</h1>
       <ul class="tags" v-if="ProductInfo.tags.length > 0">
         <li v-for="tag in ProductInfo.tags" :key="tag.id">
-          <a href="" class="tag-link">{{ tag.trim() }}</a>
+          <router-link :to="`/tag/${tag.trim()}`" class="tag-link">{{
+            tag.trim()
+          }}</router-link>
         </li>
       </ul>
     </section>
     <section>
       <h3>Description</h3>
-      <p class="wrap-text">{{ ProductInfo.desc }}</p>
+      <p class="wrap-text">
+        <vue-markdown v-bind:source="ProductInfo.desc">...</vue-markdown>
+      </p>
     </section>
     <section>
       <h3>Seller</h3>
@@ -46,11 +50,13 @@ import Contracts from "@/contracts.js";
 import RespImg from "@/components/RespImg";
 import axios from "axios";
 import Global from "@/global.js";
+import VueMarkdown from "vue-markdown";
 
 export default {
   name: "ListingInfo",
   components: {
-    RespImg
+    RespImg,
+    VueMarkdown
   },
   data() {
     return {

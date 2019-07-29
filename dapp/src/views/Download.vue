@@ -40,7 +40,7 @@
 .download-wx
   position fixed
   background #f4f4f4
-  height 100%
+  height 100% !important
   .overmask
     background #121212
     opacity 0.7
@@ -173,9 +173,9 @@ export default {
       return this.UA.match(/iPhone|iPad|iPod/i) ? true : false;
     },
     relocHref: function() {
-      console.log(decodeURIComponent(window.location.href.split("reloc?=")[1]))
+      console.log(decodeURIComponent(window.location.href.split("reloc?=")[1]));
       return decodeURIComponent(window.location.href.split("reloc?=")[1]);
     }
   }
-}
+};
 </script>

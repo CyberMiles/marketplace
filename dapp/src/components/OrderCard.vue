@@ -17,7 +17,9 @@
         <div class="paid-order" v-if="order.status === 'paid'">
           <div class="countdown">
             {{ dynCountdown(order.time) }}
-            <button class="expl" @click.stop="showExplPop">?</button>
+            <button class="expl" @click.stop="showExplPop">
+              <span>?</span>
+            </button>
           </div>
           <div class="order-actions">
             <button
@@ -264,7 +266,7 @@ export default {
       this.$router.push(`/order/${this.role}/${id}`);
     },
     async remark(id) {
-      this.$router.push(`remark/${id}`);
+      this.$router.push(`/remark/${id}`);
     },
     web3Callback(e, txhash) {
       if (e) {
@@ -367,6 +369,10 @@ export default {
         font-size (10/16)rem
         margin-left (5/16)rem
         padding 0
+        span
+          display inline-block
+          vertical-align middle
+          line-height normal
     .order-actions
       display flex
       position relative
