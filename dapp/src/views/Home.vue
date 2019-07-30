@@ -3,7 +3,7 @@
     <LoadingMask v-if="loading"></LoadingMask>
     <div class="home">
       <div class="pc-header">
-        <h1><img src="./../assets/logo.png" style="width:160px" /></h1>
+        <img src="./../assets/logo.png" class="logo" style="width:160px" />
         <!-- <h1>{{ DAppName }}</h1> -->
         <div class="search-field">
           <div class="onsearch-field">
@@ -189,6 +189,9 @@ export default {
 
 <style lang="stylus">
 .home
+  .pc-header
+    .logo
+      padding 10px 0
   padding 0 (15/16)rem (60/16)rem
   @media screen and (min-width: 600px)
     margin 0 0 (420/16)rem

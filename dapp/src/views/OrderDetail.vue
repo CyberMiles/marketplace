@@ -1,135 +1,138 @@
 <template>
-  <div class="order-detail">
-    <div class="order-status">- {{ order.status }} -</div>
-    <span class="buy-again" v-if="role === 'buy'" @click="$router.push('/')">
-      Buy Again
-    </span>
-    <section>
-      <h3>Goods Info</h3>
-      <div class="info-panel" @click="$router.push('/listing/' + contractAddr)">
-        <div class="order-goods-info">
-          <div class="goods-img">
-            <RespImg v-bind:src="order.goods.image" alt="" />
-          </div>
-          <div class="goods-desc">
-            <div class="goods-title">{{ order.goods.title }}</div>
-            <!-- <div class="goods-quantity"><label>Quantity</label>x1</div> -->
-          </div>
-        </div>
-        <dl>
-          <dt>Payment</dt>
-          <dd class="goods-price">{{ order.buyer.payment }}</dd>
-        </dl>
-        <dl>
-          <dt>Contract</dt>
-          <dd class="goods-contract">
-            <div>
-              {{ contractAddr }}
+  <div>
+    <LoadingMask v-if="loading"></LoadingMask>
+    <div class="order-detail">
+      <div class="order-status">- {{ order.status }} -</div>
+      <span class="buy-again" v-if="role === 'buy'" @click="$router.push('/')">
+        Buy Again
+      </span>
+      <section>
+        <h3>Goods Info</h3>
+        <div class="info-panel" @click="$router.push('/listing/' + contractAddr)">
+          <div class="order-goods-info">
+            <div class="goods-img">
+              <RespImg v-bind:src="order.goods.image" alt="" />
             </div>
-          </dd>
-        </dl>
-      </div>
-    </section>
+            <div class="goods-desc">
+              <div class="goods-title">{{ order.goods.title }}</div>
+              <!-- <div class="goods-quantity"><label>Quantity</label>x1</div> -->
+            </div>
+          </div>
+          <dl>
+            <dt>Payment</dt>
+            <dd class="goods-price">{{ order.buyer.payment }}</dd>
+          </dl>
+          <dl>
+            <dt>Contract</dt>
+            <dd class="goods-contract">
+              <div>
+                {{ contractAddr }}
+              </div>
+            </dd>
+          </dl>
+        </div>
+      </section>
 
-    <section v-if="order.status === 'refund'">
-      <h3>Refund</h3>
-      <div class="info-panel">
-        <dl>
-          <dt>Refund Amount</dt>
-          <dd class="goods-price">{{ order.buyer.payment }}</dd>
-        </dl>
-        <dl>
-          <dt>Refund Reason</dt>
-          <dd>{{ refundReason }}</dd>
-        </dl>
-      </div>
-    </section>
+      <section v-if="order.status === 'refund'">
+        <h3>Refund</h3>
+        <div class="info-panel">
+          <dl>
+            <dt>Refund Amount</dt>
+            <dd class="goods-price">{{ order.buyer.payment }}</dd>
+          </dl>
+          <dl>
+            <dt>Refund Reason</dt>
+            <dd>{{ refundReason }}</dd>
+          </dl>
+        </div>
+      </section>
 
-    <section>
-      <h3>Buyer Info</h3>
-      <div class="info-panel">
-        <dl>
-          <dt>Address</dt>
-          <dd>{{ order.buyer.addr }}</dd>
-        </dl>
-        <dl>
-          <dt>Contact</dt>
-          <dd>{{ order.buyer.contact }}</dd>
-        </dl>
-        <dl>
-          <dt>Payment Date</dt>
-          <dd>{{ order.buyer.paymentDate }}</dd>
-        </dl>
-        <dl>
-          <dt>Remark</dt>
-          <dd>{{ order.buyer.remark }}</dd>
-        </dl>
-      </div>
-    </section>
+      <section>
+        <h3>Buyer Info</h3>
+        <div class="info-panel">
+          <dl>
+            <dt>Address</dt>
+            <dd>{{ order.buyer.addr }}</dd>
+          </dl>
+          <dl>
+            <dt>Contact</dt>
+            <dd>{{ order.buyer.contact }}</dd>
+          </dl>
+          <dl>
+            <dt>Payment Date</dt>
+            <dd>{{ order.buyer.paymentDate }}</dd>
+          </dl>
+          <dl>
+            <dt>Remark</dt>
+            <dd>{{ order.buyer.remark }}</dd>
+          </dl>
+        </div>
+      </section>
 
-    <section>
-      <h3>Seller Info</h3>
-      <div class="info-panel">
-        <dl>
-          <dt>Address</dt>
-          <dd>{{ order.seller.addr }}</dd>
-        </dl>
-        <dl>
-          <dt>Contact</dt>
-          <dd>{{ order.seller.contact }}</dd>
-        </dl>
-      </div>
-    </section>
+      <section>
+        <h3>Seller Info</h3>
+        <div class="info-panel">
+          <dl>
+            <dt>Address</dt>
+            <dd>{{ order.seller.addr }}</dd>
+          </dl>
+          <dl>
+            <dt>Contact</dt>
+            <dd>{{ order.seller.contact }}</dd>
+          </dl>
+        </div>
+      </section>
 
-    <section>
-      <h3>Remark</h3>
-      <div class="info-panel remark">
-        <dl>
-          <dt>Remark</dt>
-          <dd><a @click="remark">Add New Remark</a></dd>
-        </dl>
-        <dl v-for="msg in sortedMessageBoard" v-bind:key="msg.id">
-          <dt>{{ recognizeSpeaker(msg.party) }}, {{ msg.time }}</dt>
-          <dd>{{ msg.words }}</dd>
-        </dl>
-      </div>
-    </section>
+      <section>
+        <h3>Remark</h3>
+        <div class="info-panel remark">
+          <dl>
+            <dt>Remark</dt>
+            <dd><a @click="remark">Add New Remark</a></dd>
+          </dl>
+          <dl v-for="msg in sortedMessageBoard" v-bind:key="msg.id">
+            <dt>{{ recognizeSpeaker(msg.party) }}, {{ msg.time }}</dt>
+            <dd>{{ msg.words }}</dd>
+          </dl>
+        </div>
+      </section>
 
-    <button
-      class="order-action"
-      v-if="order.status === 'paid' && role === 'buy'"
-      @click="closeByBuyer"
-    >
-      <span>Confirm Receipt</span>
-    </button>
-    <button
-      class="order-action sell-action"
-      v-if="
-        (order.status === 'paid' || order.status === 'dispute') &&
-          role === 'sell'
-      "
-      @click="refund"
-    >
-      <span>Cancel Order</span>
-    </button>
-    <button
-      class="order-action sell-action"
-      v-if="order.status === 'paid' && role === 'sell' && timeisup"
-      @click="closeBySeller"
-    >
-      <span>Receive Fund</span>
-    </button>
-    <button
-      class="order-action sell-action"
-      v-if="order.status === 'paid' && role === 'buy' && !timeisup"
-      @click="dispute"
-    >
-      <span>Dispute</span>
-    </button>
-    <div style="text-align:center;margin-top:20px;">
-      <router-link to="/">Home</router-link>
-      |
-      <router-link to="/profile">Profile</router-link>
+      <button
+        class="order-action"
+        v-if="order.status === 'paid' && role === 'buy'"
+        @click="closeByBuyer"
+      >
+        <span>Confirm Receipt</span>
+      </button>
+      <button
+        class="order-action sell-action"
+        v-if="
+          (order.status === 'paid' || order.status === 'dispute') &&
+            role === 'sell'
+        "
+        @click="refund"
+      >
+        <span>Cancel Order</span>
+      </button>
+      <button
+        class="order-action sell-action"
+        v-if="order.status === 'paid' && role === 'sell' && timeisup"
+        @click="closeBySeller"
+      >
+        <span>Receive Fund</span>
+      </button>
+      <button
+        class="order-action sell-action"
+        v-if="order.status === 'paid' && role === 'buy' && !timeisup"
+        @click="dispute"
+      >
+        <span>Dispute</span>
+      </button>
+      <div style="text-align:center;margin-top:20px;">
+        <router-link to="/">Home</router-link>
+        |
+        <router-link to="/profile">Profile</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -138,6 +141,9 @@
 import RespImg from "@/components/RespImg.vue";
 import Contracts from "@/contracts.js";
 import Global from "@/global.js";
+import LoadingMask from "@/components/LoadingMask.vue";
+import { web3Pass } from "@/global.js";
+
 import {
   closeByBuyerHandler,
   closeBySellerHandler,
@@ -149,10 +155,12 @@ import { setTimeout } from "timers";
 
 export default {
   components: {
-    RespImg
+    RespImg,
+    LoadingMask
   },
   data() {
     return {
+      loading: true,
       role: "",
       contractAddr: "",
       instance: null,
@@ -179,6 +187,11 @@ export default {
     };
   },
   created() {
+    if (!web3Pass(this)) {
+      return;
+    } else {
+      this.loading = false;
+    }
     this.role = this.$route.params.role;
     var contract_address = this.$route.params.orderId;
     this.contractAddr = contract_address;

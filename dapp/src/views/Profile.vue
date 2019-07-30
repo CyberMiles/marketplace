@@ -1,40 +1,43 @@
 <template>
-  <div class="profile">
-    <div class="account">
-      <h2>Account</h2>
-      <div class="account-addr">
-        {{ userAddr }}
-        <span
-          class="icon-copy"
-          v-clipboard="() => userAddr"
-          v-clipboard:success="copySuccess"
+  <div>
+    <LoadingMask v-if="loading"></LoadingMask>
+    <div class="profile">
+      <div class="account">
+        <h2>Account</h2>
+        <div class="account-addr">
+          {{ userAddr }}
+          <span
+            class="icon-copy"
+            v-clipboard="() => userAddr"
+            v-clipboard:success="copySuccess"
+          >
+          </span>
+        </div>
+      </div>
+      <div class="roles-switch">
+        <div
+          class="role"
+          :class="role === 'buy' ? 'active' : ''"
+          @click="switchRole('buy')"
         >
-        </span>
+          Buy
+        </div>
+        <div
+          class="role"
+          :class="role === 'sell' ? 'active' : ''"
+          @click="switchRole('sell')"
+        >
+          Sell
+        </div>
       </div>
-    </div>
-    <div class="roles-switch">
-      <div
-        class="role"
-        :class="role === 'buy' ? 'active' : ''"
-        @click="switchRole('buy')"
-      >
-        Buy
-      </div>
-      <div
-        class="role"
-        :class="role === 'sell' ? 'active' : ''"
-        @click="switchRole('sell')"
-      >
-        Sell
-      </div>
-    </div>
 
-    <div class="container">
-      <ProfileOrders v-if="role === 'buy'" v-bind="{ userAddr: userAddr }" />
-      <SellOverview v-if="role === 'sell'" v-bind="{ userAddr: userAddr }" />
-    </div>
+      <div class="container">
+        <ProfileOrders v-if="role === 'buy'" v-bind="{ userAddr: userAddr }" />
+        <SellOverview v-if="role === 'sell'" v-bind="{ userAddr: userAddr }" />
+      </div>
 
-    <Footer showing="profile"></Footer>
+      <Footer showing="profile"></Footer>
+    </div>
   </div>
 </template>
 
@@ -46,6 +49,8 @@ import Toast from "@/components/Toast.vue";
 import Footer from "@/components/Footer.vue";
 import ProfileOrders from "@/views/ProfileOrders.vue";
 import SellOverview from "@/views/SellOverview.vue";
+import LoadingMask from "@/components/LoadingMask.vue";
+import { web3Pass } from "@/global.js";
 
 Vue.use(Clipboard);
 Vue.use(Toast);
@@ -55,7 +60,8 @@ export default {
   components: {
     Footer,
     ProfileOrders,
-    SellOverview
+    SellOverview,
+    LoadingMask
   },
   data() {
     return {
@@ -65,6 +71,11 @@ export default {
     };
   },
   created() {
+    if (!web3Pass(this)) {
+      return;
+    } else {
+      this.loading = false;
+    }
     var that = this;
     if (this.$route.hash === "#sell") {
       this.role = "sell";

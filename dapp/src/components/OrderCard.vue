@@ -170,20 +170,18 @@ export default {
     confirm() {
       let that = this;
       this.$swal({
-        title: "Are you sure?",
-        type: "warning",
+        title: "<small>Are you sure?</small>",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
+        customClass: {
+          confirmButton: "confirm-button-class",
+          cancelButton: "cancel-button-class"
+        },
+        animation: false,
+        reverseButtons: true,
         confirmButtonText: "Yes, receive it!"
       }).then(result => {
         if (result.value) {
           that.confirmHandler();
-          // this.$swal(
-          //   'Unlisted!',
-          //   'Your product has been unlisted.',
-          //   'success'
-          // )
         }
       });
     },
@@ -191,10 +189,13 @@ export default {
       let that = this;
       this.$swal({
         title: "Are you sure?",
-        type: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
+        customClass: {
+          confirmButton: "confirm-button-class",
+          cancelButton: "cancel-button-class"
+        },
+        reverseButtons: true,
+        animation: false,
         confirmButtonText: "Yes, dispute!"
       }).then(result => {
         if (result.value) that.disputeHandler();
@@ -207,17 +208,6 @@ export default {
         href: `/order/${this.role}/${this.order.id}`
       };
       closeByBuyerHandler(instance, reloc);
-
-      // var that = this;
-      // instance.closeByBuyer(
-      //   {
-      //     gas: "400000",
-      //     gasPrice: 0
-      //   },
-      //   function(e, txhash) {
-      //     that.web3Callback(e, txhash);
-      //   }
-      // );
     },
     disputeHandler() {
       var instance = this.createInstance(this.order.id);
@@ -309,6 +299,15 @@ export default {
 </script>
 
 <style lang="stylus">
+.confirm-button-class
+  border-radius 18px  !important
+  box-shadow 0 0 7px 0 rgba(255, 63, 15, 0.3)  !important
+  font-size (15/16)rem !imporatant
+  background-image linear-gradient(to left, #ff7777, #ff3f0f) !important
+.cancel-button-class
+  background transparent !important
+  color #ff3f0f !important
+  font-size (15/16)rem !imporatant
 .order-card
   background-color #ffffff
   padding (15/16)rem

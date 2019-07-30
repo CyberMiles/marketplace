@@ -3,6 +3,8 @@ import appLogo from "./assets/imgs/app@3x.jpg";
 import appQrcode from "./assets/imgs/appQrcode.png";
 import Vue from "vue";
 import VueAnalytics from "vue-analytics";
+import Contracts from "@/contracts.js";
+import ES from "@/modules/es-ss.js";
 
 Vue.use(VueAnalytics, {
   id: "UA-120065893-20"
@@ -75,6 +77,19 @@ function createHandler(contract, obj, bin, fromUser, that) {
             path: `/creating/${txhash}`
           });
           redirected = true;
+        } else {
+          //try to be more reliable, submit abi explictly
+          let esss = new ES("https://marketplace.search.secondstate.io");
+          var abi = JSON.stringify(Contracts.Listing.abi);
+          var abiSubmission = esss.submitAbi(abi, txhash);
+          abiSubmission
+            .then(function(result) {
+              console.log("Result is " + result);
+            })
+            .catch(function() {
+              console.log("Error");
+            });
+          //submission end
         }
       }
     }
@@ -189,23 +204,33 @@ function web3Callback(e, txhash, reloc) {
     console.log(e);
     location.reload(true);
   } else {
-    var filter = window.web3.cmt.filter("latest");
-    filter.watch(function(error, blockhash) {
-      if (!error) {
-        console.log(blockhash, txhash);
-        window.web3.cmt.getBlock(blockhash, function(e, r) {
-          if (r.transactions.indexOf(txhash) != -1) {
-            // filter.stopWatching(); mobile will be stuck here
-            if (reloc != undefined && reloc != "") {
-              var router = reloc.router;
-              router.push(reloc.href);
-            } else {
-              location.reload(true);
+    var getReceipt = function() {
+      try {
+        window.web3.cmt.getTransactionReceipt(txhash, function(e, receipt) {
+          if (e) {
+            console.log(e);
+          } else {
+            if (receipt == null) setTimeout(getReceipt, 100);
+            else {
+              if (receipt.status == 0x1) {
+                if (reloc != undefined && reloc != "") {
+                  var router = reloc.router;
+                  router.push(reloc.href);
+                } else {
+                  location.reload(true);
+                }
+              } else {
+                alert("TX FAILED.");
+              }
             }
           }
         });
+      } catch (e) {
+        setTimeout(getReceipt, 100);
+        console.log("wait");
       }
-    });
+    };
+    getReceipt();
   }
 }
 

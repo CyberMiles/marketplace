@@ -426,6 +426,7 @@ export default {
       #file
         display none
     .plus-btn
+      display inline
       position relative
       top -(40/16)rem
       right (60/16)rem

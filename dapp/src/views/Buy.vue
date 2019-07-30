@@ -85,6 +85,7 @@
 import Contracts from "@/contracts.js";
 import global from "@/global.js";
 import LoadingMask from "@/components/LoadingMask.vue";
+import { web3Pass } from "@/global.js";
 
 export default {
   name: "Buy",
@@ -110,6 +111,9 @@ export default {
     };
   },
   created() {
+    if (!web3Pass(this)) {
+      return;
+    }
     this.initBuyPage();
     this.$ga.page("/buy");
   },
@@ -286,29 +290,53 @@ export default {
             gas: "200000",
             gasPrice: 0
           },
-          function(error) {
+          function(error, txhash) {
             if (error) {
               console.log(error);
             } else {
-              that.instance.buyWithCRC20(
-                crc20,
-                "",
-                that.contact,
-                that.remark,
-                {
-                  gas: "400000",
-                  gasPrice: 0
-                },
-                function(e, txhash) {
-                  if (e) {
-                    console.log(e);
-                  } else {
-                    that.$router.replace(
-                      `/complete/${that.contractAddr}/${txhash}`
-                    );
-                  }
+              var getReceipt = function() {
+                try {
+                  window.web3.cmt.getTransactionReceipt(txhash, function(
+                    e,
+                    receipt
+                  ) {
+                    if (e) {
+                      console.log(e);
+                    } else {
+                      if (receipt == null) setTimeout(getReceipt, 100);
+                      else {
+                        if (receipt.status == 0x1) {
+                          that.instance.buyWithCRC20(
+                            crc20,
+                            "",
+                            that.contact,
+                            that.remark,
+                            {
+                              gas: "400000",
+                              gasPrice: 0
+                            },
+                            function(e, txhash) {
+                              if (e) {
+                                console.log(e);
+                              } else {
+                                that.$router.replace(
+                                  `/complete/${that.contractAddr}/${txhash}`
+                                );
+                              }
+                            }
+                          ); // buyWithCRC20
+                        } else {
+                          console.log("Approve Tx Failed.");
+                        }
+                      }
+                    }
+                  });
+                } catch (e) {
+                  setTimeout(getReceipt, 100);
+                  console.log("wait");
                 }
-              ); // buyWithCRC20
+              };
+              getReceipt();
             }
           }
         ); // approve
