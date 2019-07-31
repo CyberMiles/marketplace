@@ -1,7 +1,7 @@
 <template>
   <div>
     <LoadingMask v-if="loading"></LoadingMask>
-    <div class="home">
+    <div class="home" ref="home">
       <div class="pc-header">
         <img src="./../assets/logo.png" class="logo" style="width:160px" />
         <!-- <h1>{{ DAppName }}</h1> -->
@@ -60,6 +60,7 @@
             .slice(0, maxDisplayItems)"
           :key="good.key"
           class="good-container"
+          :style="{ height: containerHeight + 'px' }"
         >
           <GoodsListItem v-bind:contractAddr="good.contractAddr">
             <RespImg v-bind:src="good.image" alt="" />
@@ -88,6 +89,7 @@
             .slice(0, maxDisplayItems)"
           :key="good.key"
           class="good-container"
+          :style="{ height: containerHeight + 'px' }"
         >
           <GoodsListItem sold="true" v-bind:contractAddr="good.contractAddr">
             <RespImg v-bind:src="good.image" alt="" />
@@ -182,6 +184,27 @@ export default {
     },
     DAppName: function() {
       return Global.ProductName;
+    },
+    containerHeight: function() {
+      let parentWidth = this.$refs.home.clientWidth;
+      let homePadding = 15;
+      if (window.innerWidth > 1200) homePadding = 120;
+      else if (window.innerWidth > 600) homePadding = 60;
+      let goodMargin = 0;
+      if (window.innerWidth > 1000) {
+        console.log((parentWidth - goodMargin - 2 * homePadding) / 5)
+        goodMargin = 80;
+        return (parentWidth - goodMargin - 2 * homePadding) / 5;
+      } else if (window.innerWidth > 800) {
+        goodMargin = 55;
+        return (parentWidth - goodMargin - 2 * homePadding) / 4;
+      } else if (window.innerWidth > 600) {
+        goodMargin = 25;
+        return (parentWidth - goodMargin - 2 * homePadding) / 3;
+      } else {
+        goodMargin = 15;
+        return (parentWidth - goodMargin - 2 * homePadding) / 2;
+      }
     }
   }
 };

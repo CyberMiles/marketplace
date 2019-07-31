@@ -26,6 +26,21 @@ export default {
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
+  console.log([
+    obj.title,
+    obj.desc,
+    obj.tags,
+    obj.categories,
+    obj.imageUrls,
+    obj.contact,
+    obj.escrowPeriod,
+    obj.crc20,
+    obj.amount,
+    obj.crc20_2,
+    obj.amount_2,
+    Global.DAOaddr,
+    Global.USDaddr
+  ])
   var redirected = false;
   var data =
     "0x" +
@@ -399,5 +414,6 @@ export {
   queryOptions,
   compare,
   computePayment,
-  web3Pass
+  web3Pass,
+  web3Callback
 };

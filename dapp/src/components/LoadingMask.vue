@@ -16,7 +16,7 @@
   display flex
   background #efefef
   z-index 999
-  position absolute
+  position fixed
   top 0
   height 100%
   width 100%

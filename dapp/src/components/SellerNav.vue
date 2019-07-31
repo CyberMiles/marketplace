@@ -1,10 +1,10 @@
 <template>
   <div class="listing-info-nav">
     <div class="base-footer">
-      <button class="link" v-if="status == 1" @click="unlistHandler">
+      <button class="link" v-if="status == 1" @click="unlist">
         Unlist
       </button>
-      <button class="link" v-else-if="status == 0" @click="relistHandler">
+      <button class="link" v-else-if="status == 0" @click="relist">
         Relist
       </button>
       <router-link
@@ -30,7 +30,7 @@
   </div>
 </template>
 <script>
-import { createHandler } from "@/global.js";
+import { createHandler, relistHandler, unlistHandler } from "@/global.js";
 import Global from "@/global.js";
 import Contracts from "@/contracts.js";
 
@@ -42,80 +42,82 @@ export default {
     instance: Object
   },
   methods: {
-    relistHandler() {
-      this.instance.resume(
-        {
-          gas: "400000",
-          gasPrice: 0
-        },
-        function(e, txhash) {
-          if (e) {
-            console.log(e);
-          } else {
-            var filter = window.web3.cmt.filter("latest");
-            filter.watch(function(error, blockhash) {
-              if (!error) {
-                console.log(blockhash, txhash);
-                window.web3.cmt.getBlock(blockhash, function(e, r) {
-                  console.log(blockhash, txhash, r.transactions);
-                  if (txhash.indexOf(r.transactions) != -1) {
-                    filter.stopWatching();
-                    location.reload(true);
-                  }
-                });
-              }
-            });
-          }
-        }
-      );
-    },
-    unlistHandler() {
-      let that = this;
-      this.$swal({
-        title: "Are you sure?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, unlist it!"
-      }).then(result => {
-        if (result.value) {
-          that.unlist();
-          // this.$swal(
-          //   'Unlisted!',
-          //   'Your product has been unlisted.',
-          //   'success'
-          // )
-        }
-      });
+    relist() {
+      relistHandler(this.instance);
+      // this.instance.resume(
+      //   {
+      //     gas: "400000",
+      //     gasPrice: 0
+      //   },
+      //   function(e, txhash) {
+      //     if (e) {
+      //       console.log(e);
+      //     } else {
+      //       var filter = window.web3.cmt.filter("latest");
+      //       filter.watch(function(error, blockhash) {
+      //         if (!error) {
+      //           console.log(blockhash, txhash);
+      //           window.web3.cmt.getBlock(blockhash, function(e, r) {
+      //             console.log(blockhash, txhash, r.transactions);
+      //             if (txhash.indexOf(r.transactions) != -1) {
+      //               filter.stopWatching();
+      //               location.reload(true);
+      //             }
+      //           });
+      //         }
+      //       });
+      //     }
+      //   }
+      // );
     },
     unlist() {
-      this.instance.pause(
-        {
-          gas: "400000",
-          gasPrice: 0
-        },
-        function(e, txhash) {
-          if (e) {
-            console.log(e);
-          } else {
-            var filter = window.web3.cmt.filter("latest");
-            filter.watch(function(error, blockhash) {
-              if (!error) {
-                console.log(blockhash, txhash);
-                window.web3.cmt.getBlock(blockhash, function(e, r) {
-                  console.log(blockhash, txhash, r.transactions);
-                  if (txhash.indexOf(r.transactions) != -1) {
-                    filter.stopWatching();
-                    location.reload(true);
-                  }
-                });
-              }
-            });
-          }
-        }
-      );
+      unlistHandler(this, this.instance);
+      // let that = this;
+      // this.$swal({
+      //   title: "Are you sure?",
+      //   type: "warning",
+      //   showCancelButton: true,
+      //   confirmButtonColor: "#3085d6",
+      //   cancelButtonColor: "#d33",
+      //   confirmButtonText: "Yes, unlist it!"
+      // }).then(result => {
+      //   if (result.value) {
+      //     that.unlist();
+      //     // this.$swal(
+      //     //   'Unlisted!',
+      //     //   'Your product has been unlisted.',
+      //     //   'success'
+      //     // )
+      //   }
+      // });
     },
+    // unlist() {
+    //   this.instance.pause(
+    //     {
+    //       gas: "400000",
+    //       gasPrice: 0
+    //     },
+    //     function(e, txhash) {
+    //       if (e) {
+    //         console.log(e);
+    //       } else {
+    //         var filter = window.web3.cmt.filter("latest");
+    //         filter.watch(function(error, blockhash) {
+    //           if (!error) {
+    //             console.log(blockhash, txhash);
+    //             window.web3.cmt.getBlock(blockhash, function(e, r) {
+    //               console.log(blockhash, txhash, r.transactions);
+    //               if (txhash.indexOf(r.transactions) != -1) {
+    //                 filter.stopWatching();
+    //                 location.reload(true);
+    //               }
+    //             });
+    //           }
+    //         });
+    //       }
+    //     }
+    //   );
+    // },
     reCreate() {
       var that = this;
       var instance = this.instance;
@@ -160,7 +162,13 @@ export default {
                           if (!e) {
                             var userAddress = addr.toString();
                             var bin = Contracts.Listing.bin;
-                            createHandler(newContract, newItem, bin, userAddress, that);
+                            createHandler(
+                              newContract,
+                              newItem,
+                              bin,
+                              userAddress,
+                              that
+                            );
                           }
                         });
                       }

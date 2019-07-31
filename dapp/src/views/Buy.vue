@@ -1,13 +1,14 @@
 <template>
   <div>
     <LoadingMask v-if="loading"></LoadingMask>
+    <ProcessingMask v-if="processing"></ProcessingMask>
     <div class="buy">
       <div class="pay-header">
         <div class="title">
           {{ goodTitle }}
         </div>
         <div class="price">
-          <span class="price-tag">price</span>
+          <span class="price-tag">Price (Postage included)</span>
           <span class="price-value"> $ {{ USDprice }} </span>
         </div>
       </div>
@@ -48,22 +49,23 @@
         </li>
       </ul>
       <a :href="USDBuyLink" class="recharge" @click="loading = true">
-        Recharge {{ USDunit }} with a credit card
+        Buy {{ USDunit }} with a credit card
       </a>
       <div class="form-group">
         <label for="contact">Contact Info</label>
-        <input
+        <textarea
+          rows="4"
           autocorrect="off"
           autocapitalize="off"
           type="text"
           class="form-control"
           id="contact"
-          placeholder="Email. Seller contacts you."
+          placeholder="For the seller to contact you, leave your email(required). Send the seller your address via this email for the delivery after you paid."
           v-model="contact"
         />
       </div>
       <div class="form-group">
-        <label for="remark">Remark</label>
+        <label for="remark">Note</label>
         <textarea
           rows="3"
           type="text"
@@ -77,6 +79,16 @@
       <div style="text-align:center;margin-top:20px;">
         <router-link :to="`/listing/${contractAddr}`">Cancel</router-link>
       </div>
+      <div class="payment-tip">
+        <vue-markdown>### Attention!
+Tokens will be locked in the contract for {{ escrowPeriod }} days.
+          
+**Within the {{ escrowPeriod }} days, if you**:
+  - **Confirm receiving**: Tokens will be released to the seller.
+  - **Click dispute**: Decentralized autonomous organization(DAO) will get involved and tokens will be locked in the contract until the dispute is resolved.
+  - **Take no action**: Tokens will be paid to the seller automatically.
+</vue-markdown>
+      </div>
     </div>
   </div>
 </template>
@@ -85,16 +97,21 @@
 import Contracts from "@/contracts.js";
 import global from "@/global.js";
 import LoadingMask from "@/components/LoadingMask.vue";
+import ProcessingMask from "@/components/ProcessingMask.vue";
 import { web3Pass } from "@/global.js";
+import VueMarkdown from "vue-markdown";
 
 export default {
   name: "Buy",
   components: {
-    LoadingMask
+    LoadingMask,
+    ProcessingMask,
+    VueMarkdown
   },
   data() {
     return {
       loading: true,
+      processing: false,
       contractAddr: null,
       tokenSet: [],
       selectedCRC20: null,
@@ -128,6 +145,9 @@ export default {
       return (
         global.USDBuyLink + this.contractAddr + "&amount=" + this.USDRealPrice
       );
+    },
+    escrowPeriod: function() {
+      return global.escrowPeriod / (60 * 60 * 24);
     }
   },
   methods: {
@@ -258,6 +278,7 @@ export default {
         this.$swal("Please select one payment.");
         return;
       }
+      this.processing = true;
       var crc20 = this.selectedCRC20.addr;
       var amount = this.selectedCRC20.amount;
       var that = this;
@@ -290,53 +311,29 @@ export default {
             gas: "200000",
             gasPrice: 0
           },
-          function(error, txhash) {
+          function(error) {
             if (error) {
               console.log(error);
             } else {
-              var getReceipt = function() {
-                try {
-                  window.web3.cmt.getTransactionReceipt(txhash, function(
-                    e,
-                    receipt
-                  ) {
-                    if (e) {
-                      console.log(e);
-                    } else {
-                      if (receipt == null) setTimeout(getReceipt, 100);
-                      else {
-                        if (receipt.status == 0x1) {
-                          that.instance.buyWithCRC20(
-                            crc20,
-                            "",
-                            that.contact,
-                            that.remark,
-                            {
-                              gas: "400000",
-                              gasPrice: 0
-                            },
-                            function(e, txhash) {
-                              if (e) {
-                                console.log(e);
-                              } else {
-                                that.$router.replace(
-                                  `/complete/${that.contractAddr}/${txhash}`
-                                );
-                              }
-                            }
-                          ); // buyWithCRC20
-                        } else {
-                          console.log("Approve Tx Failed.");
-                        }
-                      }
-                    }
-                  });
-                } catch (e) {
-                  setTimeout(getReceipt, 100);
-                  console.log("wait");
+              that.instance.buyWithCRC20(
+                crc20,
+                "",
+                that.contact,
+                that.remark,
+                {
+                  gas: "400000",
+                  gasPrice: 0
+                },
+                function(e, txhash) {
+                  if (e) {
+                    console.log(e);
+                  } else {
+                    that.$router.replace(
+                      `/complete/${that.contractAddr}/${txhash}`
+                    );
+                  }
                 }
-              };
-              getReceipt();
+              ); // buyWithCRC20
             }
           }
         ); // approve
@@ -473,4 +470,7 @@ export default {
     span
       font-size (17/16)rem
       color #ffffff
+  .payment-tip
+    margin-top (48/16)rem
+    color #3333333
 </style>

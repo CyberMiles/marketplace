@@ -56,7 +56,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="tags">Tags</label>
+        <label for="tags">Tags(max. 5 tags)</label>
         <input
           type="text"
           class="form-control"
@@ -64,6 +64,12 @@
           placeholder="Such as #rolex#watch"
           v-model="tags"
         />
+        <small class="alert" v-if="invalidTags">
+          Please enter tags starting with "#".
+        </small>
+        <small class="alert" v-if="maxTags">
+          Maximum is 5 tags.
+        </small>
       </div>
       <div class="form-group">
         <label for="desc">Description</label>
@@ -72,12 +78,12 @@
           type="text"
           class="form-control"
           id="desc"
-          placeholder="Describe your product in as much detail as possible"
+          placeholder="Please describe the destination countries and other important delivery info."
           v-model="desc"
         />
       </div>
       <div class="form-group">
-        <label for="amount">Price</label>
+        <label for="amount">Price(Postage included)</label>
         <div>
           <input
             type="number"
@@ -91,6 +97,9 @@
           </div>
           <span class="price-tip">1 {{ USDunit }} ≈ 1 USD</span>
         </div>
+        <small class="alert" v-if="emptyPrice">
+          Price must be set.
+        </small>
       </div>
       <div class="form-group" v-if="edit">
         <label for="CMTamount">Price2(optional)</label>
@@ -109,13 +118,14 @@
       </div>
       <div class="form-group">
         <label for="contact">Contact Info</label>
-        <input
+        <textarea
+          rows="4"
           type="text"
           class="form-control"
           autocorrect="off"
           autocapitalize="off"
           id="contact"
-          placeholder="Email. Buyer contacts you."
+          placeholder="Leave your email(required) and/or other contact info like telegram The buyers will contact you with this info and send you the receiving address, etc."
           v-model="contact"
         />
         <small class="alert" v-if="contactIsEmpty">
@@ -148,7 +158,7 @@ import Contracts from "@/contracts.js";
 import ProcessingMask from "@/components/ProcessingMask.vue";
 import axios from "axios";
 import Global from "@/global.js";
-import { createHandler } from "@/global.js";
+import { createHandler, web3Callback } from "@/global.js";
 
 export default {
   name: "ProductInfo",
@@ -171,7 +181,10 @@ export default {
         instance: null,
         userAddress: ""
       },
-      contactIsEmpty: false
+      contactIsEmpty: false,
+      invalidTags: false,
+      maxTags: false,
+      emptyPrice: false
     };
   },
   props: ["edit", "contractAddr"],
@@ -334,25 +347,12 @@ export default {
               gasPrice: 0
             },
             function(e, txhash) {
-              if (e) {
-                console.log(e);
-              } else {
-                that.processing = true;
-                var filter = window.web3.cmt.filter("latest");
-                filter.watch(function(error, blockhash) {
-                  if (!error) {
-                    console.log(blockhash, txhash);
-                    window.web3.cmt.getBlock(blockhash, function(e, r) {
-                      console.log(blockhash, txhash, r.transactions);
-                      if (r.transactions.indexOf(txhash) != -1) {
-                        // filter.stopWatching(); mobile will be stuck here
-                        console.log("stop and redirect");
-                        that.$router.push("/listing/" + that.contractAddr);
-                      }
-                    });
-                  }
-                });
+              that.processing = true;
+              var reloc = {
+                router: that.$router,
+                href: "/listing/" + that.contractAddr
               }
+              web3Callback(e, txhash, reloc);
             }
           );
         } else setTimeout(checkUploadImg, 50);
@@ -361,6 +361,10 @@ export default {
     },
     createTrading() {
       var that = this;
+      if (this.amount == "" || this.amount == null) {
+        this.emptyPrice = true;
+        return;
+      }
       if (this.contact.trim() == "") {
         this.contactIsEmpty = true;
         return;
@@ -401,6 +405,38 @@ export default {
   computed: {
     USDunit: function() {
       return Global.USDunit;
+    }
+  },
+  watch: {
+    tags: function() {
+      if (this.tags.slice(0, 1) != "#") {
+        this.tags = this.tags.slice(1);
+        this.invalidTags = true;
+      } else {
+        this.invalidTags = false;
+      }
+      let tagArray = this.tags.split("#");
+      let n = tagArray.length;
+      if (n > 6) {
+        this.tags = this.tags
+          .split("#")
+          .slice(0, 6)
+          .join("#");
+        this.maxTags = true;
+      } else if (n <= 5) {
+        this.maxTags = false;
+      }
+    },
+    amount: function() {
+      if (
+        this.amount === undefined ||
+        this.amount === null ||
+        this.amount === ""
+      ) {
+        this.emptyPrice = true;
+      } else {
+        this.emptyPrice = false;
+      }
     }
   }
 };

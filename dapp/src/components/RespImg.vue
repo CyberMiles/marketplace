@@ -11,6 +11,9 @@ export default {
   computed: {
     srcset() {
       return `${this.newSrc}, ${this.newSrc} 2x`;
+    },
+    minHeight() {
+      return (window.innerWidth - 15) / 2; //px
     }
   },
   data() {
@@ -42,6 +45,8 @@ export default {
 </script>
 
 <style lang="stylus">
+margin-bottom (15/16)rem
+      width w = "calc((100% - %s)/2)" % good-margin
 img
   display block
   max-width 100%

@@ -168,7 +168,7 @@ contract Listing {
     */
     
 
-    function closeBySeller () external onlyOwner {
+    function closeBySeller () external {
         require (status == TradingStatus.LockedByBuyer);
         require (buyer.amount > 0);
         require (buyer.ts_escrow + escrow_period < now);
@@ -314,7 +314,7 @@ contract Listing {
                 token.transfer(buyer.addr, buyer.amount);
             }
             buyer.closedReason = ClosedReasons.ResolveByDAO;
-            status = TradingStatus.BuyerPaid;
+            status = TradingStatus.BuyerRefunded;            
         } else {
             // Transfer fund to seller now
             if (buyer.crc20 == 0x0000000000000000000000000000000000000000) {
@@ -324,7 +324,7 @@ contract Listing {
                 token.transfer(owner, buyer.amount);
             }
             buyer.closedReason = ClosedReasons.ResolveByDAO;
-            status = TradingStatus.BuyerRefunded;
+            status = TradingStatus.BuyerPaid;
         }
     }
     

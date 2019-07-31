@@ -8,7 +8,10 @@
       </span>
       <section>
         <h3>Goods Info</h3>
-        <div class="info-panel" @click="$router.push('/listing/' + contractAddr)">
+        <div
+          class="info-panel"
+          @click="$router.push('/listing/' + contractAddr)"
+        >
           <div class="order-goods-info">
             <div class="goods-img">
               <RespImg v-bind:src="order.goods.image" alt="" />
@@ -350,7 +353,7 @@ export default {
       else if (addr == this.order.buyer.addr) speaker = "buyer";
       return speaker;
     },
-    async remark() {
+    remark() {
       this.$router.push(`/remark/${this.contractAddr}`);
     }
   }

@@ -109,7 +109,12 @@
 <script>
 import RespImg from "@/components/RespImg.vue";
 import Contracts from "@/contracts.js";
-import { closeByBuyerHandler } from "@/global.js";
+import {
+  closeByBuyerHandler,
+  closeBySellerHandler,
+  disputeHandler,
+  refundHandler
+} from "@/global.js";
 
 export default {
   props: ["order", "role"],
@@ -181,7 +186,12 @@ export default {
         confirmButtonText: "Yes, receive it!"
       }).then(result => {
         if (result.value) {
-          that.confirmHandler();
+          var instance = that.createInstance(this.order.id);
+          var reloc = {
+            router: that.$router,
+            href: `/order/${that.role}/${that.order.id}`
+          };
+          closeByBuyerHandler(instance, reloc);
         }
       });
     },
@@ -198,56 +208,19 @@ export default {
         animation: false,
         confirmButtonText: "Yes, dispute!"
       }).then(result => {
-        if (result.value) that.disputeHandler();
-      });
-    },
-    confirmHandler() {
-      var instance = this.createInstance(this.order.id);
-      var reloc = {
-        router: this.$router,
-        href: `/order/${this.role}/${this.order.id}`
-      };
-      closeByBuyerHandler(instance, reloc);
-    },
-    disputeHandler() {
-      var instance = this.createInstance(this.order.id);
-      var that = this;
-      instance.dispute(
-        "", //prefilled dispute reason
-        {
-          gas: "400000",
-          gasPrice: 0
-        },
-        function(e, txhash) {
-          that.web3Callback(e, txhash);
+        if (result.value) {
+          var instance = that.createInstance(this.order.id);
+          disputeHandler(instance);
         }
-      );
+      });
     },
     receiveFund() {
       var instance = this.createInstance(this.order.id);
-      var that = this;
-      instance.closeBySeller(
-        {
-          gas: "400000",
-          gasPrice: 0
-        },
-        function(e, txhash) {
-          that.web3Callback(e, txhash);
-        }
-      );
+      closeBySellerHandler(instance);
     },
     cancelOrder() {
       var instance = this.createInstance(this.order.id);
-      var that = this;
-      instance.refund(
-        {
-          gas: "400000",
-          gasPrice: 0
-        },
-        function(e, txhash) {
-          that.web3Callback(e, txhash);
-        }
-      );
+      refundHandler(instance);
     },
     viewOrder(id) {
       if (!this.actionsPopShown && !this.explPopShown) {
@@ -255,28 +228,8 @@ export default {
       }
       this.$router.push(`/order/${this.role}/${id}`);
     },
-    async remark(id) {
+    remark(id) {
       this.$router.push(`/remark/${id}`);
-    },
-    web3Callback(e, txhash) {
-      if (e) {
-        console.log(e);
-      } else {
-        var filter = window.web3.cmt.filter("latest");
-        filter.watch(function(error, blockhash) {
-          if (!error) {
-            console.log(blockhash, txhash);
-            window.web3.cmt.getBlock(blockhash, function(e, r) {
-              console.log(blockhash, txhash, r.transactions);
-              if (r.transactions.indexOf(txhash) != -1) {
-                filter.stopWatching();
-                location.reload(true);
-                //TODO
-              }
-            });
-          }
-        });
-      }
     },
     createInstance(addr) {
       var contract = window.web3.cmt.contract(Contracts.Listing.abi);
