@@ -192,7 +192,6 @@ export default {
       else if (window.innerWidth > 600) homePadding = 60;
       let goodMargin = 0;
       if (window.innerWidth > 1000) {
-        console.log((parentWidth - goodMargin - 2 * homePadding) / 5)
         goodMargin = 80;
         return (parentWidth - goodMargin - 2 * homePadding) / 5;
       } else if (window.innerWidth > 800) {
