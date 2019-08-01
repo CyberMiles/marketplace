@@ -5,6 +5,7 @@ import Vue from "vue";
 import VueAnalytics from "vue-analytics";
 import Contracts from "@/contracts.js";
 import ES from "@/modules/es-ss.js";
+import publicPath from "../vue.config.js";
 
 Vue.use(VueAnalytics, {
   id: "UA-120065893-20"
@@ -367,7 +368,10 @@ function web3Pass(that, targetUrl = null) {
           if (result.value) {
             if (targetUrl !== null)
               that.$router.push(
-                `/download/reloc?=${window.location.origin + "/#" + targetUrl}`
+                `/download/reloc?=${window.location.origin +
+                  publicPath +
+                  "#" +
+                  targetUrl}`
               );
             else that.$router.push(`/download/reloc?=${window.location.href}`);
             // const webBrowser = new Browser.AppLink();
