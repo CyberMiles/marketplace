@@ -33,6 +33,7 @@ contract Listing {
         string refunded_reason;
 
         ClosedReasons closedReason;
+        string PGPkey;
 
     }
 
@@ -49,6 +50,8 @@ contract Listing {
         uint tmstp;
         string content;
     }
+
+    string public feedback; //expected a json string storing rating + comment
     
     address private USD_ADDR;
     address public DAO_ADDR;
@@ -65,6 +68,8 @@ contract Listing {
     uint private escrow_period;
     string private seller_contact;
     string image_urls;
+    string private seller_PGPkey;
+    string private buyer_PGPkey;
     
     event TransferCMT (address indexed to, uint256 value);
 
@@ -78,7 +83,7 @@ contract Listing {
         _;
     }
 
-    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2, address _DAO_ADDR, address _USD_ADDR) public {
+    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2, address _DAO_ADDR, address _USD_ADDR, string _seller_PGPkey) public {
         require(_amount_1 > 0);
 
         owner = msg.sender;
@@ -89,7 +94,8 @@ contract Listing {
         seller_contact = _seller_contact;
         image_urls = _image_urls;
         escrow_period = _escrow_period;
-        
+        seller_PGPkey = _seller_PGPkey;
+
         prices.push(Price(_crc20_1, _amount_1));
         
         status = TradingStatus.Listing;
@@ -98,7 +104,6 @@ contract Listing {
         
         USD_ADDR = _USD_ADDR;
         DAO_ADDR = _DAO_ADDR;
-        
         
     }
     
@@ -162,6 +167,11 @@ contract Listing {
         
         messageBoard.push(MsgPiece(msg.sender, now, words));
     }
+
+    function setFeedback(string _feedback) public {
+        require (buyer.ts_escrow + escrow_period < now);
+        feedback = _feedback;
+    }
     
     /*
         Seller Actions
@@ -216,7 +226,7 @@ contract Listing {
         Buyer Actions
     */
 
-    function buyWithCMT (string _name, string _contact, string _mesg) payable public {
+    function buyWithCMT (string _name, string _contact, string _mesg, string _buyer_PGPkey) payable public {
         require(status == TradingStatus.Listing);
 
         Price memory price;
@@ -229,11 +239,11 @@ contract Listing {
         require (price.amount > 0);
         require (msg.value >= price.amount);
 
-        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount, false, "", "", ClosedReasons.Succeed);
+        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey);
         status = TradingStatus.LockedByBuyer;
     }
     
-    function buyWithCRC20 (address _crc20, string _name, string _contact, string _mesg) public {
+    function buyWithCRC20 (address _crc20, string _name, string _contact, string _mesg, string _buyer_PGPkey) public {
         require(_crc20 != address(0));
         require(status == TradingStatus.Listing);
 
@@ -248,7 +258,7 @@ contract Listing {
 
         ICRC20 token = ICRC20(_crc20);
         require(token.transferFrom(msg.sender, address(this), price.amount));
-        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount, false, "", "", ClosedReasons.Succeed);
+        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey);
 
         status = TradingStatus.LockedByBuyer;
     }
