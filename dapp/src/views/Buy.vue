@@ -79,7 +79,7 @@
       <div style="text-align:center;margin-top:20px;">
         <router-link :to="`/listing/${contractAddr}`">Cancel</router-link>
       </div>
-      <div class="payment-tip">
+      <div class="payment-tip markdown-body">
         <vue-markdown>### Attention!
 Tokens will be locked in the contract for {{ escrowPeriod }} days.
           
