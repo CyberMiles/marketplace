@@ -41,7 +41,7 @@ function createHandler(contract, obj, bin, fromUser, that) {
     obj.amount_2,
     Global.DAOaddr,
     Global.USDaddr
-  ])
+  ]);
   var redirected = false;
   var data =
     "0x" +
@@ -80,7 +80,7 @@ function createHandler(contract, obj, bin, fromUser, that) {
     {
       from: fromUser,
       data: data,
-      gas: "9999000",
+      gas: "99990000",
       gasPrice: 2000000000
     },
     function(e, instance) {

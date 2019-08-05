@@ -355,7 +355,7 @@ export default {
             amount2Addr,
             parseInt(amount2),
             {
-              gas: "9999000",
+              gas: "99990000",
               gasPrice: 2000000000
             },
             function(e, txhash) {
