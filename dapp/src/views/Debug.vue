@@ -17,13 +17,9 @@
 ### More Information:
 
 #### Error Info
-- url: {{ errorURL }}
-- error: {{ errorMsg }}
-- web3 call tx: {{ txHash }}
-- web3 call method: {{ callMethod }}
+{{ errorParams }}
 
 #### DApp Info
-- url: {{ errorURL }}
 - rpc endpoint: {{ rpcEndpoint }}
 - es endpoint: {{ esEndpoint }}
 - abiSha: {{ abiShaList }}
@@ -48,7 +44,7 @@
 </template>
 
 <script>
-// Eg URL: http://localhost:8080/#/debug?errorURL=https%3A%2F%2Fdfd&txHash=0x123
+// Eg URL: https://cybermiles.github.io/marketplace/#/debug?errorURL=https%3A%2F%2Fabd&txHash=0x123&error=null&callMethod=null
 import Global from "@/global.js";
 import VueMarkdown from "vue-markdown";
 
@@ -56,22 +52,20 @@ export default {
   components: {
     VueMarkdown
   },
+  data() {
+    return {
+      errorParams: ""
+    };
+  },
+  created() {
+    let searchs = new URLSearchParams(window.location.href.split("debug?")[1]);
+    var entries = searchs.entries();
+    for (let pair of entries) { 
+      console.log(pair[0], pair[1]);
+      this.errorParams += "- " + pair[0] + ":  " + pair[1] + "\n";
+    }
+  },
   computed: {
-    errorURL: function() {
-      return decodeURIComponent(
-        window.location.href.split("errorURL=")[1].split("&")[0]
-      );
-    },
-    txHash: function() {
-      return decodeURIComponent(
-        window.location.href.split("txHash=")[1].split("&")[0]
-      );
-    },
-    callMethod: function() {
-      return decodeURIComponent(
-        window.location.href.split("callMethod=")[1].split("&")[0]
-      );
-    },
     abiShaList: function() {
       return Global.abiShaList;
     },
