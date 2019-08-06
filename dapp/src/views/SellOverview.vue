@@ -40,7 +40,7 @@
 
 <script>
 import axios from "axios";
-import { queryOptions, makeQuery } from "@/global.js";
+import { queryOptions, makeQuery, goDebug } from "@/global.js";
 
 export default {
   data() {
@@ -61,7 +61,11 @@ export default {
       try {
         window.web3.cmt.getAccounts(function(e, address) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "getAccounts",
+              e: e
+            });
           } else {
             that.userAddress = address.toString();
             axios(queryOptions(makeQuery(["1"], that.userAddress))).then(r => {

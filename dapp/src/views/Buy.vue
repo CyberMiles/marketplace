@@ -98,7 +98,7 @@ import Contracts from "@/contracts.js";
 import global from "@/global.js";
 import LoadingMask from "@/components/LoadingMask.vue";
 import ProcessingMask from "@/components/ProcessingMask.vue";
-import { web3Pass } from "@/global.js";
+import { web3Pass, goDebug } from "@/global.js";
 import VueMarkdown from "vue-markdown";
 
 export default {
@@ -154,7 +154,6 @@ export default {
     initBuyPage() {
       var contract_address = this.$route.params.contractAddr;
       this.contractAddr = contract_address;
-      console.log(contract_address);
       var that = this;
       //set timeout to check web3, because sometimes once mounted, the web3 hasn't been injected
       var checkWeb3 = function() {
@@ -164,17 +163,23 @@ export default {
           }
           window.web3.cmt.getAccounts(function(e, address) {
             if (e) {
-              console.log(e);
+              goDebug({
+                txhash: "null",
+                callMethod: "instance.getAccounts",
+                e: e
+              });
             } else {
               var userAddress = address.toString();
-              console.log(userAddress);
               var contract = window.web3.cmt.contract(Contracts.Listing.abi);
               var instance = contract.at(contract_address);
               that.instance = instance;
               instance.getPricesCount(function(e, pricesCount) {
                 if (e) {
-                  console.log(e);
-                  that.$router.push(`/`);
+                  goDebug({
+                    txhash: "null",
+                    callMethod: "instance.getPricesCount",
+                    e: e
+                  });
                 } else {
                   for (let i = 0; i < pricesCount; i++) {
                     instance.getPrice(i, function(e_price, r_price) {
@@ -222,7 +227,11 @@ export default {
 
               instance.info(function(e, info) {
                 if (e) {
-                  console.log(e);
+                  goDebug({
+                    txhash: "null",
+                    callMethod: "instance.info",
+                    e: e
+                  });
                 } else {
                   that.goodTitle = info[1];
                   if (info[0].toNumber() !== 1) {
@@ -242,7 +251,11 @@ export default {
                 },
                 function(e, USDbalance) {
                   if (e) {
-                    console.log(e);
+                    goDebug({
+                      txhash: "null",
+                      callMethod: "instanceUSD.balanceOf",
+                      e: e
+                    });
                   } else {
                     that.balance.USD = USDbalance;
                   }
@@ -250,7 +263,11 @@ export default {
               );
               window.web3.cmt.getBalance(userAddress, function(e, CMTbalance) {
                 if (e) {
-                  console.log(e);
+                  goDebug({
+                    txhash: "null",
+                    callMethod: "getBalance",
+                    e: e
+                  });
                 } else {
                   that.balance.CMT = CMTbalance;
                 }
@@ -295,7 +312,11 @@ export default {
           },
           function(e, txhash) {
             if (e) {
-              console.log(e);
+              goDebug({
+                txhash: txhash,
+                callMethod: "null",
+                e: e
+              });
             } else {
               that.$router.replace(`/complete/${that.contractAddr}/${txhash}`);
             }
@@ -311,9 +332,13 @@ export default {
             gas: "200000",
             gasPrice: 0
           },
-          function(error) {
+          function(error, txhash) {
             if (error) {
-              console.log(error);
+              goDebug({
+                txhash: txhash,
+                callMethod: "null",
+                e: error
+              });
             } else {
               that.instance.buyWithCRC20(
                 crc20,
@@ -326,7 +351,11 @@ export default {
                 },
                 function(e, txhash) {
                   if (e) {
-                    console.log(e);
+                    goDebug({
+                      txhash: "txhash",
+                      callMethod: "null",
+                      e: e
+                    });
                   } else {
                     that.$router.replace(
                       `/complete/${that.contractAddr}/${txhash}`

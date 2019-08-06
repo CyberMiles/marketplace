@@ -25,6 +25,7 @@
 </template>
 <script>
 import { setTimeout } from "timers";
+import { goDebug } from "@/global.js";
 
 export default {
   data() {
@@ -41,7 +42,11 @@ export default {
           that.$route.params.txHash,
           function(e, receipt) {
             if (e) {
-              console.log(e);
+              goDebug({
+                txhash: "null",
+                callMethod: "getTransactionReceipt",
+                e: e
+              });
             } else {
               if (receipt == null) setTimeout(getReceipt, 100);
               else {

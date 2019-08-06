@@ -152,7 +152,8 @@ import {
   closeBySellerHandler,
   refundHandler,
   disputeHandler,
-  compare
+  compare,
+  goDebug
 } from "@/global.js";
 import { setTimeout } from "timers";
 
@@ -208,7 +209,11 @@ export default {
         }
         window.web3.cmt.getAccounts(function(e, address) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "getAccounts",
+              e: e
+            });
           } else {
             // This method should return much faster than network methods
             userAddress = address.toString();
@@ -220,8 +225,11 @@ export default {
         that.instance = instance;
         instance.info(function(e, r) {
           if (e) {
-            console.log(e);
-            that.$router.push(`/`);
+            goDebug({
+              txhash: "null",
+              callMethod: "instance.info",
+              e: e
+            });
           } else {
             if (r[0] == 2) that.order.status = "paid";
             else if (r[0] == 3) that.order.status = "dispute";
@@ -245,7 +253,11 @@ export default {
         });
         instance.buyerInfo(function(e, b_r) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "instance.buyerInfo",
+              e: e
+            });
           } else {
             var unit = "";
             var amount = "";
@@ -272,19 +284,31 @@ export default {
         });
         instance.secondaryBuyerInfo(function(e, s_r) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "instance.secondaryBuyerInfo",
+              e: e
+            });
           } else {
             that.order.buyer.closedReason = s_r[1];
           }
         });
         instance.getMessagesCount(function(e, r) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "instance.getMessagesCount",
+              e: e
+            });
           } else {
             for (let i = 0; i < r; i++) {
               instance.showMessageBoard(i, function(e, msg) {
                 if (e) {
-                  console.log(e);
+                  goDebug({
+                    txhash: "null",
+                    callMethod: "instance.showMessageBoard",
+                    e: e
+                  });
                 } else {
                   that.messageBoard.push({
                     id: i,

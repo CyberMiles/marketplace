@@ -10,7 +10,13 @@
 import OrderCard from "@/components/OrderCard.vue";
 import Footer from "@/components/Footer.vue";
 import axios from "axios";
-import { computePayment, compare, makeQuery, queryOptions } from "@/global.js";
+import {
+  computePayment,
+  compare,
+  makeQuery,
+  queryOptions,
+  goDebug
+} from "@/global.js";
 
 export default {
   name: "sellOrders",
@@ -34,7 +40,11 @@ export default {
       try {
         window.web3.cmt.getAccounts(function(e, address) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "getAccounts",
+              e: e
+            });
           } else {
             that.userAddr = address.toString();
           }

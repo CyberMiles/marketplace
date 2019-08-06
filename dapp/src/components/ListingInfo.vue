@@ -28,7 +28,7 @@
     </section>
     <section class="desc-sec">
       <h3>Description</h3>
-      <p class="wrap-text markdown-body">
+      <p class="markdown-body">
         <vue-markdown v-bind:source="ProductInfo.desc">...</vue-markdown>
       </p>
     </section>
@@ -50,7 +50,9 @@ import Contracts from "@/contracts.js";
 import RespImg from "@/components/RespImg";
 import axios from "axios";
 import Global from "@/global.js";
+import { goDebug } from "@/global.js";
 import VueMarkdown from "vue-markdown";
+import config from "../../vue.config.js";
 
 export default {
   name: "ListingInfo",
@@ -91,7 +93,11 @@ export default {
           }
           window.web3.cmt.getAccounts(function(e, address) {
             if (e) {
-              console.log(e);
+              goDebug({
+                txHash: "null",
+                callMethod: "getAccounts",
+                error: e
+              });
             } else {
               var userAddress = address.toString();
 
@@ -100,8 +106,11 @@ export default {
 
               instance.info(function(e, r) {
                 if (e) {
-                  console.log(e);
-                  that.$router.push(`/`);
+                  goDebug({
+                    txHash: "null",
+                    callMethod: "instance.info",
+                    error: e
+                  });
                 } else {
                   console.log(r);
                   // console.log(r[3]);

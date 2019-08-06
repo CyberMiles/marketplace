@@ -166,7 +166,7 @@ import Contracts from "@/contracts.js";
 import ProcessingMask from "@/components/ProcessingMask.vue";
 import axios from "axios";
 import Global from "@/global.js";
-import { createHandler, web3Callback } from "@/global.js";
+import { createHandler, web3Callback, goDebug } from "@/global.js";
 import Toast from "@/components/Toast.vue";
 
 Vue.use(Toast);
@@ -219,7 +219,11 @@ export default {
             }
             window.web3.cmt.getAccounts(function(e, address) {
               if (e) {
-                console.log(e);
+                goDebug({
+                  txHash: "null",
+                  callMethod: "getAccounts",
+                  error: e
+                });
               } else {
                 var userAddress = address.toString();
 
@@ -230,8 +234,11 @@ export default {
 
                 instance.info(function(e, r) {
                   if (e) {
-                    console.log(e);
-                    that.$router.push(`/`);
+                    goDebug({
+                      txHash: "null",
+                      callMethod: "instance.info",
+                      error: e
+                    });
                   } else {
                     console.log(r[3]);
                     that.title = r[1];
@@ -245,7 +252,11 @@ export default {
                 });
                 instance.getPricesCount(function(e, pricesCount) {
                   if (e) {
-                    console.log(e);
+                    goDebug({
+                      txHash: "null",
+                      callMethod: "instance.getPricesCount",
+                      error: e
+                    });
                   } else {
                     for (let i = 0; i < pricesCount; i++) {
                       instance.getPrice(i, function(e_price, r_price) {
@@ -391,7 +402,11 @@ export default {
       }
       window.web3.cmt.getAccounts(function(e, addr) {
         if (e) {
-          console.log(e);
+          goDebug({
+            txHash: "null",
+            callMethod: "getAccounts",
+            error: e
+          });
         } else {
           var userAddress = addr.toString();
           console.log(that.imageUrls.length, that.images.length);

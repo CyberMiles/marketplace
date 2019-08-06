@@ -173,7 +173,6 @@ export default {
       return this.UA.match(/iPhone|iPad|iPod/i) ? true : false;
     },
     relocHref: function() {
-      console.log(decodeURIComponent(window.location.href.split("reloc?=")[1]));
       return decodeURIComponent(window.location.href.split("reloc?=")[1]);
     }
   }
