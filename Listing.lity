@@ -1,5 +1,7 @@
 pragma lity >=1.2.6;
 
+import "./json.lity";
+
 interface ICRC20 {
     function totalSupply() external view returns (uint256);
     function balanceOf(address account) external view returns (uint256);
@@ -13,7 +15,7 @@ interface ICRC20 {
 }
 
 contract Listing {
-
+    using JSON for JSON.ValueRef;
     address public owner;
     
     enum ClosedReasons { Refund, ResolveByDAO, ResolveByBuyer, Succeed }
@@ -57,6 +59,9 @@ contract Listing {
     address public DAO_ADDR;
     
     MsgPiece[] messageBoard;
+    
+    mapping (string => mapping(address => uint)) private ShippingCost;
+    string[] shippingRegions;
 
     enum TradingStatus {Unlisting, Listing, LockedByBuyer, Dispute, BuyerPaid, BuyerRefunded, Processing}
 
@@ -83,7 +88,7 @@ contract Listing {
         _;
     }
 
-    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2, address _DAO_ADDR, address _USD_ADDR, string _seller_PGPkey) public {
+    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2, address _DAO_ADDR, address _USD_ADDR, string _json_shipping_cost, string _seller_PGPkey) public {
         require(_amount_1 > 0);
 
         owner = msg.sender;
@@ -94,6 +99,7 @@ contract Listing {
         seller_contact = _seller_contact;
         image_urls = _image_urls;
         escrow_period = _escrow_period;
+        // setupShippingcost(_json_shipping_cost);
         seller_PGPkey = _seller_PGPkey;
 
         prices.push(Price(_crc20_1, _amount_1));
@@ -173,6 +179,51 @@ contract Listing {
         feedback = _feedback;
     }
     
+    
+    /*
+    Expected JSON string is like:
+    "[
+        {
+            "dest":"Shanghai",
+            "cost":
+            [
+                {
+                    "coinAddr":"0x0000000000000000000000000000000000000000",
+                    "amount":50000
+                },
+                {
+                    "coinAddr":"0x6b50000354fa74A4f384B9Ff35108Eb89d652409",
+                    "amount":10000
+                }
+            ]
+        },
+        {
+            "dest":"Shanghai",
+            "cost":
+            [
+                {
+                    "coinAddr":"0x0000000000000000000000000000000000000000",
+                    "amount":90000
+                }
+            ]
+        },
+    ]"
+    */
+    function setupShippingcost(string _json_shipping_cost) public {
+        JSON.ValueRef memory root = JSON.newValueRef(_json_shipping_cost);
+        JSON.ValueRef[] memory list_items = root.asArray(_json_shipping_cost);
+        for (uint i = 0; i < list_items.length; i++) {
+            string memory dest = list_items[i].objectGet(_json_shipping_cost, "dest").asString(_json_shipping_cost);
+            JSON.ValueRef[] memory costs = list_items[i].objectGet(_json_shipping_cost, "cost").asArray(_json_shipping_cost);
+            shippingRegions.push(dest);
+            for (uint j = 0; j < costs.length; j++) {
+                address coinAddr = costs[j].objectGet(_json_shipping_cost, "coinAddr").asAddress(_json_shipping_cost); 
+                int amount = costs[j].objectGet(_json_shipping_cost, "amount").asInt(_json_shipping_cost);
+                ShippingCost[dest][coinAddr] = uint(amount);
+            }
+        }
+    }
+
     /*
         Seller Actions
     */
@@ -226,7 +277,7 @@ contract Listing {
         Buyer Actions
     */
 
-    function buyWithCMT (string _name, string _contact, string _mesg, string _buyer_PGPkey) payable public {
+    function buyWithCMT (string _name, string _contact, string _mesg, string _shipping_dest, string _buyer_PGPkey) payable public {
         require(status == TradingStatus.Listing);
 
         Price memory price;
@@ -236,14 +287,17 @@ contract Listing {
                 price = prices[i];
             }
         }
+        
+        uint shipping_amount = ShippingCost[_shipping_dest][price.crc20];
+        
         require (price.amount > 0);
-        require (msg.value >= price.amount);
+        require (msg.value >= price.amount + shipping_amount);
 
-        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey);
+        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount + shipping_amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey);
         status = TradingStatus.LockedByBuyer;
     }
     
-    function buyWithCRC20 (address _crc20, string _name, string _contact, string _mesg, string _buyer_PGPkey) public {
+    function buyWithCRC20 (address _crc20, string _name, string _contact, string _mesg, string _shipping_dest, string _buyer_PGPkey) public {
         require(_crc20 != address(0));
         require(status == TradingStatus.Listing);
 
@@ -254,11 +308,14 @@ contract Listing {
                 price = prices[i];
             }
         }
+        
+        uint shipping_amount = ShippingCost[_shipping_dest][price.crc20];
+        
         require (price.amount > 0);
 
         ICRC20 token = ICRC20(_crc20);
-        require(token.transferFrom(msg.sender, address(this), price.amount));
-        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey);
+        require(token.transferFrom(msg.sender, address(this), price.amount + shipping_amount));
+        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount + shipping_amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey);
 
         status = TradingStatus.LockedByBuyer;
     }
@@ -367,6 +424,18 @@ contract Listing {
 
     function getPrice(uint index) public view returns(address, uint) {
         return (prices[index].crc20, prices[index].amount);
+    }
+
+    function getShippingCost(string region, address coinAddr) public view returns(uint) {
+        return ShippingCost[region][coinAddr];
+    }
+    
+    function getShippingRegionsCount() public view returns(uint){
+        return shippingRegions.length;
+    }
+    
+    function getShippingRegion(uint index)public view returns(string) {
+        return shippingRegions[index];
     }
 
     function info () view public returns (uint, string, string, string, string, uint, string, uint, address, address) {
