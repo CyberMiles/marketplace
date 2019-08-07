@@ -10,6 +10,7 @@
 import normalize from "normalize-styl";
 import iconfont from "@/components/Icofont.vue";
 import TransitionPage from "@/components/Transition.vue";
+import mdStyle from "github-markdown-css";
 
 export default {
   components: {

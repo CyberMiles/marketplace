@@ -50,7 +50,7 @@ import Footer from "@/components/Footer.vue";
 import ProfileOrders from "@/views/ProfileOrders.vue";
 import SellOverview from "@/views/SellOverview.vue";
 import LoadingMask from "@/components/LoadingMask.vue";
-import { web3Pass } from "@/global.js";
+import { web3Pass, goDebug } from "@/global.js";
 
 Vue.use(Clipboard);
 Vue.use(Toast);
@@ -84,7 +84,11 @@ export default {
       try {
         window.web3.cmt.getAccounts(function(e, address) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "getAccounts",
+              e: e
+            });
           } else {
             that.userAddr = address.toString();
           }

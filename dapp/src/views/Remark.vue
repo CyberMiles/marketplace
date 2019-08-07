@@ -32,7 +32,7 @@
 import Contracts from "@/contracts.js";
 import ProcessingMask from "@/components/ProcessingMask.vue";
 import { setTimeout } from "timers";
-import { compare, remarkHandler } from "@/global.js";
+import { compare, remarkHandler, goDebug } from "@/global.js";
 
 export default {
   data() {
@@ -65,7 +65,11 @@ export default {
         that.instance = instance;
         instance.info(function(e, r) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "instance.info",
+              e: e
+            });
           } else {
             that.order.seller = {
               addr: r[8]
@@ -74,7 +78,11 @@ export default {
         });
         instance.buyerInfo(function(e, b_r) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "instance.buyerInfo",
+              e: e
+            });
           } else {
             that.order.buyer = {
               addr: b_r[0]
@@ -83,12 +91,20 @@ export default {
         });
         instance.getMessagesCount(function(e, r) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "instance.getMessagesCount",
+              e: e
+            });
           } else {
             for (let i = 0; i < r; i++) {
               instance.showMessageBoard(i, function(e, msg) {
                 if (e) {
-                  console.log(e);
+                  goDebug({
+                    txhash: "null",
+                    callMethod: "instance.showMessageBoard",
+                    e: e
+                  });
                 } else {
                   that.messageBoard.push({
                     id: i,

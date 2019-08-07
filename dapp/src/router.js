@@ -15,6 +15,7 @@ import BuyCompletePage from "./views/BuyComplete.vue";
 import CreatingPage from "./views/Creating.vue";
 import DownloadPage from "./views/Download.vue";
 import DisputePage from "./views/DisputeBoard.vue";
+import DebugPage from "./views/Debug.vue";
 import Global from "@/global.js";
 
 Vue.use(Router);
@@ -166,6 +167,14 @@ export default new Router({
       component: DisputePage,
       meta: {
         title: "Dispute Board"
+      }
+    },
+    {
+      path: "/debug",
+      name: "debug",
+      component: DebugPage,
+      meta: {
+        title: "Error"
       }
     }
   ]

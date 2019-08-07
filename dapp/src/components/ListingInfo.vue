@@ -26,9 +26,9 @@
         </li>
       </ul>
     </section>
-    <section>
+    <section class="desc-sec">
       <h3>Description</h3>
-      <p class="wrap-text">
+      <p class="markdown-body">
         <vue-markdown v-bind:source="ProductInfo.desc">...</vue-markdown>
       </p>
     </section>
@@ -50,7 +50,9 @@ import Contracts from "@/contracts.js";
 import RespImg from "@/components/RespImg";
 import axios from "axios";
 import Global from "@/global.js";
+import { goDebug } from "@/global.js";
 import VueMarkdown from "vue-markdown";
+import config from "../../vue.config.js";
 
 export default {
   name: "ListingInfo",
@@ -91,7 +93,11 @@ export default {
           }
           window.web3.cmt.getAccounts(function(e, address) {
             if (e) {
-              console.log(e);
+              goDebug({
+                txHash: "null",
+                callMethod: "getAccounts",
+                error: e
+              });
             } else {
               var userAddress = address.toString();
 
@@ -100,8 +106,11 @@ export default {
 
               instance.info(function(e, r) {
                 if (e) {
-                  console.log(e);
-                  that.$router.push(`/`);
+                  goDebug({
+                    txHash: "null",
+                    callMethod: "instance.info",
+                    error: e
+                  });
                 } else {
                   console.log(r);
                   // console.log(r[3]);
@@ -178,7 +187,6 @@ export default {
   }
 };
 </script>
-
 <style lang="stylus">
 .listing-info
   margin-bottom (50/16)rem
@@ -216,7 +224,7 @@ export default {
         display block
         width (60/16)rem
         height (60/16)rem
-  h1
+  .wrap-text
     font-size (17/16)rem
     font-weight 500
     line-height 1.4
@@ -241,8 +249,25 @@ export default {
       color #666666
       background-color #f0f0f0
       text-decoration none
-  section
-    padding (20/16)rem (15/16)rem
+  .desc-sec
+    padding 45px
+    @media screen and (max-width: 767px)
+      padding (20/16)rem (15/16)rem
+    margin-bottom (8/16)rem
+    box-shadow 0 0.5px 0 0 #e5e5e5
+    background-color #ffffff
+    .markdown-body
+      box-sizing border-box
+      min-width 200px
+      max-width 980px
+      margin 0 auto
+      padding 45px
+      @media screen and (max-width: 767px)
+        padding 0
+  section:not(.desc-sec)
+    padding 45px
+    @media screen and (max-width: 767px)
+      padding (20/16)rem (15/16)rem
     margin-bottom (8/16)rem
     box-shadow 0 0.5px 0 0 #e5e5e5
     background-color #ffffff

@@ -44,6 +44,9 @@
           @click="$refs.myFiles.click()"
           class="plus-btn"
         />
+        <small class="alert" v-if="emptyPics && images.length == 0">
+          Upload at least 1 picture.
+        </small>
       </div>
       <div class="form-group">
         <label for="title">Name</label>
@@ -144,7 +147,11 @@
         <a @click="$router.go(-1)" class="create-btn left-btn"
           ><span>Cancel</span></a
         >
-        <a href="#" class="create-btn right-btn" @click="createTrading"
+        <a
+          href="#"
+          class="create-btn right-btn"
+          @click="createTrading"
+          v-bind:class="{ gray: notReady }"
           ><span>List</span></a
         >
       </div>
@@ -154,11 +161,15 @@
 </template>
 
 <script>
+import Vue from "vue";
 import Contracts from "@/contracts.js";
 import ProcessingMask from "@/components/ProcessingMask.vue";
 import axios from "axios";
 import Global from "@/global.js";
-import { createHandler, web3Callback } from "@/global.js";
+import { createHandler, web3Callback, goDebug } from "@/global.js";
+import Toast from "@/components/Toast.vue";
+
+Vue.use(Toast);
 
 export default {
   name: "ProductInfo",
@@ -183,8 +194,9 @@ export default {
       },
       contactIsEmpty: false,
       invalidTags: false,
-      maxTags: false,
-      emptyPrice: false
+      emptyPrice: false,
+      emptyPics: false,
+      maxTags: false
     };
   },
   props: ["edit", "contractAddr"],
@@ -207,7 +219,11 @@ export default {
             }
             window.web3.cmt.getAccounts(function(e, address) {
               if (e) {
-                console.log(e);
+                goDebug({
+                  txHash: "null",
+                  callMethod: "getAccounts",
+                  error: e
+                });
               } else {
                 var userAddress = address.toString();
 
@@ -218,8 +234,11 @@ export default {
 
                 instance.info(function(e, r) {
                   if (e) {
-                    console.log(e);
-                    that.$router.push(`/`);
+                    goDebug({
+                      txHash: "null",
+                      callMethod: "instance.info",
+                      error: e
+                    });
                   } else {
                     console.log(r[3]);
                     that.title = r[1];
@@ -233,7 +252,11 @@ export default {
                 });
                 instance.getPricesCount(function(e, pricesCount) {
                   if (e) {
-                    console.log(e);
+                    goDebug({
+                      txHash: "null",
+                      callMethod: "instance.getPricesCount",
+                      error: e
+                    });
                   } else {
                     for (let i = 0; i < pricesCount; i++) {
                       instance.getPrice(i, function(e_price, r_price) {
@@ -344,15 +367,15 @@ export default {
             parseInt(amount2),
             Global.SampleShippingCost,
             {
-              gas: "400000",
-              gasPrice: 0
+              gas: "99990000",
+              gasPrice: 2000000000
             },
             function(e, txhash) {
               that.processing = true;
               var reloc = {
                 router: that.$router,
                 href: "/listing/" + that.contractAddr
-              }
+              };
               web3Callback(e, txhash, reloc);
             }
           );
@@ -362,6 +385,10 @@ export default {
     },
     createTrading() {
       var that = this;
+      if (this.images.length == 0) {
+        this.emptyPics = true;
+        return;
+      }
       if (this.amount == "" || this.amount == null) {
         this.emptyPrice = true;
         return;
@@ -370,9 +397,17 @@ export default {
         this.contactIsEmpty = true;
         return;
       }
+      if (this.notReady) {
+        this.$toast("Please waiting for pictures uploaded.");
+        return;
+      }
       window.web3.cmt.getAccounts(function(e, addr) {
         if (e) {
-          console.log(e);
+          goDebug({
+            txHash: "null",
+            callMethod: "getAccounts",
+            error: e
+          });
         } else {
           var userAddress = addr.toString();
           console.log(that.imageUrls.length, that.images.length);
@@ -406,6 +441,9 @@ export default {
   computed: {
     USDunit: function() {
       return Global.USDunit;
+    },
+    notReady: function() {
+      return this.imageUrls.length !== this.images.length;
     }
   },
   watch: {
@@ -437,6 +475,13 @@ export default {
         this.emptyPrice = true;
       } else {
         this.emptyPrice = false;
+      }
+    },
+    contact: function() {
+      if (this.contact === "") {
+        this.contactIsEmpty = true;
+      } else {
+        this.contactIsEmpty = false;
       }
     }
   }
@@ -530,4 +575,8 @@ export default {
   .left-btn
     width 45%
     display inline-flex
+  .gray
+    background #ccc !important
+    box-shadow none !important
+    color #fff
 </style>

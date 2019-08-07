@@ -43,7 +43,8 @@ import {
   unlistHandler,
   relistHandler,
   createHandler,
-  compare
+  compare,
+  goDebug
 } from "@/global.js";
 import Global from "@/global.js";
 import Contracts from "@/contracts.js";
@@ -65,7 +66,11 @@ export default {
       try {
         window.web3.cmt.getAccounts(function(e, address) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "getAccounts",
+              e: e
+            });
           } else {
             that.userAddress = address.toString();
             axios(

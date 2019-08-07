@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "^2.6.5",
+    "github-markdown-css": "^3.0.1",
     "normalize-styl": "^4.1.1",
     "v-clipboard": "^2.2.2",
     "vue": "^2.6.10",

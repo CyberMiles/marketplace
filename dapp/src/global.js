@@ -95,7 +95,11 @@ function createHandler(contract, obj, bin, fromUser, that) {
     },
     function(e, instance) {
       if (e) {
-        console.log(e);
+        goDebug({
+          txHash: instance.transactionHash,
+          callMethod: "null",
+          error: e
+        });
       } else {
         var txhash = instance.transactionHash;
         if (!redirected) {
@@ -225,16 +229,39 @@ function remarkHandler(instance, text, reloc = "") {
   );
 }
 
+function goDebug(debugInfo) {
+  let debugURL =
+    window.location.origin +
+    config.publicPath +
+    "#" +
+    "debug?errorURL=" +
+    window.location.href +
+    "&txHash=" +
+    debugInfo.txhash +
+    "&callMethod=" +
+    debugInfo.callMethod +
+    "&error=" +
+    debugInfo.e;
+  location.href = debugURL;
+}
+
 function web3Callback(e, txhash, reloc) {
   if (e) {
-    console.log(e);
-    location.reload(true);
+    goDebug({
+      txhash: txhash,
+      callMethod: "null",
+      e: e
+    });
   } else {
     var getReceipt = function() {
       try {
         window.web3.cmt.getTransactionReceipt(txhash, function(e, receipt) {
           if (e) {
-            console.log(e);
+            goDebug({
+              txhash: "null",
+              callMethod: "getTransactionReceipt",
+              e: e
+            });
           } else {
             if (receipt == null) setTimeout(getReceipt, 100);
             else {
@@ -429,5 +456,6 @@ export {
   compare,
   computePayment,
   web3Pass,
-  web3Callback
+  web3Callback,
+  goDebug
 };
