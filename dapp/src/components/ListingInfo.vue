@@ -52,7 +52,6 @@ import axios from "axios";
 import Global from "@/global.js";
 import { goDebug } from "@/global.js";
 import VueMarkdown from "vue-markdown";
-import config from "../../vue.config.js";
 
 export default {
   name: "ListingInfo",
@@ -126,6 +125,9 @@ export default {
                     buyerAddress: r[9].toString(),
                     contact: r[4]
                   };
+                  document.title = `${that.ProductInfo.title} — ${
+                    Global.ProductName
+                  }`;
                   // console.log(that.ProductInfo);
                   that.headImg = that.ProductInfo.images[0];
                   that.isSeller = userAddress == that.ProductInfo.seller;
@@ -184,7 +186,7 @@ export default {
         that.sellerCompletedNumber = r.data.length;
       });
     }
-  }
+  },
 };
 </script>
 <style lang="stylus">
