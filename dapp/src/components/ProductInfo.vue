@@ -342,6 +342,7 @@ export default {
             parseInt(parseFloat(that.amount) * 100), // the OPB is 2 decimals,
             amount2Addr,
             parseInt(amount2),
+            Global.SampleShippingCost,
             {
               gas: "400000",
               gasPrice: 0

@@ -74,7 +74,6 @@ contract Listing {
     string private seller_contact;
     string image_urls;
     string private seller_PGPkey;
-    string private buyer_PGPkey;
     
     event TransferCMT (address indexed to, uint256 value);
 
@@ -116,7 +115,7 @@ contract Listing {
     /*
     Setters
     */
-    function updateListing (string _title, string _desc, string _tags, string _image_urls, string _contact, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2) external onlyOwner {
+    function updateListing (string _title, string _desc, string _tags, string _image_urls, string _contact, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2, string _json_shipping_cost) external onlyOwner {
         require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);
         title = _title;
         desc = _desc;
@@ -125,27 +124,33 @@ contract Listing {
         seller_contact = _contact;
         setPrice(_crc20_1, _amount_1);
         setPrice(_crc20_2, _amount_2);
+        //setupShippingcost(_json_shipping_cost);
+    }
+    
+    function setSellerPGPkey(string _seller_PGPkey) public onlyOwner {
+        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);
+        seller_PGPkey = _seller_PGPkey;
     }
 
-    function setTitle (string _title) external onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-        title = _title;
-    }
+    // function setTitle (string _title) external onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
+    //     title = _title;
+    // }
     
-    function setDesc (string _desc) external onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-        desc = _desc;
-    }
+    // function setDesc (string _desc) external onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
+    //     desc = _desc;
+    // }
     
-    function setTags (string _tags) external onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-        tags = _tags;
-    }
+    // function setTags (string _tags) external onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
+    //     tags = _tags;
+    // }
     
-    function setCategories (string _categories) external onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-        categories = _categories;
-    }
+    // function setCategories (string _categories) external onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
+    //     categories = _categories;
+    // }
     
     function setEscrowPeriod (uint _escrow_period) external onlyOwner {
         require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
@@ -438,6 +443,14 @@ contract Listing {
         return shippingRegions[index];
     }
 
+    function getSellerPGPkey() public view returns(string) {
+        return seller_PGPkey;
+    }
+
+    function getBuyerPGPkey() public view returns(string) {
+        return buyer.PGPkey;
+    }
+ 
     function info () view public returns (uint, string, string, string, string, uint, string, uint, address, address) {
         //fetch USD price
         uint USD_amount;

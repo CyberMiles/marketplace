@@ -288,6 +288,8 @@ export default {
           "",
           this.contact,
           this.remark,
+          global.SampleShippingDest,
+          global.SampleBuyerPGPKey,
           {
             gas: "400000",
             gasPrice: 0,
@@ -320,6 +322,8 @@ export default {
                 "",
                 that.contact,
                 that.remark,
+                global.SampleShippingDest,
+                global.SampleBuyerPGPKey,
                 {
                   gas: "400000",
                   gasPrice: 0

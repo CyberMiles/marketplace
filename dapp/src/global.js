@@ -23,7 +23,11 @@ export default {
   escrowPeriod: 60 * 60 * 24 * 10,
   HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
   DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",
-  ProductName: "Market Place"
+  ProductName: "Market Place",
+  SampleShippingCost: "",
+  SampleSellerPGPKey: "",
+  SampleShippingDest: "",
+  SampleBuyerPGPKey: ""
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
@@ -40,8 +44,10 @@ function createHandler(contract, obj, bin, fromUser, that) {
     obj.crc20_2,
     obj.amount_2,
     Global.DAOaddr,
-    Global.USDaddr
-  ])
+    Global.USDaddr,
+    Global.SampleShippingCost,
+    Global.SampleSellerPGPKey
+  ]);
   var redirected = false;
   var data =
     "0x" +
@@ -59,6 +65,8 @@ function createHandler(contract, obj, bin, fromUser, that) {
       obj.amount_2,
       Global.DAOaddr,
       Global.USDaddr,
+      Global.SampleShippingCost,
+      Global.SampleSellerPGPKey,
       { data: bin }
     );
   contract.new(
@@ -75,12 +83,14 @@ function createHandler(contract, obj, bin, fromUser, that) {
       obj.crc20_2,
       obj.amount_2,
       Global.DAOaddr,
-      Global.USDaddr
+      Global.USDaddr,
+      Global.SampleShippingCost,
+      Global.SampleSellerPGPKey
     ],
     {
       from: fromUser,
       data: data,
-      gas: "9999000",
+      gas: "99990000",
       gasPrice: 2000000000
     },
     function(e, instance) {
