@@ -247,10 +247,10 @@ contract Listing {
         //setupShippingcost(_json_shipping_cost);
     }
     
-    function setSellerPGPkey(string _seller_PGPkey) public onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);
-        seller_PGPkey = _seller_PGPkey;
-    }
+    // function setSellerPGPkey(string _seller_PGPkey) public onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);
+    //     seller_PGPkey = _seller_PGPkey;
+    // }
 
     // function setTitle (string _title) external onlyOwner {
     //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
