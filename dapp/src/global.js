@@ -15,14 +15,14 @@ Vue.use(VueAnalytics, {
 export default {
   popularTags: ["white", "test", "girl"],
   abiShaList:
-    "0x63d59476a40629e93dfa53c4604fa726cfade0be70be6129a1add52dc2561903",
+    "0xf2d55a1e2ceaf0e1511115e100490464fcb8d62993860c1251bd0c56fa16df9a",
   eeEndpoint: "https://marketplace.search.secondstate.io/api/es_search",
   submitESEndpoint: "https://marketplace.search.secondstate.io",
   USDaddr: "0x08bcb145e174e59e033d2d9c4bc4d0fe49a82613",
   USDunit: "USDO",
   USDBuyLink:
     "http://stripe-stablecoin.ufn3g4prnu.ap-northeast-1.elasticbeanstalk.com/checkout?currency=usd&desc=test&contract_addr=",
-  escrowPeriod: 60 * 60 * 24 * 10,
+  escrowPeriod: 60 * 60 * 24 * 21,
   HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
   DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",
   ProductName: "Market Place"
