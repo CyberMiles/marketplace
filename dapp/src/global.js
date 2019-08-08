@@ -6,6 +6,7 @@ import VueAnalytics from "vue-analytics";
 import Contracts from "@/contracts.js";
 import ES from "@/modules/es-ss.js";
 import config from "../vue.config.js";
+import router from "./router";
 
 Vue.use(VueAnalytics, {
   id: "UA-120065893-20"
@@ -24,8 +25,7 @@ export default {
   escrowPeriod: 60 * 60 * 24 * 10,
   HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
   DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",
-  ProductName: "Market Place",
-  SampleShippingCost: "",
+  ProductName: "Market Place"
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
@@ -226,10 +226,13 @@ function remarkHandler(instance, text, reloc = "") {
 }
 
 function goDebug(debugInfo) {
+  let connector = "";
+  if (router.mode == "hash") connector = "#/";
+  else if(router.mode == "history") connector = "";
   let debugURL =
     window.location.origin +
     config.publicPath +
-    "#" +
+    connector +
     "debug?errorURL=" +
     window.location.href +
     "&txHash=" +
@@ -238,7 +241,7 @@ function goDebug(debugInfo) {
     debugInfo.callMethod +
     "&error=" +
     debugInfo.e;
-  location.href = debugURL;
+    location.href = debugURL;
 }
 
 function web3Callback(e, txhash, reloc) {
@@ -399,14 +402,20 @@ function web3Pass(that, targetUrl = null) {
         })
         .then(function(result) {
           if (result.value) {
-            if (targetUrl !== null)
+            if (targetUrl !== null) {
+              let connector = "";
+              if (router.mode == "hash") connector = "#/";
+              else if (router.mode == "history") connector = "";
+
+              if (targetUrl.slice(0, 1) == "/") targetUrl = targetUrl.slice(1);
               that.$router.push(
                 `/download/reloc?=${window.location.origin +
                   config.publicPath +
-                  "#" +
+                  connector +
                   targetUrl}`
               );
-            else that.$router.push(`/download/reloc?=${window.location.href}`);
+            } else
+              that.$router.push(`/download/reloc?=${window.location.href}`);
             // const webBrowser = new Browser.AppLink();
             // webBrowser.openBrowser();
           }
