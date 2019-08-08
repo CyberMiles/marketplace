@@ -365,7 +365,7 @@ export default {
             parseInt(parseFloat(that.amount) * 100), // the OPB is 2 decimals,
             amount2Addr,
             parseInt(amount2),
-            Global.SampleShippingCost,
+            "", //TODO: JSON_SHIPPING_COST. It should fetch from user input in the future.
             {
               gas: "99990000",
               gasPrice: 2000000000

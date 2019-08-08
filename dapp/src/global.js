@@ -26,9 +26,6 @@ export default {
   DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",
   ProductName: "Market Place",
   SampleShippingCost: "",
-  SampleSellerPGPKey: "",
-  SampleShippingDest: "",
-  SampleBuyerPGPKey: ""
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
@@ -45,9 +42,7 @@ function createHandler(contract, obj, bin, fromUser, that) {
     obj.crc20_2,
     obj.amount_2,
     Global.DAOaddr,
-    Global.USDaddr,
-    Global.SampleShippingCost,
-    Global.SampleSellerPGPKey
+    Global.USDaddr
   ]);
   var redirected = false;
   var data =
@@ -66,8 +61,8 @@ function createHandler(contract, obj, bin, fromUser, that) {
       obj.amount_2,
       Global.DAOaddr,
       Global.USDaddr,
-      Global.SampleShippingCost,
-      Global.SampleSellerPGPKey,
+      "", //TODO: JSON_SHIPPING_COST. It should fetch from user input in the future.
+      "", //TODO: SELLER PGP KEY. It should fetch from user input in the future.
       { data: bin }
     );
   contract.new(
@@ -85,8 +80,8 @@ function createHandler(contract, obj, bin, fromUser, that) {
       obj.amount_2,
       Global.DAOaddr,
       Global.USDaddr,
-      Global.SampleShippingCost,
-      Global.SampleSellerPGPKey
+      "", //TODO: JSON_SHIPPING_COST. It should fetch from user input in the future.
+      "" //TODO: SELLER PGP KEY. It should fetch from user input in the future.
     ],
     {
       from: fromUser,

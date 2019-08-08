@@ -156,6 +156,7 @@ contract Listing {
 
         ClosedReasons closedReason;
         string PGPkey;
+        string shippingDest;
 
     }
 
@@ -181,6 +182,8 @@ contract Listing {
     MsgPiece[] messageBoard;
     
     mapping (string => mapping(address => uint)) private ShippingCost;
+    mapping (string => mapping(address => bool)) private ShippingCostKey; // true: key exists; false: reject to buy
+    
     string[] shippingRegions;
 
     enum TradingStatus {Unlisting, Listing, LockedByBuyer, Dispute, BuyerPaid, BuyerRefunded, Processing}
@@ -335,18 +338,19 @@ contract Listing {
     ]"
     */
     function setupShippingcost(string _json_shipping_cost) public {
-        JSON.ValueRef memory root = JSON.newValueRef(_json_shipping_cost);
-        JSON.ValueRef[] memory list_items = root.asArray(_json_shipping_cost);
-        for (uint i = 0; i < list_items.length; i++) {
-            string memory dest = list_items[i].objectGet(_json_shipping_cost, "dest").asString(_json_shipping_cost);
-            JSON.ValueRef[] memory costs = list_items[i].objectGet(_json_shipping_cost, "cost").asArray(_json_shipping_cost);
-            shippingRegions.push(dest);
-            for (uint j = 0; j < costs.length; j++) {
-                address coinAddr = costs[j].objectGet(_json_shipping_cost, "coinAddr").asAddress(_json_shipping_cost); 
-                int amount = costs[j].objectGet(_json_shipping_cost, "amount").asInt(_json_shipping_cost);
-                ShippingCost[dest][coinAddr] = uint(amount);
-            }
-        }
+        // JSON.ValueRef memory root = JSON.newValueRef(_json_shipping_cost);
+        // JSON.ValueRef[] memory list_items = root.asArray(_json_shipping_cost);
+        // for (uint i = 0; i < list_items.length; i++) {
+        //     string memory dest = list_items[i].objectGet(_json_shipping_cost, "dest").asString(_json_shipping_cost);
+        //     JSON.ValueRef[] memory costs = list_items[i].objectGet(_json_shipping_cost, "cost").asArray(_json_shipping_cost);
+        //     shippingRegions.push(dest);
+        //     for (uint j = 0; j < costs.length; j++) {
+        //         address coinAddr = costs[j].objectGet(_json_shipping_cost, "coinAddr").asAddress(_json_shipping_cost); 
+        //         int amount = costs[j].objectGet(_json_shipping_cost, "amount").asInt(_json_shipping_cost);
+        //         ShippingCost[dest][coinAddr] = uint(amount);
+        //         ShippingCostKey[dest][coinAddr] = true;
+        //     }
+        // }
     }
 
     /*
@@ -413,12 +417,14 @@ contract Listing {
             }
         }
         
+        require(shippingRegions.length == 0 || ShippingCostKey[_shipping_dest][price.crc20] == true);
+        
         uint shipping_amount = ShippingCost[_shipping_dest][price.crc20];
         
         require (price.amount > 0);
         require (msg.value >= price.amount + shipping_amount);
 
-        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount + shipping_amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey);
+        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount + shipping_amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey, _shipping_dest);
         status = TradingStatus.LockedByBuyer;
     }
     
@@ -434,13 +440,15 @@ contract Listing {
             }
         }
         
+        require(shippingRegions.length == 0 || ShippingCostKey[_shipping_dest][price.crc20] == true );
+        
         uint shipping_amount = ShippingCost[_shipping_dest][price.crc20];
         
         require (price.amount > 0);
 
         ICRC20 token = ICRC20(_crc20);
         require(token.transferFrom(msg.sender, address(this), price.amount + shipping_amount));
-        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount + shipping_amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey);
+        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount + shipping_amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey, _shipping_dest);
 
         status = TradingStatus.LockedByBuyer;
     }
@@ -569,6 +577,10 @@ contract Listing {
 
     function getBuyerPGPkey() public view returns(string) {
         return buyer.PGPkey;
+    }
+    
+    function getShippingDest() public view returns(string) {
+        return (buyer.shippingDest);
     }
  
     function info () view public returns (uint, string, string, string, string, uint, string, uint, address, address) {
