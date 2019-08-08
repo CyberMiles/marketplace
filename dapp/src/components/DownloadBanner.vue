@@ -16,7 +16,8 @@
     </div>
     <div class="download">
       <a
-        href="https://play.google.com/store/apps/details?id=io.cybermiles.cmtwallet">
+        href="https://play.google.com/store/apps/details?id=io.cybermiles.cmtwallet"
+      >
         <img src="../assets/imgs/google-play.svg"
       /></a>
       <a href="https://apps.apple.com/us/app/id1418378426"

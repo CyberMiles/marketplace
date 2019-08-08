@@ -1,5 +1,127 @@
 pragma lity >=1.2.6;
 
+library JSON {
+
+    enum Type {
+        BOOL,
+        NUMBER,
+        STRING,
+        ARRAY,
+        OBJECT,
+        INVALID
+    }
+
+    struct ValueRef {
+        uint begin;
+        uint end;
+    }
+
+    function newValueRef(string memory s) internal pure returns (ValueRef) {
+        ValueRef memory ref;
+        ref.begin = 0;
+        ref.end = bytes(s).length;
+        return ref;
+    }
+
+    function getType(ValueRef memory ref, string memory s) internal pure returns (Type) {
+        if (bytes(s)[ref.begin] == 't' || bytes(s)[ref.begin] == 'f') return Type.BOOL;
+        if (48 <= uint8(bytes(s)[ref.begin]) && uint8(bytes(s)[ref.begin]) <= 57) return Type.NUMBER;
+        if (bytes(s)[ref.begin] == '[') return Type.ARRAY;
+        if (bytes(s)[ref.begin] == '{') return Type.OBJECT;
+        return Type.INVALID;
+    }
+
+    function asBool(ValueRef memory ref, string memory s) internal pure returns (bool) {
+        return bytes(s)[ref.begin] == 't';
+    }
+
+    function asInt(ValueRef memory ref, string memory s) internal pure returns (int) {
+        bytes memory b = bytes(s);
+        int result = 0;
+        bool negative = false;
+        for (uint i = ref.begin; i < ref.end; i++) {
+            if (i == 0 && b[i] == '-') {
+                negative = true;
+                continue;
+            }
+            if (b[i] == '.') {
+                break;
+            }
+            require(b[i] <= 57);
+            result *= 10;
+            result += uint8(b[i]) - 48;
+        }
+        return result;
+    }
+    
+    function asAddress (ValueRef memory ref, string memory s) internal pure returns (address) {
+        bytes memory b = bytes(s);
+        uint result = 0;
+        for (uint i =  ref.begin; i < ref.end; i++) {
+            uint c = uint(b[i]);
+            if (c >= 48 && c <= 57) {
+                result = result * 16 + (c - 48);
+            }
+            if(c >= 65 && c<= 90) {
+                result = result * 16 + (c - 55);
+            }
+            if(c >= 97 && c<= 122) {
+                result = result * 16 + (c - 87);
+            }
+        }
+        return address(result);
+}
+
+    function asString(ValueRef memory ref, string memory s) internal pure returns (string) {
+        uint ref_begin = ref.begin;
+        uint ref_end = ref.end;
+        return eni("json", "parseString", s, ref_begin, ref_end);
+    }
+
+    function toUint(bytes memory b, uint i) internal pure returns (uint) {
+        return (uint(b[i+3])<<0)|(uint(b[i+2])<<8)|(uint(b[i+1])<<16)|(uint(b[i+0])<<24);
+    }
+    function toValueRef(bytes memory b, uint i) internal pure returns (ValueRef) {
+        ValueRef memory ref;
+        ref.begin = toUint(b, i);
+        ref.end = toUint(b, i+4);
+        ref.end = 8;
+        return ref;
+    }
+    function toValueRef(bytes memory b) internal pure returns (ValueRef) {
+        return toValueRef(b, 0);
+    }
+
+    function asArray(ValueRef memory ref, string memory s) internal pure returns (ValueRef[]) {
+        uint ref_begin = ref.begin;
+    uint ref_end = ref.end;
+        string memory eni_result = eni("json", "parseArray", s, ref_begin, ref_end);
+        bytes memory b = bytes(eni_result);
+
+        // 4 byte integer x2
+        ValueRef[] memory refs = new ValueRef[](b.length / 8);
+
+        for (uint i = 0; i < refs.length; i++) {
+            refs[i] = toValueRef(b, i * 4);
+        }
+
+        return refs;
+    }
+
+    function arrayGet(ValueRef memory ref, string memory s, uint index) internal pure returns (ValueRef) {
+        uint ref_begin = ref.begin;
+        uint ref_end = ref.end;
+        return toValueRef(bytes(eni("json", "arrayGet", s, ref_begin, ref_end, index)));
+    }
+
+    function objectGet(ValueRef memory ref, string memory s, string key) internal pure returns (ValueRef) {
+        uint ref_begin = ref.begin;
+        uint ref_end = ref.end;
+        return toValueRef(bytes(eni("json", "objectGet", s, ref_begin, ref_end, key)));
+    }
+}
+
+
 interface ICRC20 {
     function totalSupply() external view returns (uint256);
     function balanceOf(address account) external view returns (uint256);
@@ -13,7 +135,7 @@ interface ICRC20 {
 }
 
 contract Listing {
-
+    using JSON for JSON.ValueRef;
     address public owner;
     
     enum ClosedReasons { Refund, ResolveByDAO, ResolveByBuyer, Succeed }
@@ -33,6 +155,8 @@ contract Listing {
         string refunded_reason;
 
         ClosedReasons closedReason;
+        string PGPkey;
+        string shippingDest;
 
     }
 
@@ -49,11 +173,18 @@ contract Listing {
         uint tmstp;
         string content;
     }
+
+    string public feedback; //expected a json string storing rating + comment
     
     address private USD_ADDR;
     address public DAO_ADDR;
     
     MsgPiece[] messageBoard;
+    
+    mapping (string => mapping(address => uint)) private ShippingCost;
+    mapping (string => mapping(address => bool)) private ShippingCostKey; // true: key exists; false: reject to buy
+    
+    string[] shippingRegions;
 
     enum TradingStatus {Unlisting, Listing, LockedByBuyer, Dispute, BuyerPaid, BuyerRefunded, Processing}
 
@@ -65,6 +196,7 @@ contract Listing {
     uint private escrow_period;
     string private seller_contact;
     string image_urls;
+    string private seller_PGPkey;
     
     event TransferCMT (address indexed to, uint256 value);
 
@@ -78,7 +210,7 @@ contract Listing {
         _;
     }
 
-    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2, address _DAO_ADDR, address _USD_ADDR) public {
+    constructor (string _title, string _desc, string _tags, string _categories, string _image_urls, string _seller_contact, uint _escrow_period, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2, address _DAO_ADDR, address _USD_ADDR, string _json_shipping_cost, string _seller_PGPkey) public {
         require(_amount_1 > 0);
 
         owner = msg.sender;
@@ -89,7 +221,9 @@ contract Listing {
         seller_contact = _seller_contact;
         image_urls = _image_urls;
         escrow_period = _escrow_period;
-        
+        // setupShippingcost(_json_shipping_cost);
+        seller_PGPkey = _seller_PGPkey;
+
         prices.push(Price(_crc20_1, _amount_1));
         
         status = TradingStatus.Listing;
@@ -99,13 +233,12 @@ contract Listing {
         USD_ADDR = _USD_ADDR;
         DAO_ADDR = _DAO_ADDR;
         
-        
     }
     
     /*
     Setters
     */
-    function updateListing (string _title, string _desc, string _tags, string _image_urls, string _contact, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2) external onlyOwner {
+    function updateListing (string _title, string _desc, string _tags, string _image_urls, string _contact, address _crc20_1, uint _amount_1, address _crc20_2, uint _amount_2, string _json_shipping_cost) external onlyOwner {
         require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);
         title = _title;
         desc = _desc;
@@ -114,27 +247,33 @@ contract Listing {
         seller_contact = _contact;
         setPrice(_crc20_1, _amount_1);
         setPrice(_crc20_2, _amount_2);
+        //setupShippingcost(_json_shipping_cost);
     }
+    
+    // function setSellerPGPkey(string _seller_PGPkey) public onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);
+    //     seller_PGPkey = _seller_PGPkey;
+    // }
 
-    function setTitle (string _title) external onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-        title = _title;
-    }
+    // function setTitle (string _title) external onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
+    //     title = _title;
+    // }
     
-    function setDesc (string _desc) external onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-        desc = _desc;
-    }
+    // function setDesc (string _desc) external onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
+    //     desc = _desc;
+    // }
     
-    function setTags (string _tags) external onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-        tags = _tags;
-    }
+    // function setTags (string _tags) external onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
+    //     tags = _tags;
+    // }
     
-    function setCategories (string _categories) external onlyOwner {
-        require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
-        categories = _categories;
-    }
+    // function setCategories (string _categories) external onlyOwner {
+    //     require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
+    //     categories = _categories;
+    // }
     
     function setEscrowPeriod (uint _escrow_period) external onlyOwner {
         require(status == TradingStatus.Unlisting || status == TradingStatus.Listing);        
@@ -162,7 +301,58 @@ contract Listing {
         
         messageBoard.push(MsgPiece(msg.sender, now, words));
     }
+
+    function setFeedback(string _feedback) public {
+        require (buyer.ts_escrow + escrow_period < now);
+        feedback = _feedback;
+    }
     
+    
+    /*
+    Expected JSON string is like:
+    "[
+        {
+            "dest":"Shanghai",
+            "cost":
+            [
+                {
+                    "coinAddr":"0x0000000000000000000000000000000000000000",
+                    "amount":50000
+                },
+                {
+                    "coinAddr":"0x6b50000354fa74A4f384B9Ff35108Eb89d652409",
+                    "amount":10000
+                }
+            ]
+        },
+        {
+            "dest":"Shanghai",
+            "cost":
+            [
+                {
+                    "coinAddr":"0x0000000000000000000000000000000000000000",
+                    "amount":90000
+                }
+            ]
+        },
+    ]"
+    */
+    function setupShippingcost(string _json_shipping_cost) public {
+        // JSON.ValueRef memory root = JSON.newValueRef(_json_shipping_cost);
+        // JSON.ValueRef[] memory list_items = root.asArray(_json_shipping_cost);
+        // for (uint i = 0; i < list_items.length; i++) {
+        //     string memory dest = list_items[i].objectGet(_json_shipping_cost, "dest").asString(_json_shipping_cost);
+        //     JSON.ValueRef[] memory costs = list_items[i].objectGet(_json_shipping_cost, "cost").asArray(_json_shipping_cost);
+        //     shippingRegions.push(dest);
+        //     for (uint j = 0; j < costs.length; j++) {
+        //         address coinAddr = costs[j].objectGet(_json_shipping_cost, "coinAddr").asAddress(_json_shipping_cost); 
+        //         int amount = costs[j].objectGet(_json_shipping_cost, "amount").asInt(_json_shipping_cost);
+        //         ShippingCost[dest][coinAddr] = uint(amount);
+        //         ShippingCostKey[dest][coinAddr] = true;
+        //     }
+        // }
+    }
+
     /*
         Seller Actions
     */
@@ -216,7 +406,7 @@ contract Listing {
         Buyer Actions
     */
 
-    function buyWithCMT (string _name, string _contact, string _mesg) payable public {
+    function buyWithCMT (string _name, string _contact, string _mesg, string _shipping_dest, string _buyer_PGPkey) payable public {
         require(status == TradingStatus.Listing);
 
         Price memory price;
@@ -226,14 +416,19 @@ contract Listing {
                 price = prices[i];
             }
         }
+        
+        require(shippingRegions.length == 0 || ShippingCostKey[_shipping_dest][price.crc20] == true);
+        
+        uint shipping_amount = ShippingCost[_shipping_dest][price.crc20];
+        
         require (price.amount > 0);
-        require (msg.value >= price.amount);
+        require (msg.value >= price.amount + shipping_amount);
 
-        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount, false, "", "", ClosedReasons.Succeed);
+        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount + shipping_amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey, _shipping_dest);
         status = TradingStatus.LockedByBuyer;
     }
     
-    function buyWithCRC20 (address _crc20, string _name, string _contact, string _mesg) public {
+    function buyWithCRC20 (address _crc20, string _name, string _contact, string _mesg, string _shipping_dest, string _buyer_PGPkey) public {
         require(_crc20 != address(0));
         require(status == TradingStatus.Listing);
 
@@ -244,11 +439,16 @@ contract Listing {
                 price = prices[i];
             }
         }
+        
+        require(shippingRegions.length == 0 || ShippingCostKey[_shipping_dest][price.crc20] == true );
+        
+        uint shipping_amount = ShippingCost[_shipping_dest][price.crc20];
+        
         require (price.amount > 0);
 
         ICRC20 token = ICRC20(_crc20);
-        require(token.transferFrom(msg.sender, address(this), price.amount));
-        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount, false, "", "", ClosedReasons.Succeed);
+        require(token.transferFrom(msg.sender, address(this), price.amount + shipping_amount));
+        buyer = Buyer (msg.sender, now, 0, _name, _contact, _mesg, price.crc20, price.amount + shipping_amount, false, "", "", ClosedReasons.Succeed, _buyer_PGPkey, _shipping_dest);
 
         status = TradingStatus.LockedByBuyer;
     }
@@ -359,6 +559,30 @@ contract Listing {
         return (prices[index].crc20, prices[index].amount);
     }
 
+    function getShippingCost(string region, address coinAddr) public view returns(uint) {
+        return ShippingCost[region][coinAddr];
+    }
+    
+    function getShippingRegionsCount() public view returns(uint){
+        return shippingRegions.length;
+    }
+    
+    function getShippingRegion(uint index)public view returns(string) {
+        return shippingRegions[index];
+    }
+
+    function getSellerPGPkey() public view returns(string) {
+        return seller_PGPkey;
+    }
+
+    function getBuyerPGPkey() public view returns(string) {
+        return buyer.PGPkey;
+    }
+    
+    function getShippingDest() public view returns(string) {
+        return (buyer.shippingDest);
+    }
+ 
     function info () view public returns (uint, string, string, string, string, uint, string, uint, address, address) {
         //fetch USD price
         uint USD_amount;

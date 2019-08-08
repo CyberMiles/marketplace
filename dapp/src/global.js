@@ -16,6 +16,7 @@ export default {
   abiShaList:
     "0x63d59476a40629e93dfa53c4604fa726cfade0be70be6129a1add52dc2561903",
   eeEndpoint: "https://marketplace.search.secondstate.io/api/es_search",
+  submitESEndpoint: "https://marketplace.search.secondstate.io",
   USDaddr: "0x08bcb145e174e59e033d2d9c4bc4d0fe49a82613",
   USDunit: "USDO",
   USDBuyLink:
@@ -23,7 +24,8 @@ export default {
   escrowPeriod: 60 * 60 * 24 * 10,
   HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
   DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",
-  ProductName: "Market Place"
+  ProductName: "Market Place",
+  SampleShippingCost: "",
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
@@ -59,6 +61,8 @@ function createHandler(contract, obj, bin, fromUser, that) {
       obj.amount_2,
       Global.DAOaddr,
       Global.USDaddr,
+      "", //TODO: JSON_SHIPPING_COST. It should fetch from user input in the future.
+      "", //TODO: SELLER PGP KEY. It should fetch from user input in the future.
       { data: bin }
     );
   contract.new(
@@ -75,7 +79,9 @@ function createHandler(contract, obj, bin, fromUser, that) {
       obj.crc20_2,
       obj.amount_2,
       Global.DAOaddr,
-      Global.USDaddr
+      Global.USDaddr,
+      "", //TODO: JSON_SHIPPING_COST. It should fetch from user input in the future.
+      "" //TODO: SELLER PGP KEY. It should fetch from user input in the future.
     ],
     {
       from: fromUser,
@@ -99,7 +105,7 @@ function createHandler(contract, obj, bin, fromUser, that) {
           redirected = true;
         } else {
           //try to be more reliable, submit abi explictly
-          let esss = new ES("https://marketplace.search.secondstate.io");
+          let esss = new ES(Global.submitESEndpoint);
           var abi = JSON.stringify(Contracts.Listing.abi);
           var abiSubmission = esss.submitAbi(abi, txhash);
           abiSubmission

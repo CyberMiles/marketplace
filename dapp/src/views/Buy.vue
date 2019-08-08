@@ -305,6 +305,8 @@ export default {
           "",
           this.contact,
           this.remark,
+          "", //TODO: ShippingDest. It should fetch from the user input in the future.
+          "", //TODO: BuyerPGPKey. It should fetch from the user input in the future.
           {
             gas: "400000",
             gasPrice: 0,
@@ -345,6 +347,8 @@ export default {
                 "",
                 that.contact,
                 that.remark,
+                "", //TODO: ShippingDest. It should fetch from the user input in the future.
+                "", //TODO: BuyerPGPKey. It should fetch from the user input in the future.
                 {
                   gas: "400000",
                   gasPrice: 0
