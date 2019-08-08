@@ -12,10 +12,10 @@
 
 <script>
 export default {
-  props: ["sold", "contractAddr"],
+  props: ["sold", "title", "contractAddr"],
   methods: {
     goListing() {
-      this.$router.push("/listing/" + this.contractAddr);
+      this.$router.push("/" + this.title + "/listing/" + this.contractAddr);
     }
   }
 };

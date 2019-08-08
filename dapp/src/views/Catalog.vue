@@ -40,7 +40,10 @@
       <div class="goods-list">
         <div v-for="good in goodList" :key="good.key" class="good-container">
           <GoodsListItem
-            v-bind:contractAddr="good.contractAddr"
+            v-bind="{
+              contractAddr: good.contractAddr,
+              title: good.title
+            }"
             :sold="good.sold ? true : ``"
           >
             <RespImg v-bind:src="good.image" alt="" />
@@ -68,7 +71,12 @@ import LoadingMask from "@/components/LoadingMask.vue";
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
 import global from "@/global.js";
-import { queryOptions, makeQuery, compare } from "@/global.js";
+import {
+  queryOptions,
+  makeQuery,
+  compare,
+  refactorListingTitle
+} from "@/global.js";
 
 export default {
   name: "home",
@@ -98,7 +106,6 @@ export default {
     initGoodList() {
       var that = this;
       var queryMarketplaceABI = "";
-      console.log(this.$route.params)
       if (this.$route.params.tag !== undefined) {
         queryMarketplaceABI = {
           query: {
@@ -171,6 +178,7 @@ export default {
             image: item.functionData.info[6].split(",")[0],
             price: (parseInt(item.functionData.info[7]) / 100).toString(),
             contractAddr: item.contractAddress,
+            itle: refactorListingTitle(item.functionData.info[1]),
             sold: item.functionData.info[0] == 1 ? false : true
           });
         });

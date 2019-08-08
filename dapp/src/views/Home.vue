@@ -62,7 +62,12 @@
           class="good-container"
           :style="{ height: containerHeight + 'px' }"
         >
-          <GoodsListItem v-bind:contractAddr="good.contractAddr">
+          <GoodsListItem
+            v-bind="{
+              contractAddr: good.contractAddr,
+              title: good.title
+            }"
+          >
             <RespImg v-bind:src="good.image" alt="" />
             <template v-slot:price>
               ${{ good.price }}
@@ -91,7 +96,13 @@
           class="good-container"
           :style="{ height: containerHeight + 'px' }"
         >
-          <GoodsListItem sold="true" v-bind:contractAddr="good.contractAddr">
+          <GoodsListItem
+            sold="true"
+            v-bind="{
+              contractAddr: good.contractAddr,
+              title: good.title
+            }"
+          >
             <RespImg v-bind:src="good.image" alt="" />
             <template v-slot:price>
               ${{ good.price }}
@@ -112,7 +123,13 @@ import RespImg from "@/components/RespImg.vue";
 import LoadingMask from "@/components/LoadingMask.vue";
 import axios from "axios";
 import Global from "@/global.js";
-import { web3Pass, queryOptions, makeQuery, compare } from "@/global.js";
+import {
+  web3Pass,
+  queryOptions,
+  makeQuery,
+  compare,
+  refactorListingTitle
+} from "@/global.js";
 
 export default {
   name: "home",
@@ -160,6 +177,7 @@ export default {
             image: item.functionData.info[6].split(",")[0],
             price: (parseInt(item.functionData.info[7]) / 100).toString(),
             contractAddr: item.contractAddress,
+            title: refactorListingTitle(item.functionData.info[1]),
             sold: item.functionData.info[0] == 1 ? false : true
           });
         });

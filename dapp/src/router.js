@@ -2,7 +2,8 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
 import CreatePage from "./views/Create.vue";
-import ListingPage from "./views/Listing.vue";
+import ListingPage from "./views/ForwardListing.vue";
+import SEOFriendlyListingPage from "./views/Listing.vue";
 import EditPage from "./views/Edit.vue";
 import BuyPage from "./views/Buy.vue";
 import CatalogPage from "./views/Catalog.vue";
@@ -62,6 +63,14 @@ export default new Router({
       path: "/listing/:contractAddr",
       name: "listing",
       component: ListingPage,
+      meta: {
+        title: "Market Place"
+      }
+    },
+    {
+      path: "/:title/listing/:contractAddr",
+      name: "SEOlisting",
+      component: SEOFriendlyListingPage,
       meta: {
         title: "Market Place"
       }

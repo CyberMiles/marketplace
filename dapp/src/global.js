@@ -228,7 +228,7 @@ function remarkHandler(instance, text, reloc = "") {
 function goDebug(debugInfo) {
   let connector = "";
   if (router.mode == "hash") connector = "#/";
-  else if(router.mode == "history") connector = "";
+  else if (router.mode == "history") connector = "";
   let debugURL =
     window.location.origin +
     config.publicPath +
@@ -241,7 +241,7 @@ function goDebug(debugInfo) {
     debugInfo.callMethod +
     "&error=" +
     debugInfo.e;
-    location.href = debugURL;
+  location.href = debugURL;
 }
 
 function web3Callback(e, txhash, reloc) {
@@ -447,6 +447,10 @@ function _isMobile() {
   return flag;
 }
 
+function refactorListingTitle(uri) {
+  return uri.replace(/ /g, "-").replace(/\+|%|\/|\?|#|&|=/g, "");
+}
+
 export {
   createHandler,
   unlistHandler,
@@ -462,5 +466,6 @@ export {
   computePayment,
   web3Pass,
   web3Callback,
-  goDebug
+  goDebug,
+  refactorListingTitle
 };
