@@ -68,7 +68,7 @@ Each single product in this platform is an individual contract deployed in Cyber
 
 Different actions called on the contract programatically would make the purchase process updated semantically. According to the semantic meaning of different purchase progress, we design some different contract status respectivel. 
 
-!(FlowChart of Purchasing)[https://github.com/CyberMiles/marketplace/tree/master/docs/MPflowchart.png]
+![FlowChart of Purchasing](https://github.com/CyberMiles/marketplace/blob/master/docs/MPflowchart.png)
 
 There's 3 parties in this trading system.
 
