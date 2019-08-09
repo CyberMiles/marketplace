@@ -35,6 +35,14 @@
         <span class="count">{{ refundN }}</span>
       </router-link>
     </div>
+
+    <h3>Orders</h3>
+    <div class="entries">
+      <router-link class="entry" to="/withdraw-usdo-guide">
+        <label>Withdraw USDO as dollars</label>
+      </router-link>
+    </div>
+
   </div>
 </template>
 

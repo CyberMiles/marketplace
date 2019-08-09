@@ -16,6 +16,7 @@ import BuyCompletePage from "./views/BuyComplete.vue";
 import CreatingPage from "./views/Creating.vue";
 import DownloadPage from "./views/Download.vue";
 import DisputePage from "./views/DisputeBoard.vue";
+import WithdrawUSDOGuidePage from "./views/WithdrawUSDOGuide.vue";
 import DebugPage from "./views/Debug.vue";
 import Global from "@/global.js";
 
@@ -168,6 +169,13 @@ export default new Router({
       component: DownloadPage,
       meta: {
         title: "CyberMiles"
+      }
+    },
+    {
+      path: "/withdraw-usdo-guide",
+      component: WithdrawUSDOGuidePage,
+      meta: {
+        title:"Withdraw USDO as dollars"
       }
     },
     {
