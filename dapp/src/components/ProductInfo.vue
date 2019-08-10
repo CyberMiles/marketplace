@@ -349,7 +349,7 @@ export default {
           var imageUrls = that.uploadedImgs.concat(that.imageUrls).join(",");
           // console.log(imageUrls);
           var amount2Addr = that.crc20;
-          var amount2 = parseInt(parseFloat(that.amount) * 100); // the OPB is 2 decimals,
+          var amount2 = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
           if (that.CMTamount > 0) {
             amount2Addr = "0x0000000000000000000000000000000000000000";
             amount2 = window.web3.toWei(that.CMTamount);
@@ -362,7 +362,7 @@ export default {
             imageUrls,
             that.contact,
             that.crc20,
-            parseInt(parseFloat(that.amount) * 100), // the OPB is 2 decimals,
+            parseInt(Math.round(parseFloat(that.amount) * 100)), // the OPB is 2 decimals,
             amount2Addr,
             parseInt(amount2),
             "", //TODO: JSON_SHIPPING_COST. It should fetch from user input in the future.
@@ -424,9 +424,9 @@ export default {
                 contact: that.contact,
                 escrowPeriod: that.escrowPeriod,
                 crc20: that.crc20,
-                amount: parseInt(parseFloat(that.amount) * 100),
+                amount: parseInt(Math.round(parseFloat(that.amount) * 100)),
                 crc20_2: that.crc20,
-                amount_2: parseInt(parseFloat(that.amount) * 100)
+                amount_2: parseInt(Math.round(parseFloat(that.amount) * 100))
               };
               var newContract = window.web3.cmt.contract(Contracts.Listing.abi);
               var bin = Contracts.Listing.bin;
