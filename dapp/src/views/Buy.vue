@@ -8,7 +8,7 @@
           {{ goodTitle }}
         </div>
         <div class="price">
-          <span class="price-tag">Price (Postage included)</span>
+          <span class="price-tag">Price (Shipping included)</span>
           <span class="price-value"> $ {{ USDprice }} </span>
         </div>
       </div>
@@ -49,7 +49,7 @@
         </li>
       </ul>
       <a :href="USDBuyLink" class="recharge" @click="loading = true">
-        Buy {{ USDunit }} with a credit card
+        Pay {{ USDunit }} with credit or debit card
       </a>
       <div class="form-group">
         <label for="contact">Contact Info</label>
@@ -60,7 +60,7 @@
           type="text"
           class="form-control"
           id="contact"
-          placeholder="For the seller to contact you, leave your email(required). Send the seller your address via this email for the delivery after you paid."
+          placeholder="The seller will contact you privately to arrange delivery after you pay. Do not worry, you can get your money back if the seller fails to deliver. We recommend you leave an email address here for privacy."
           v-model="contact"
         />
       </div>
@@ -71,7 +71,7 @@
           type="text"
           class="form-control"
           id="remark"
-          placeholder="Note information"
+          placeholder="Additional note for the seller"
           v-model="remark"
         />
       </div>
@@ -80,13 +80,14 @@
         <router-link :to="`/listing/${contractAddr}`">Cancel</router-link>
       </div>
       <div class="payment-tip markdown-body">
-        <vue-markdown>### Attention!
-Tokens will be locked in the contract for {{ escrowPeriod }} days.
+        <vue-markdown>### Buyers:
+Your payment will be locked in the contract for {{ escrowPeriod }} days (escrow period).
           
 **Within the {{ escrowPeriod }} days, if you**:
-  - **Confirm receiving**: Tokens will be released to the seller.
-  - **Click dispute**: Decentralized autonomous organization(DAO) will get involved and tokens will be locked in the contract until the dispute is resolved.
-  - **Take no action**: Tokens will be paid to the seller automatically.
+  - **Confirm upon receipt**: Your payment will be released to the seller.
+  - **Dispute**: A Decentralized autonomous organization (DAO) will mediate and resolve the dispute. The fund will be released to the winner.
+
+If you **take no action**, the payment will be released to the seller after escrow period of {{ escrowPeriod }} days.
 </vue-markdown>
       </div>
     </div>
