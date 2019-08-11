@@ -122,6 +122,7 @@ export default {
       USDprice: null,
       USDRealPrice: null,
       goodTitle: "",
+      userAddress: "",
       balance: {
         USD: "",
         CMT: ""
@@ -144,7 +145,7 @@ export default {
     },
     USDBuyLink: function() {
       return (
-        global.USDBuyLink + this.contractAddr + "&amount=" + this.USDRealPrice
+        global.USDBuyLink + this.contractAddr + "&amount=" + this.USDRealPrice + "&desc=" + this.userAddress;
       );
     },
     escrowPeriod: function() {
@@ -171,6 +172,7 @@ export default {
               });
             } else {
               var userAddress = address.toString();
+              that.userAddress = userAddress;
               var contract = window.web3.cmt.contract(Contracts.Listing.abi);
               var instance = contract.at(contract_address);
               that.instance = instance;
