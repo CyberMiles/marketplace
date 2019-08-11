@@ -145,7 +145,7 @@ export default {
     },
     USDBuyLink: function() {
       return (
-        global.USDBuyLink + this.contractAddr + "&amount=" + this.USDRealPrice + "&desc=" + this.userAddress;
+        global.USDBuyLink + this.contractAddr + "&amount=" + this.USDRealPrice + "&desc=" + this.userAddress
       );
     },
     escrowPeriod: function() {
