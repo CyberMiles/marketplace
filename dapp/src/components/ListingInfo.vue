@@ -128,6 +128,14 @@ export default {
                   document.title = `${that.ProductInfo.title} — ${
                     Global.ProductName
                   }`;
+                  let keywords = that.ProductInfo.title;
+                  that.ProductInfo.tags.forEach(tag => {
+                    keywords = keywords + "," + tag.trim();
+                  });
+                  const tag = document.createElement("meta");
+                  tag.setAttribute("name", "keywords");
+                  tag.setAttribute("content", keywords);
+                  document.head.appendChild(tag);
                   // console.log(that.ProductInfo);
                   that.headImg = that.ProductInfo.images[0];
                   that.isSeller = userAddress == that.ProductInfo.seller;

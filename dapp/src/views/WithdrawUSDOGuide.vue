@@ -1,10 +1,13 @@
 <template>
   <div class="container">
-		<img
-        src="../assets/imgs/usdoicon.png"
-        srcset="../assets/imgs/usdoicon@2x.png 2x, ../assets/imgs/usdoicon@3x.png 3x"
-        class="usdo-logo"
-      />
+    <img
+      src="../assets/imgs/usdoicon.png"
+      srcset="
+        ../assets/imgs/usdoicon@2x.png 2x,
+        ../assets/imgs/usdoicon@3x.png 3x
+      "
+      class="usdo-logo"
+    />
     <p class="instruction">How to withdraw USDO as dollars</p>
     <div class="step">
       <div class="step-seq">
@@ -12,20 +15,19 @@
       </div>
       <div class="step-items">
         <div class="step-item">
-          1, Prepare the following KYC information
-     The signature page of your passport
+          1, Prepare the following KYC information: The signature page of your
+          passport
         </div>
         <div class="step-item">
-          2, Photo taken with handheld passport and a   
-      paper with the date and USDO amount
+          2, Photo taken with handheld passport and a paper with the date and
+          USDO amount
         </div>
         <div class="step-item">
           3, Details of a bank account to receive dollars
         </div>
         <div class="step-item">
-          4, Withdrawal services for users in the 
-      following countries will not be provided. 
-      North Korea Iran
+          4, Withdrawal services for users in the following countries will not
+          be provided: North Korea, Iran
         </div>
       </div>
     </div>
@@ -35,12 +37,13 @@
           Step2
         </div>
         <div class="step-item">
-          1, Send the above information to  
-      xxxx@xx.com using the email template    
-      below.
+          1, Send the above information to {{ USDOsupportEmail }} using the
+          email template below.
         </div>
       </div>
-      <span class="left" @click="showEmailFormat()">View Email format</span>
+      <span class="left" @click="showEmailFormat = true">
+        View Email format
+      </span>
       <div class="right">
         Copy
         <span
@@ -57,9 +60,8 @@
           Step3
         </div>
         <div class="step-item">
-          1, After receiving the email application, your  
-   withdrawal will be processed within 3 
-   working days.
+          1, After receiving the email application, your withdrawal will be
+          processed within 3 working days.
         </div>
       </div>
     </div>
@@ -69,8 +71,7 @@
           Step4
         </div>
         <div class="step-item">
-          1, The staff will notify you via email the KYC 
-    review results.
+          1, The staff will notify you via email the KYC review results.
         </div>
       </div>
     </div>
@@ -80,15 +81,15 @@
           Step5
         </div>
         <div class="step-item">
-          1, After receiving the email, you will need to 
-   transfer the USDO to the specified address 
-   within the specified time as instructed in 
-   email. After we receive the USDO, we will 
-   arrange the USD transfer to your bank card
+          1, After receiving the email, you will need to transfer the USDO to
+          the specified address within the specified time as instructed in
+          email. After we receive the USDO, we will arrange the USD transfer to
+          your bank card
         </div>
         <div class="step-item">
-          2, We will charge a 4+15% processing fee for 
-   each withdraw (xxxx@xx.com)
+          2, We will charge a 4+15% processing fee for each withdrawal ({{
+            USDOsupportEmail
+          }})
         </div>
       </div>
     </div>
@@ -103,7 +104,9 @@
       </div>
     </div>
     <span class="btn" @click="showContact()">Ask Us</span>
-
+    <div class="mask" @click="showEmailFormat = false" v-if="showEmailFormat">
+      <img class="emailFormat" src="../assets/imgs/emailFormat.jpg" />
+    </div>
   </div>
 </template>
 
@@ -111,6 +114,7 @@
 import Vue from "vue";
 import Clipboard from "v-clipboard";
 import Toast from "@/components/Toast.vue";
+import Global from "@/global.js";
 
 Vue.use(Clipboard);
 Vue.use(Toast);
@@ -118,13 +122,23 @@ Vue.use(Toast);
 export default {
   data() {
     return {
-      EmailFormat: "email\nformat"
+      EmailFormat: "email\nformat",
+      showEmailFormat: false
+    };
+  },
+  computed: {
+    USDOsupportEmail: function() {
+      return Global.USDOsupportEmail;
     }
   },
   methods: {
     showContact() {
+      var that = this;
       this.$swal({
-        title: "<small>Please send your questions to:xxxxx@xx.com</small>",
+        title:
+          "<small>Please send your questions to:" +
+          that.USDOsupportEmail +
+          "</small>",
         showCancelButton: false,
         customClass: {
           confirmButton: "confirm-button-class",
@@ -132,17 +146,13 @@ export default {
         animation: false,
         reverseButtons: true,
         confirmButtonText: "Ok"
-      })
-    },
-    showEmailFormat() {
-      alert("TODO: show email format pic");
+      });
     },
     copySuccess() {
       this.$toast("copied");
     }
   }
 };
-
 </script>
 
 <style lang="stylus">
@@ -189,5 +199,16 @@ export default {
   box-shadow 0 0 7px 0 rgba(255, 63, 15, 0.3)  !important
   font-size (15/16)rem !imporatant
   background-image linear-gradient(to left, #ff7777, #ff3f0f) !important
-
+.mask
+  position fixed
+  top 0
+  left 0
+  background rgba(1, 1, 1, 0.2)
+  height 100%
+  width 100%
+  z-index 998
+  .emailFormat
+    max-height 95%
+    margin 5% auto
+    z-index 999
 </style>

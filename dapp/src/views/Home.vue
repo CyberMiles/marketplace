@@ -206,21 +206,22 @@ export default {
     containerHeight: function() {
       let parentWidth = this.$refs.home.clientWidth;
       let homePadding = 15;
+      let lineHeight = 18;
       if (window.innerWidth > 1200) homePadding = 120;
       else if (window.innerWidth > 600) homePadding = 60;
       let goodMargin = 0;
       if (window.innerWidth > 1000) {
         goodMargin = 80;
-        return (parentWidth - goodMargin - 2 * homePadding) / 5;
+        return lineHeight + (parentWidth - goodMargin - 2 * homePadding) / 5;
       } else if (window.innerWidth > 800) {
         goodMargin = 55;
-        return (parentWidth - goodMargin - 2 * homePadding) / 4;
+        return lineHeight + (parentWidth - goodMargin - 2 * homePadding) / 4;
       } else if (window.innerWidth > 600) {
         goodMargin = 25;
-        return (parentWidth - goodMargin - 2 * homePadding) / 3;
+        return lineHeight + (parentWidth - goodMargin - 2 * homePadding) / 3;
       } else {
         goodMargin = 15;
-        return (parentWidth - goodMargin - 2 * homePadding) / 2;
+        return lineHeight + (parentWidth - goodMargin - 2 * homePadding) / 2;
       }
     }
   }
@@ -323,6 +324,7 @@ export default {
     padding 0
     list-style none
     display flex
+    overflow scroll
     li
       margin-right (15/16)rem
       &:last-child
