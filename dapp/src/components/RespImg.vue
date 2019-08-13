@@ -7,37 +7,71 @@
 
 <script>
 export default {
-  props: ["src", "alt"],
+  props: ["src", "alt", "division"],
   computed: {
     srcset() {
-      return `${this.newSrc}, ${this.newSrc} 2x`;
-    },
-    minHeight() {
-      return (window.innerWidth - 15) / 2; //px
+      return `${this.newSrc}, ${this.newSrc2x} 2x`;
     }
   },
   data() {
     return {
-      newSrc: this.src
+      newSrc: this.src,
+      newSrc2x: this.src
     };
   },
   created() {
-    if (
-      this.src !== undefined &&
-      this.src.slice(0, 27) == "https://res.cloudinary.com/"
-    ) {
-      this.newSrc = this.src
-        .split("upload/")
-        .join("upload/w_"+window.innerWidth*2+",h_"+window.innerWidth*2+",c_scale/");
-    }
+    this.refactorSrc();
   },
   watch: {
     src: function() {
-      console.log(window.innerWidth*2)
-      if (this.src.slice(0, 27) == "https://res.cloudinary.com/") {
-        this.newSrc = this.src
-          .split("upload/")
-          .join("upload/w_"+window.innerWidth*2+",h_"+window.innerWidth*2+",c_scale/");
+      this.refactorSrc();
+    }
+  },
+  methods: {
+    refactorSrc() {
+      if (
+        this.src !== undefined &&
+        this.src.slice(0, 27) == "https://res.cloudinary.com/"
+      ) {
+        if (this.division !== undefined) {
+          this.newSrc = this.src
+            .split("upload/")
+            .join(
+              "upload/w_" +
+                Math.round(window.innerWidth / this.division) +
+                ",h_" +
+                Math.round(window.innerWidth / this.division) +
+                ",c_scale/"
+            );
+          this.newSrc2x = this.src
+            .split("upload/")
+            .join(
+              "upload/w_" +
+                Math.round(window.innerWidth / this.division) * 2 +
+                ",h_" +
+                Math.round(window.innerWidth / this.division) * 2 +
+                ",c_scale/"
+            );
+        } else {
+          this.newSrc = this.src
+            .split("upload/")
+            .join(
+              "upload/w_" +
+                window.innerWidth +
+                ",h_" +
+                window.innerWidth +
+                ",c_scale/"
+            );
+          this.newSrc2x = this.src
+            .split("upload/")
+            .join(
+              "upload/w_" +
+                window.innerWidth * 2 +
+                ",h_" +
+                window.innerWidth * 2 +
+                ",c_scale/"
+            );
+        }
       }
     }
   }

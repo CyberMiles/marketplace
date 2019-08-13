@@ -122,7 +122,8 @@ Vue.use(Toast);
 export default {
   data() {
     return {
-      EmailFormat: "email\nformat",
+      EmailFormat:
+        "Email body:\n\nUSDO address: 0xxxxxxxxx...xxxx\nThe USDO withdrawal amount: xxx\nBank account to receive USD: xxxx\n\nEmail Attachment:\n\n1. Frontand back of the passport\n2. Hand-held passport front photo + paper shooting date and USDO",
       showEmailFormat: false
     };
   },
@@ -136,12 +137,12 @@ export default {
       var that = this;
       this.$swal({
         title:
-          "<small>Please send your questions to:" +
+          "<div style='font-size: 60%'>Please send your questions to:" +
           that.USDOsupportEmail +
-          "</small>",
+          "</div>",
         showCancelButton: false,
         customClass: {
-          confirmButton: "confirm-button-class",
+          confirmButton: "confirm-button-class"
         },
         animation: false,
         reverseButtons: true,

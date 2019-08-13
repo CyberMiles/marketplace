@@ -46,7 +46,7 @@
             }"
             :sold="good.sold ? true : ``"
           >
-            <RespImg v-bind:src="good.image" alt="" />
+            <RespImg v-bind:src="good.image" alt="" division="2" />
             <template v-slot:price>
               ${{ good.price }}
             </template>

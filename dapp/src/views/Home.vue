@@ -68,7 +68,11 @@
               title: good.title
             }"
           >
-            <RespImg v-bind:src="good.image" alt="" />
+            <RespImg
+              v-bind:src="good.image"
+              alt=""
+              v-bind:division="itemsPerLine"
+            />
             <template v-slot:price>
               ${{ good.price }}
             </template>
@@ -103,7 +107,11 @@
               title: good.title
             }"
           >
-            <RespImg v-bind:src="good.image" alt="" />
+            <RespImg
+              v-bind:src="good.image"
+              alt=""
+              v-bind:division="itemsPerLine"
+            />
             <template v-slot:price>
               ${{ good.price }}
             </template>
@@ -209,19 +217,32 @@ export default {
       let lineHeight = 18;
       if (window.innerWidth > 1200) homePadding = 120;
       else if (window.innerWidth > 600) homePadding = 60;
-      let goodMargin = 0;
+
+      return (
+        lineHeight +
+        (parentWidth - this.goodMargin - 2 * homePadding) / this.itemsPerLine
+      );
+    },
+    itemsPerLine: function() {
       if (window.innerWidth > 1000) {
-        goodMargin = 80;
-        return lineHeight + (parentWidth - goodMargin - 2 * homePadding) / 5;
+        return 5;
       } else if (window.innerWidth > 800) {
-        goodMargin = 55;
-        return lineHeight + (parentWidth - goodMargin - 2 * homePadding) / 4;
+        return 4;
       } else if (window.innerWidth > 600) {
-        goodMargin = 25;
-        return lineHeight + (parentWidth - goodMargin - 2 * homePadding) / 3;
+        return 3;
       } else {
-        goodMargin = 15;
-        return lineHeight + (parentWidth - goodMargin - 2 * homePadding) / 2;
+        return 2;
+      }
+    },
+    goodMargin: function() {
+      if (window.innerWidth > 1000) {
+        return 80;
+      } else if (window.innerWidth > 800) {
+        return 55;
+      } else if (window.innerWidth > 600) {
+        return 25;
+      } else {
+        return 15;
       }
     }
   }

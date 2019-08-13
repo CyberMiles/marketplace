@@ -1,7 +1,11 @@
 <template>
   <div class="listing-info">
-    <div class="main">
-      <RespImg v-bind:src="headImg" v-bind:alt="ProductInfo.desc" />
+    <div class="main" :style="{ height: headImgWidth + 'px' }">
+      <RespImg
+        v-bind:src="headImg"
+        v-bind:alt="ProductInfo.desc"
+        v-bind:division="0.75"
+      />
       <div class="goods-price">
         <span>$ {{ ProductInfo.USDprice }}</span>
       </div>
@@ -14,7 +18,7 @@
           :key="image.key"
           @click="headImg = image"
         >
-          <RespImg v-bind:src="image" />
+          <RespImg v-bind:src="image" v-bind:division="6" />
         </div>
       </div>
       <h1 class="wrap-text">{{ ProductInfo.title }}</h1>
@@ -195,6 +199,11 @@ export default {
       });
     }
   },
+  computed: {
+    headImgWidth: function() {
+      return window.innerWidth;
+    }
+  }
 };
 </script>
 <style lang="stylus">

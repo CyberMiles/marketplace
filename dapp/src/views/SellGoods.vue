@@ -3,7 +3,7 @@
     <div class="goods-items">
       <div class="sell-goods-item" v-for="g in goods" :key="g.id">
         <div class="goods-info" @click="$router.push('/listing/' + g.id)">
-          <RespImg v-bind:src="g.image" alt="" />
+          <RespImg v-bind:src="g.image" alt="" division="2" />
           <div class="goods-price">
             <span>$ {{ g.price }}</span>
           </div>

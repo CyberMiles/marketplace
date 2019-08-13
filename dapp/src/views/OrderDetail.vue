@@ -14,7 +14,7 @@
         >
           <div class="order-goods-info">
             <div class="goods-img">
-              <RespImg v-bind:src="order.goods.image" alt="" />
+              <RespImg v-bind:src="order.goods.image" alt="" division="6" />
             </div>
             <div class="goods-desc">
               <div class="goods-title">{{ order.goods.title }}</div>

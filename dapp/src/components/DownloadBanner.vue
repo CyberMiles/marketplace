@@ -39,9 +39,9 @@ export default {
 
 <style lang="stylus">
 .footer-banner
-  height (240/16)rem
+  height (150/16)rem
   background #ffffff
-  padding (40/16)rem (120/16)rem (100/16)rem
+  padding (10/16)rem (120/16)rem (40/16)rem
   width 100%
   display flex
   .logo
