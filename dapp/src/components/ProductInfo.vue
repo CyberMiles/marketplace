@@ -516,6 +516,7 @@ export default {
       margin (10/16)rem (10/16)rem (10/16)rem 0
       display inline-block
       .preview
+        object-fit cover
         width (100/16)rem
         height (100/16)rem
         border-radius 8px

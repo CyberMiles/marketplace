@@ -41,7 +41,7 @@ export default {
                 Math.round(window.innerWidth / this.division) +
                 ",h_" +
                 Math.round(window.innerWidth / this.division) +
-                ",c_scale/"
+                ",c_fill/"
             );
           this.newSrc2x = this.src
             .split("upload/")
@@ -50,7 +50,7 @@ export default {
                 Math.round(window.innerWidth / this.division) * 2 +
                 ",h_" +
                 Math.round(window.innerWidth / this.division) * 2 +
-                ",c_scale/"
+                ",c_fill/"
             );
         } else {
           this.newSrc = this.src
@@ -60,7 +60,7 @@ export default {
                 window.innerWidth +
                 ",h_" +
                 window.innerWidth +
-                ",c_scale/"
+                ",c_fill/"
             );
           this.newSrc2x = this.src
             .split("upload/")
@@ -69,7 +69,7 @@ export default {
                 window.innerWidth * 2 +
                 ",h_" +
                 window.innerWidth * 2 +
-                ",c_scale/"
+                ",c_fill/"
             );
         }
       }
@@ -82,6 +82,7 @@ export default {
 img
   display block
   max-width 100%
+  object-fit cover
 .prePic
   background #f2f2f2
   width 200px

@@ -1,6 +1,6 @@
 <template>
   <div class="listing-info">
-    <div class="main" :style="{ height: headImgWidth + 'px' }">
+    <div class="main" :style="{ height: headImgWidth + 'px' }" @click="showFullPic()">
       <RespImg
         v-bind:src="headImg"
         v-bind:alt="ProductInfo.desc"
@@ -197,6 +197,9 @@ export default {
         console.log(r.data.length);
         that.sellerCompletedNumber = r.data.length;
       });
+    },
+    showFullPic() {
+      location.href = this.headImg;
     }
   },
   computed: {
