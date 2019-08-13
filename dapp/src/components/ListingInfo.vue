@@ -215,7 +215,7 @@ export default {
   .main
     position relative
     background-color #f0f0f0
-    height 100%
+    height 100% !important
     img
       display block
       width 100vw
