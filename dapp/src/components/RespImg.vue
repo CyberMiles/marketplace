@@ -1,7 +1,15 @@
 <template>
   <div>
-    <img v-bind:srcset="srcset" v-bind:src="newSrc" v-bind:alt="alt" />
-    <div v-if="src == undefined" class="prePic"></div>
+    <img
+      v-bind:srcset="srcset"
+      v-bind:src="newSrc"
+      v-bind:alt="alt"
+      @load="Loaded = true"
+      v-show="Loaded"
+    />
+    <div class="prePic" v-if="!Loaded">
+      <img v-bind:src="newSrcLowQ" v-bind:alt="alt" />
+    </div>
   </div>
 </template>
 
@@ -16,7 +24,9 @@ export default {
   data() {
     return {
       newSrc: this.src,
-      newSrc2x: this.src
+      newSrc2x: this.src,
+      newSrcLowQ: "",
+      Loaded: false
     };
   },
   created() {
@@ -34,6 +44,15 @@ export default {
         this.src.slice(0, 27) == "https://res.cloudinary.com/"
       ) {
         if (this.division !== undefined) {
+          this.newSrcLowQ = this.src
+            .split("upload/")
+            .join(
+              "upload/q_10/w_" +
+                Math.round(window.innerWidth / this.division) +
+                ",h_" +
+                Math.round(window.innerWidth / this.division) +
+                ",c_fill,f_auto/"
+            );
           this.newSrc = this.src
             .split("upload/")
             .join(
@@ -41,7 +60,7 @@ export default {
                 Math.round(window.innerWidth / this.division) +
                 ",h_" +
                 Math.round(window.innerWidth / this.division) +
-                ",c_fill/"
+                ",c_fill,f_auto/"
             );
           this.newSrc2x = this.src
             .split("upload/")
@@ -50,9 +69,18 @@ export default {
                 Math.round(window.innerWidth / this.division) * 2 +
                 ",h_" +
                 Math.round(window.innerWidth / this.division) * 2 +
-                ",c_fill/"
+                ",c_fill,f_auto/"
             );
         } else {
+          this.newSrcLowQ = this.src
+            .split("upload/")
+            .join(
+              "upload/q_10/w_" +
+                window.innerWidth +
+                ",h_" +
+                window.innerWidth +
+                ",c_fill,f_auto/"
+            );
           this.newSrc = this.src
             .split("upload/")
             .join(
@@ -60,7 +88,7 @@ export default {
                 window.innerWidth +
                 ",h_" +
                 window.innerWidth +
-                ",c_fill/"
+                ",c_fill,f_auto/"
             );
           this.newSrc2x = this.src
             .split("upload/")
@@ -69,7 +97,7 @@ export default {
                 window.innerWidth * 2 +
                 ",h_" +
                 window.innerWidth * 2 +
-                ",c_fill/"
+                ",c_fill,f_auto/"
             );
         }
       }
@@ -85,5 +113,4 @@ img
   object-fit cover
 .prePic
   background #f2f2f2
-  width 200px
 </style>

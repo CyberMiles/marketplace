@@ -4,7 +4,7 @@
       <RespImg
         v-bind:src="headImg"
         v-bind:alt="ProductInfo.desc"
-        v-bind:division="0.75"
+        v-bind:division="1"
       />
       <div class="goods-price">
         <span>$ {{ ProductInfo.USDprice }}</span>
@@ -215,6 +215,7 @@ export default {
   .main
     position relative
     background-color #f0f0f0
+    height 100%
     img
       display block
       width 100vw
