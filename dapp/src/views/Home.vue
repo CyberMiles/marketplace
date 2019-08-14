@@ -5,6 +5,7 @@
       <div class="pc-header">
         <img src="./../assets/logo.png" class="logo" style="width:160px" />
         <!-- <h1>{{ DAppName }}</h1> -->
+        <span class="about-entry" @click="$router.push('/about')">About?</span>
         <div class="search-field">
           <div class="onsearch-field">
             <input
@@ -252,7 +253,7 @@ export default {
 .home
   .pc-header
     .logo
-      padding 10px 0
+      padding (10/16)rem 0
   padding 0 (15/16)rem (60/16)rem
   @media screen and (min-width: 600px)
     margin 0 0 (420/16)rem
@@ -270,6 +271,15 @@ export default {
       margin-top (44/16)rem
       display inline-block
       max-width (160/16)rem;
+  .about-entry
+    top (14/16)rem
+    right 0
+    position absolute
+    border-radius (16/16)rem 0 0 (16/16)rem
+    padding (8/16)rem (12/16)rem
+    box-shadow 0 0 7px 0 rgba(255, 63, 15, 0.3)
+    background-image linear-gradient(to left, #ff7777, #ff3f0f)
+    color #fafafa
   .search-field
     @media screen and (min-width: 600px)
       margin 0 (10/16)rem 0 0
