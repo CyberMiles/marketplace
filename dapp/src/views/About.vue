@@ -17,7 +17,7 @@
       </li>
       <li>
         The {{ USDunit }}s are frozen and secured in the smart contract and
-        cannot be accessed by any more.
+        cannot be accessed by anymore.
       </li>
     </ul>
   </div>
