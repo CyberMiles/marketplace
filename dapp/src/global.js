@@ -33,21 +33,13 @@ export default {
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
-  console.log([
-    obj.title,
-    obj.desc,
-    obj.tags,
-    obj.categories,
-    obj.imageUrls,
-    obj.contact,
-    obj.escrowPeriod,
-    obj.crc20,
-    obj.amount,
-    obj.crc20_2,
-    obj.amount_2,
-    Global.DAOaddr,
-    Global.USDaddr
-  ]);
+  if (
+    Global.badGuys
+      .map(obj => obj.toLowerCase())
+      .indexOf(fromUser.toLowerCase()) !== -1
+  ) {
+    return;
+  }
   var redirected = false;
   var data =
     "0x" +

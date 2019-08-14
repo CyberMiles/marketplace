@@ -18,6 +18,7 @@ import DownloadPage from "./views/Download.vue";
 import DisputePage from "./views/DisputeBoard.vue";
 import WithdrawUSDOGuidePage from "./views/WithdrawUSDOGuide.vue";
 import DebugPage from "./views/Debug.vue";
+import AboutPage from "./views/About.vue";
 import Global from "@/global.js";
 
 Vue.use(Router);
@@ -37,11 +38,7 @@ export default new Router({
     {
       path: "/about",
       name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
+      component: AboutPage
     },
     {
       path: "/create",
