@@ -26,7 +26,10 @@ export default {
   HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
   DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",
   ProductName: "Market Place",
-  USDOsupportEmail: "usdo@supernodecapital.com"
+  USDOsupportEmail: "usdo@supernodecapital.com",
+  badGuys: [
+    "0x5dDC817cf4Ed5EE01E3CabAa4689787Ff5618768"
+  ]
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {

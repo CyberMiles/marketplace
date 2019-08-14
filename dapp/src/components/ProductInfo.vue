@@ -410,6 +410,14 @@ export default {
           });
         } else {
           var userAddress = addr.toString();
+          that.processing = true;
+          if (
+            Global.badGuys
+              .map(obj => obj.toLowerCase())
+              .indexOf(userAddress.toLowerCase()) !== -1
+          ) {
+            return;
+          }
           console.log(that.imageUrls.length, that.images.length);
           //wait until the pics have been uploaded to the cloud
           var checkUploadImg = function() {

@@ -135,8 +135,7 @@ import {
   web3Pass,
   queryOptions,
   makeQuery,
-  compare,
-  refactorListingTitle
+  compare
 } from "@/global.js";
 
 export default {
@@ -185,7 +184,7 @@ export default {
             image: item.functionData.info[6].split(",")[0],
             price: (parseInt(item.functionData.info[7]) / 100).toString(),
             contractAddr: item.contractAddress,
-            title: refactorListingTitle(item.functionData.info[1]),
+            title: item.functionData.info[1],
             sold: item.functionData.info[0] == 1 ? false : true
           });
         });
@@ -273,7 +272,7 @@ export default {
       max-width (160/16)rem;
   .search-field
     @media screen and (min-width: 600px)
-      margin (44/16)rem (10/16)rem 0 (10/16)rem
+      margin 0 (10/16)rem 0 0
       display inline-block
       button-size = (200/16)rem
       logo-size = (160/16)rem

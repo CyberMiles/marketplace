@@ -74,8 +74,7 @@ import global from "@/global.js";
 import {
   queryOptions,
   makeQuery,
-  compare,
-  refactorListingTitle
+  compare
 } from "@/global.js";
 
 export default {
@@ -178,7 +177,7 @@ export default {
             image: item.functionData.info[6].split(",")[0],
             price: (parseInt(item.functionData.info[7]) / 100).toString(),
             contractAddr: item.contractAddress,
-            title: refactorListingTitle(item.functionData.info[1]),
+            title: item.functionData.info[1],
             sold: item.functionData.info[0] == 1 ? false : true
           });
         });

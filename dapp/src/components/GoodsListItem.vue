@@ -14,11 +14,13 @@
 </template>
 
 <script>
+import { refactorListingTitle } from "@/global.js";
+
 export default {
   props: ["sold", "title", "contractAddr"],
   methods: {
     goListing() {
-      this.$router.push("/" + this.title + "/listing/" + this.contractAddr);
+      this.$router.push("/" + refactorListingTitle(this.title) + "/listing/" + this.contractAddr);
     }
   }
 };
