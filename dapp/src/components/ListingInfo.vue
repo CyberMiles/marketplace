@@ -1,6 +1,10 @@
 <template>
   <div class="listing-info">
-    <div class="main" :style="{ height: headImgWidth + 'px' }" @click="showFullPic()">
+    <div
+      class="main"
+      :style="{ height: headImgWidth + 'px' }"
+      @click="showFullPic()"
+    >
       <RespImg
         v-bind:src="headImg"
         v-bind:alt="ProductInfo.desc"
@@ -12,14 +16,20 @@
     </div>
     <section>
       <div class="thumbs">
+        <div class="goods-thumb" v-if="ProductInfo.images.length === 0"></div>
         <div
           class="goods-thumb"
           v-for="image in ProductInfo.images"
           :key="image.key"
           @click="headImg = image"
+          v-bind:class="{ selected: image === headImg }"
         >
           <RespImg v-bind:src="image" v-bind:division="6" />
         </div>
+      </div>
+      <div v-if="ProductInfo.title === null">
+        <br />
+        <div class="prefilled-text"></div>
       </div>
       <h1 class="wrap-text">{{ ProductInfo.title }}</h1>
       <ul class="tags" v-if="ProductInfo.tags.length > 0">
@@ -32,169 +42,59 @@
     </section>
     <section class="desc-sec">
       <h3>Description</h3>
+      <div v-if="ProductInfo.desc === null">
+        <div class="prefilled-text"></div>
+        <br />
+        <div class="prefilled-text"></div>
+      </div>
       <p class="markdown-body">
-        <vue-markdown v-bind:source="ProductInfo.desc">...</vue-markdown>
+        <vue-markdown v-bind:source="ProductInfo.desc">{{
+          ProductInfo.desc
+        }}</vue-markdown>
       </p>
     </section>
     <section>
       <h3>Seller</h3>
       <dl>
         <dt>Address</dt>
+        <div class="prefilled-text" v-if="ProductInfo.seller === null"></div>
         <dd>{{ ProductInfo.seller }}</dd>
         <dt>Completed Order</dt>
         <dd>{{ sellerCompletedNumber }} order</dd>
         <dt>Contact Info</dt>
+        <div class="prefilled-text" v-if="ProductInfo.contact === null"></div>
         <dd>{{ ProductInfo.contact }}</dd>
       </dl>
     </section>
   </div>
 </template>
 <script>
-import Contracts from "@/contracts.js";
 import RespImg from "@/components/RespImg";
 import axios from "axios";
-import Global from "@/global.js";
-import { goDebug } from "@/global.js";
+import { makeQuery, queryOptions } from "@/global.js";
 import VueMarkdown from "vue-markdown";
 
 export default {
   name: "ListingInfo",
+  props: ["ProductInfo"],
   components: {
     RespImg,
     VueMarkdown
   },
   data() {
     return {
-      isSeller: false,
-      isBuyer: false,
-      sellerCompletedNumber: 0,
       headImg: "",
-      ProductInfo: {
-        images: [],
-        title: null,
-        tags: [],
-        desc: null,
-        seller: null,
-        contact: null,
-        USDprice: null
-      }
+      sellerCompletedNumber: 0
     };
   },
   created() {
-    this.initProductInfo();
+    console.log(this.ProductInfo);
   },
   methods: {
-    initProductInfo() {
-      var contract_address = this.$route.params.contractAddr;
-      // console.log(contract_address);
-      var that = this;
-      //set timeout to check web3, because sometimes once mounted, the web3 hasn't been injected
-      var checkWeb3 = function() {
-        try {
-          if (!window.web3.isAddress(contract_address)) {
-            that.$router.push(`/`);
-          }
-          window.web3.cmt.getAccounts(function(e, address) {
-            if (e) {
-              goDebug({
-                txHash: "null",
-                callMethod: "getAccounts",
-                error: e
-              });
-            } else {
-              var userAddress = address.toString();
-
-              var contract = window.web3.cmt.contract(Contracts.Listing.abi);
-              var instance = contract.at(contract_address);
-
-              instance.info(function(e, r) {
-                if (e) {
-                  goDebug({
-                    txHash: "null",
-                    callMethod: "instance.info",
-                    error: e
-                  });
-                } else {
-                  console.log(r);
-                  // console.log(r[3]);
-                  that.ProductInfo = {
-                    status: r[0],
-                    title: r[1],
-                    desc: r[2],
-                    tags: r[3].split("#").filter(obj => obj.trim() != ""),
-                    escrowDuration: r[5],
-                    images: r[6].split(","),
-                    USDprice: (parseInt(r[7]) / 100).toString(),
-                    seller: r[8].toString(),
-                    buyerAddress: r[9].toString(),
-                    contact: r[4]
-                  };
-                  document.title = `${that.ProductInfo.title} — ${
-                    Global.ProductName
-                  }`;
-                  let keywords = that.ProductInfo.title;
-                  that.ProductInfo.tags.forEach(tag => {
-                    keywords = keywords + "," + tag.trim();
-                  });
-                  const tag = document.createElement("meta");
-                  tag.setAttribute("name", "keywords");
-                  tag.setAttribute("content", keywords);
-                  document.head.appendChild(tag);
-                  // console.log(that.ProductInfo);
-                  that.headImg = that.ProductInfo.images[0];
-                  that.isSeller = userAddress == that.ProductInfo.seller;
-                  that.isBuyer = userAddress == that.ProductInfo.buyerAddress;
-                  that.$emit("tradingInfo", {
-                    isSeller: that.isSeller,
-                    isBuyer: that.isBuyer,
-                    status: that.ProductInfo.status.toNumber(),
-                    instance: instance,
-                    sellerInfo: that.ProductInfo.contact
-                  });
-                  that.getCompletedOrder(that.ProductInfo.seller);
-                }
-              });
-            }
-          });
-        } catch (e) {
-          setTimeout(checkWeb3, 50);
-        }
-      };
-      checkWeb3(); //immediate first run
-    },
     getCompletedOrder(seller) {
       var that = this;
-      var queryMarketplaceABI = {
-        query: {
-          bool: {
-            must: [
-              {
-                match: {
-                  abiShaList: Global.abiShaList
-                }
-              },
-              {
-                match: {
-                  "functionDataList.0.functionData.info.0": "4"
-                }
-              },
-              {
-                match: {
-                  "functionDataList.0.functionData.info.8": seller
-                }
-              }
-            ]
-          }
-        }
-      };
-      const options = {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        data: JSON.stringify(queryMarketplaceABI),
-        url: "https://cmt-testnet.search.secondstate.io/api/es_search"
-      };
-      axios(options).then(r => {
-        console.log(r.data.length);
+      var queryMarketplaceABI = makeQuery([4], seller);
+      axios(queryOptions(queryMarketplaceABI)).then(r => {
         that.sellerCompletedNumber = r.data.length;
       });
     },
@@ -206,16 +106,25 @@ export default {
     headImgWidth: function() {
       return window.innerWidth;
     }
+  },
+  watch: {
+    ProductInfo: function() {
+      this.getCompletedOrder(this.ProductInfo.seller);
+      this.headImg = this.ProductInfo.images[0];
+    }
   }
 };
 </script>
 <style lang="stylus">
+.prefilled-text
+  background #f2f2f2
+  width 80%
+  height (16/16)rem
 .listing-info
   margin-bottom (50/16)rem
   .main
     position relative
     background-color #f0f0f0
-    height 100% !important
     img
       display block
       width 100vw
@@ -235,9 +144,12 @@ export default {
       color #ffffff
       padding 0 (7/16)rem
   .thumbs
+    .selected
+      opacity 0.3
     margin-top (-5/16)rem
     .goods-thumb
       width (60/16)rem
+      height (60/16)rem
       border-radius (4/16)rem
       background-color #f0f0f0
       overflow hidden
@@ -257,11 +169,13 @@ export default {
     margin 0
     padding 0
     list-style none
-    display flex
+    overflow: auto;
     li
       margin-right (15/16)rem
-      &:last-child
-        margin-right 0
+      white-space nowrap
+      float left
+      display block
+      margin-bottom (10/16)rem
     .tag-link
       display block
       height (24/16)rem

@@ -9,6 +9,11 @@
         <span>Sold</span>
       </div>
     </div>
+    <div
+      class="prefilled-text"
+      style="margin-top: (3/16)rem"
+      v-if="title === null"
+    ></div>
     <div class="short-title">{{ title }}</div>
   </div>
 </template>
@@ -20,7 +25,9 @@ export default {
   props: ["sold", "title", "contractAddr"],
   methods: {
     goListing() {
-      this.$router.push("/" + refactorListingTitle(this.title) + "/listing/" + this.contractAddr);
+      this.$router.push(
+        "/" + refactorListingTitle(this.title) + "/listing/" + this.contractAddr
+      );
     }
   }
 };
@@ -28,6 +35,7 @@ export default {
 
 <style lang="stylus">
 .goods-list-item-container
+  height "calc(100% - %s)" % (18/16)rem
   .goods-list-item
     position relative
     width 100%

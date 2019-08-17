@@ -13,7 +13,7 @@ Vue.use(VueAnalytics, {
 });
 
 export default {
-  popularTags: ["white", "test", "girl"],
+  popularTags: ["white", "test", "girl", "long tag tag long tag", "long tag tag long tag"],
   abiShaList:
     "0xf2d55a1e2ceaf0e1511115e100490464fcb8d62993860c1251bd0c56fa16df9a",
   eeEndpoint: "https://marketplace.search.secondstate.io/api/es_search",
@@ -23,6 +23,7 @@ export default {
   USDBuyLink:
     "http://stripe-stablecoin.ufn3g4prnu.ap-northeast-1.elasticbeanstalk.com/checkout?currency=usd&contract_addr=",
   escrowPeriod: 60 * 60 * 24 * 21,
+  chainId: 19,
   HttpProvider: "https://testnet-rpc.cybermiles.io:8545",
   DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",
   ProductName: "Market Place",
@@ -225,6 +226,8 @@ function goDebug(debugInfo) {
   let connector = "";
   if (router.mode == "hash") connector = "#/";
   else if (router.mode == "history") connector = "";
+
+  console.log(Object.keys(debugInfo))
   let debugURL =
     window.location.origin +
     config.publicPath +

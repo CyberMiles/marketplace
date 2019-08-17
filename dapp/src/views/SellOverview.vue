@@ -36,13 +36,12 @@
       </router-link>
     </div>
 
-    <h3>Orders</h3>
+    <h3>USDO</h3>
     <div class="entries">
       <router-link class="entry" to="/withdraw-usdo-guide">
         <label>Withdraw USDO as dollars</label>
       </router-link>
     </div>
-
   </div>
 </template>
 

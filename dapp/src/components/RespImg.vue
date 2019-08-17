@@ -1,13 +1,16 @@
 <template>
-  <div>
-    <img
-      v-bind:srcset="srcset"
-      v-bind:src="newSrc"
-      v-bind:alt="alt"
-      @load="Loaded = true"
-      v-show="Loaded"
-    />
-    <div class="prePic" v-if="!Loaded">
+  <div class="wrapper">
+    <transition :name="transition">
+      <img
+        v-bind:srcset="srcset"
+        v-bind:src="newSrc"
+        v-bind:alt="alt"
+        @load="Loaded = true"
+        v-show="Loaded"
+        :key="newSrc"
+      />
+    </transition>
+    <div class="prePic" v-if="!Loaded && newSrcLowQ != null">
       <img v-bind:src="newSrcLowQ" v-bind:alt="alt" />
     </div>
   </div>
@@ -25,15 +28,21 @@ export default {
     return {
       newSrc: this.src,
       newSrc2x: this.src,
-      newSrcLowQ: "",
-      Loaded: false
+      newSrcLowQ: null,
+      Loaded: false,
+      transition: ""
     };
   },
   created() {
     this.refactorSrc();
   },
   watch: {
-    src: function() {
+    src: function(newVal, oldVal) {
+      if (oldVal !== null && oldVal !== "") {
+        this.transition = "fade";
+      } else {
+        this.transition = "";
+      }
       this.refactorSrc();
     }
   },
@@ -107,10 +116,22 @@ export default {
 </script>
 
 <style lang="stylus">
-img
-  display block
-  max-width 100%
-  object-fit cover
-.prePic
-  background #f2f2f2
+.wrapper
+    background #f2f2f2
+  img
+    display block
+    max-width 100%
+    object-fit cover
+
+.fade-enter-active {
+  transition: opacity .3s ease-in-out;
+}
+
+.fade-enter-to {
+  opacity: 1;
+}
+
+.fade-enter {
+  opacity: 0;
+}
 </style>

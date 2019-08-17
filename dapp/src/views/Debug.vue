@@ -10,35 +10,11 @@
         class="wrong-logo"
       />
       <span>Oops!</span>
-      <span>something went wrong!</span>
+      <span>Something went wrong!</span>
     </div>
+    <div class="detected-error" v-if="networkMismatched">Important: Network Mismatched!</div>
     <div class="error-info markdown-body">
-      <vue-markdown>
-### More Information:
-
-#### Error Info
-{{ errorParams }}
-
-#### DApp Info
-- rpc endpoint: {{ rpcEndpoint }}
-- es endpoint: {{ esEndpoint }}
-- abiSha: {{ abiShaList }}
-- DAOaddr: {{ DAOaddr  }}
-
-#### Web3 Info
-- web3.current.provider
-  + host: {{ web3Provider.host }}
-  + selected address: {{ web3Provider.selectedAddress }}
-  + network version: {{ web3Provider.networkVersion }}
-  + isMetaMask: {{ web3Provider.isMetaMask }}
-
-- web3 version: {{ web3Version }}
-- web3.cmt version: {{ web3CmtVersion }}
-
-
-#### Network Info
-- User agent: {{ userAgent }}
-      </vue-markdown>
+      <vue-markdown v-bind:source="ErrorDesc"> </vue-markdown>
     </div>
   </div>
 </template>
@@ -47,6 +23,7 @@
 // Eg URL: https://cybermiles.github.io/marketplace/#/debug?errorURL=https%3A%2F%2Fabd&txHash=0x123&error=null&callMethod=null
 import Global from "@/global.js";
 import VueMarkdown from "vue-markdown";
+import { setTimeout } from 'timers';
 
 export default {
   components: {
@@ -54,16 +31,47 @@ export default {
   },
   data() {
     return {
-      errorParams: ""
+      errorParams: "",
+      chainId: "",
+      networkMismatched: false,
+      web3Version: "",
+      web3CmtVersion: "",
+      web3Provider: Object()
     };
   },
   created() {
+    var that = this;
     let searchs = new URLSearchParams(window.location.href.split("debug?")[1]);
     var entries = searchs.entries();
-    for (let pair of entries) { 
+    for (let pair of entries) {
       console.log(pair[0], pair[1]);
       this.errorParams += "- " + pair[0] + ":  " + pair[1] + "\n";
     }
+    //make sure web3 has been injected
+    let checkWeb3 = function() {
+      try {
+        window.web3.cmt;
+        window.web3.net.getId(function(e, currentNetId) {
+          if (!e) {
+            that.chainId = currentNetId;
+            var Web3 = require("web3-cmt");
+            new Web3(
+              new Web3.providers.HttpProvider(that.rpcEndpoint)
+            ).net.getId(function(e, netId) {
+              if (currentNetId !== netId) {
+                that.networkMismatched = true;
+              }
+            });
+            that.web3Version = window.web3.version.api;
+            that.web3CmtVersion = window.web3.cmt.version;
+            that.web3Provider = window.web3.currentProvider;
+          }
+        });
+      } catch (e) {
+        setTimeout(checkWeb3, 50);
+      }
+    };
+    checkWeb3();
   },
   computed: {
     abiShaList: function() {
@@ -83,17 +91,34 @@ export default {
     esEndpoint: function() {
       return Global.eeEndpoint;
     },
-    web3Version: function() {
-      return window.web3 === undefined ? "web3NotDefined" : window.web3.version.api;
-    },
-    web3CmtVersion: function() {
-      return window.web3 === undefined ? "web3NotDefined" : window.web3.cmt.version;
-    },
-    web3Provider: function() {
-      return window.web3 === undefined ? "web3NotDefined" : window.web3.currentProvider;
-    },
     userAgent: function() {
       return navigator.userAgent;
+    },
+    ErrorDesc: function() {
+      return `### More Information:
+
+#### Error Info
+${this.errorParams}
+
+#### DApp Info
+- rpc endpoint: ${this.rpcEndpoint}
+- es endpoint: ${this.esEndpoint}
+- abiSha: ${this.abiShaList}
+- DAOaddr: ${this.DAOaddr}
+
+#### Web3 Info
+- web3.current.provider
+  + host: ${this.web3Provider.host}
+  + selected address: ${this.web3Provider.selectedAddress}
+  + network version: ${this.chainId}
+  + isMetaMask: ${this.web3Provider.isMetaMask}
+
+- web3 version: ${this.web3Version}
+- web3.cmt version: ${this.web3CmtVersion}
+
+
+#### Network Info
+- User agent: ${this.userAgent}`;
     }
   }
 };
@@ -111,6 +136,13 @@ export default {
   .wrong-logo
     display block
     margin (12/16)rem auto
+.detected-error
+  font-size (20/18)rem
+  font-weight bold
+  border solid 1px red
+  width fit-content
+  margin 0 auto
+  padding (12/16)rem
 .error-info
   padding (64/16)rem
   @media screen and (max-width: 767px)

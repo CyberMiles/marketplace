@@ -219,7 +219,6 @@ export default {
             userAddress = address.toString();
           }
         });
-
         var contract = window.web3.cmt.contract(Contracts.Listing.abi);
         instance = contract.at(that.contractAddr);
         that.instance = instance;
