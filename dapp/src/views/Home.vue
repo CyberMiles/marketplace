@@ -174,7 +174,8 @@ export default {
       goodList: [],
       popularTags: Global.popularTags,
       searchTerm: "",
-      onSearch: false
+      onSearch: false,
+      homePanelWidth: window.innerWidth
     };
   },
   components: {
@@ -186,6 +187,9 @@ export default {
   created() {
     this.initGoodList();
     this.$ga.page("/");
+  },
+  mounted() {
+    this.homePanelWidth = this.$refs.home.clientWidth;
   },
   methods: {
     initGoodList() {
@@ -254,8 +258,7 @@ export default {
         .slice(0, this.maxDisplayItems);
     },
     containerHeight: function() {
-      // let parentWidth = this.$refs.home.clientWidth;
-      let parentWidth = window.innerWidth;
+      let parentWidth = this.homePanelWidth;
       let homePadding = 15;
       let lineHeight = 18;
       if (window.innerWidth > 1200) homePadding = 120;

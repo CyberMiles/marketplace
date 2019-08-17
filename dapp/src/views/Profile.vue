@@ -51,7 +51,6 @@ import ProfileOrders from "@/views/ProfileOrders.vue";
 import SellOverview from "@/views/SellOverview.vue";
 import LoadingMask from "@/components/LoadingMask.vue";
 import { web3Pass, goDebug } from "@/global.js";
-import Global from "@/global.js";
 
 Vue.use(Clipboard);
 Vue.use(Toast);

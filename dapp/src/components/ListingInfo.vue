@@ -4,6 +4,7 @@
       class="main"
       :style="{ height: headImgWidth + 'px' }"
       @click="showFullPic()"
+      ref="header"
     >
       <RespImg
         v-bind:src="headImg"
@@ -84,11 +85,12 @@ export default {
   data() {
     return {
       headImg: "",
+      headImgWidth: window.innerWidth,
       sellerCompletedNumber: 0
     };
   },
-  created() {
-    console.log(this.ProductInfo);
+  mounted() {
+    this.headImgWidth = this.$refs.header.clientWidth;
   },
   methods: {
     getCompletedOrder(seller) {
@@ -100,11 +102,6 @@ export default {
     },
     showFullPic() {
       location.href = this.headImg;
-    }
-  },
-  computed: {
-    headImgWidth: function() {
-      return window.innerWidth;
     }
   },
   watch: {
