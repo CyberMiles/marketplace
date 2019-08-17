@@ -23,7 +23,7 @@
 // Eg URL: https://cybermiles.github.io/marketplace/#/debug?errorURL=https%3A%2F%2Fabd&txHash=0x123&error=null&callMethod=null
 import Global from "@/global.js";
 import VueMarkdown from "vue-markdown";
-import { setTimeout } from 'timers';
+import { setTimeout } from "timers";
 
 export default {
   components: {
@@ -50,14 +50,13 @@ export default {
     //make sure web3 has been injected
     let checkWeb3 = function() {
       try {
-        window.web3.cmt;
-        window.web3.net.getId(function(e, currentNetId) {
+        window.web3.version.getNetwork(function(e, currentNetId) {
           if (!e) {
             that.chainId = currentNetId;
             var Web3 = require("web3-cmt");
             new Web3(
               new Web3.providers.HttpProvider(that.rpcEndpoint)
-            ).net.getId(function(e, netId) {
+            ).version.getNetwork(function(e, netId) {
               if (currentNetId !== netId) {
                 that.networkMismatched = true;
               }
