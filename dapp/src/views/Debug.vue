@@ -12,7 +12,9 @@
       <span>Oops!</span>
       <span>Something went wrong!</span>
     </div>
-    <div class="detected-error" v-if="networkMismatched">Important: Network Mismatched!</div>
+    <div class="detected-error" v-if="networkMismatched">
+      Important: Network Mismatched!
+    </div>
     <div class="error-info markdown-body">
       <vue-markdown v-bind:source="ErrorDesc"> </vue-markdown>
     </div>

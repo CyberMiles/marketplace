@@ -49,7 +49,7 @@
       </div>
       <div class="goods-list">
         <div
-          v-for="good in latestGoodList"
+          v-for="good in latestGoodList.slice(0, maxDisplayItems)"
           :key="good.key"
           class="good-container"
           :style="{ height: containerHeight + 'px' }"
@@ -103,7 +103,7 @@
       </div>
       <div class="goods-list">
         <div
-          v-for="good in soldGoodList"
+          v-for="good in soldGoodList.slice(0, this.maxDisplayItems)"
           :key="good.key"
           class="good-container"
           :style="{ height: containerHeight + 'px' }"
@@ -202,11 +202,14 @@ export default {
           .sort(compare("blockNumber"))
           .reverse()
           .filter(obj => {
-            //remove those whose usd price is 0 or the img url is empty or ulisted
+            //remove those whose USD price is 0 or the img url is empty or ulisted or in BlackList
             if (
               obj.functionData.info[7] != 0 &&
               obj.functionData.info[6] != "" &&
-              obj.functionData.info[0] != 0
+              obj.functionData.info[0] != 0 &&
+              Global.badListings
+                .map(o => o.toLowerCase())
+                .indexOf(obj.contractAddress.toLowerCase()) === -1
             )
               return obj;
           });
@@ -244,18 +247,14 @@ export default {
       return Global.ProductName;
     },
     latestGoodList: function() {
-      return this.goodList
-        .filter(obj => {
-          return !obj.sold;
-        })
-        .slice(0, this.maxDisplayItems);
+      return this.goodList.filter(obj => {
+        return !obj.sold;
+      });
     },
     soldGoodList: function() {
-      return this.goodList
-        .filter(obj => {
-          return obj.sold;
-        })
-        .slice(0, this.maxDisplayItems);
+      return this.goodList.filter(obj => {
+        return obj.sold;
+      });
     },
     containerHeight: function() {
       let parentWidth = this.homePanelWidth;
@@ -434,5 +433,4 @@ export default {
       @media screen and (min-width: 1000px)
         good-margin = (80/16) rem
         width "calc((100% - %s)/5)" % good-margin
-    
 </style>

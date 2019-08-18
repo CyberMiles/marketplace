@@ -80,7 +80,7 @@ import GoodsListItem from "@/components/GoodsListItem.vue";
 import LoadingMask from "@/components/LoadingMask.vue";
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
-import global from "@/global.js";
+import Global from "@/global.js";
 import { queryOptions, makeQuery, compare } from "@/global.js";
 
 export default {
@@ -93,7 +93,7 @@ export default {
       all: this.$route.params.all,
       search: this.$route.params.search,
       goodList: [],
-      popularTags: global.popularTags,
+      popularTags: Global.popularTags,
       searchTerm: ""
     };
   },
@@ -118,7 +118,7 @@ export default {
               must: [
                 {
                   match: {
-                    abiShaList: global.abiShaList
+                    abiShaList: Global.abiShaList
                   }
                 },
                 {
@@ -138,7 +138,7 @@ export default {
               must: [
                 {
                   match: {
-                    abiShaList: global.abiShaList
+                    abiShaList: Global.abiShaList
                   }
                 },
                 {
@@ -173,7 +173,10 @@ export default {
             if (
               obj.functionData.info[7] != 0 &&
               obj.functionData.info[6] != "" &&
-              obj.functionData.info[0] != 0
+              obj.functionData.info[0] != 0 &&
+              Global.badListings
+                .map(o => o.toLowerCase())
+                .indexOf(obj.contractAddress.toLowerCase()) === -1
             )
               return obj;
           });

@@ -30,6 +30,10 @@ export default {
   USDOsupportEmail: "usdo@supernodecapital.com",
   badGuys: [
     "0x5dDC817cf4Ed5EE01E3CabAa4689787Ff5618768"
+  ],
+  badListings: [
+    "0x4640b41a93C8514793555009Bd5b0f0395BDA884",
+    "0x13a0C7e9a36d9339beA493e9dBdF8282EeBc77B6"
   ]
 };
 
