@@ -207,9 +207,12 @@ export default {
               obj.functionData.info[7] != 0 &&
               obj.functionData.info[6] != "" &&
               obj.functionData.info[0] != 0 &&
-              Global.badListings
+              Global.blackAddrs
                 .map(o => o.toLowerCase())
-                .indexOf(obj.contractAddress.toLowerCase()) === -1
+                .indexOf(obj.contractAddress.toLowerCase()) === -1 &&
+              Global.blackAddrs
+                .map(o => o.toLowerCase())
+                .indexOf(obj.functionData.info[8].toLowerCase()) === -1
             )
               return obj;
           });
@@ -224,6 +227,7 @@ export default {
           });
         });
         console.log(this.goodList);
+        console.log(sortedData);
       });
     },
     goSearch() {

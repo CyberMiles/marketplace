@@ -31,9 +31,11 @@ export default {
   badGuys: [
     "0x5dDC817cf4Ed5EE01E3CabAa4689787Ff5618768"
   ],
-  badListings: [
-    "0x4640b41a93C8514793555009Bd5b0f0395BDA884",
-    "0x13a0C7e9a36d9339beA493e9dBdF8282EeBc77B6"
+  //blacklist of both listing addresses and account addresses
+  blackAddrs: [
+    // "0x4640b41a93C8514793555009Bd5b0f0395BDA884",
+    // "0xa8e465ed64588b4c0d73c500f8f0247b3dbeb271",
+    // "0xf310f6574d2da372c22a31e7d71fc3a484d0c550"
   ]
 };
 
