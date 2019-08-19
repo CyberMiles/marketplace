@@ -250,6 +250,7 @@ export default {
         background-color #ff3f0f
         color #ffffff
   .goods-list
+    width 100%
     display flex
     flex-wrap wrap
     justify-content space-between

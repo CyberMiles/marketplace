@@ -3,7 +3,7 @@
     <!-- <LoadingMask v-if="loading"></LoadingMask> -->
     <div class="home" ref="home">
       <div class="pc-header">
-        <img src="./../assets/logo.png" class="logo" style="width:160px" />
+        <img src="./../assets/logo.png" class="logo" />
         <span class="about-entry" @click="$router.push('/about')">About?</span>
         <div class="search-field">
           <div class="onsearch-field">
@@ -303,6 +303,8 @@ export default {
   .pc-header
     .logo
       padding (10/16)rem 0
+      width 160px
+      min-height 48px
   padding 0 (15/16)rem (60/16)rem
   @media screen and (min-width: 600px)
     margin 0 0 (420/16)rem

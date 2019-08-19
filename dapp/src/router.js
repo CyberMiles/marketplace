@@ -172,7 +172,7 @@ export default new Router({
       path: "/withdraw-usdo-guide",
       component: WithdrawUSDOGuidePage,
       meta: {
-        title:"Withdraw USDO as dollars"
+        title: "Withdraw USDO as dollars"
       }
     },
     {

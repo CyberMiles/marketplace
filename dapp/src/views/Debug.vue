@@ -14,6 +14,7 @@
     </div>
     <div class="detected-error" v-if="networkMismatched">
       Important: Network Mismatched!
+      <a :href="`/faq.html#1-a-` + mismatchType" class="fix-href">How to fix it?</a>
     </div>
     <div class="error-info markdown-body">
       <vue-markdown v-bind:source="ErrorDesc"> </vue-markdown>
@@ -38,7 +39,8 @@ export default {
       networkMismatched: false,
       web3Version: "",
       web3CmtVersion: "",
-      web3Provider: Object()
+      web3Provider: Object(),
+      mismatchType: 0
     };
   },
   created() {
@@ -61,6 +63,15 @@ export default {
             ).version.getNetwork(function(e, netId) {
               if (currentNetId !== netId) {
                 that.networkMismatched = true;
+                if (netId === "18" && currentNetId === "19") {
+                  that.mismatchType = 1;
+                } else if (netId === "18" && currentNetId !== "19") {
+                  that.mismatchType = 2;
+                } else if (netId === "19" && currentNetId === "18") {
+                  that.mismatchType = 3;
+                } else if (netId === "19" && currentNetId !== "18") {
+                  that.mismatchType = 4;
+                }
               }
             });
             that.web3Version = window.web3.version.api;
@@ -138,12 +149,15 @@ ${this.errorParams}
     display block
     margin (12/16)rem auto
 .detected-error
-  font-size (20/18)rem
+  font-size (20/16)rem
   font-weight bold
   border solid 1px red
   width fit-content
   margin 0 auto
   padding (12/16)rem
+  .fix-href
+    font-size (12/16)rem
+    color #0366d6
 .error-info
   padding (64/16)rem
   @media screen and (max-width: 767px)
