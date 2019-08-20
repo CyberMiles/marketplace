@@ -96,7 +96,6 @@ function createHandler(contract, obj, bin, fromUser, that) {
       if (e) {
         goDebug({
           txHash: instance.transactionHash,
-          callMethod: "null",
           error: e
         });
       } else {
@@ -233,19 +232,19 @@ function goDebug(debugInfo) {
   if (router.mode == "hash") connector = "#/";
   else if (router.mode == "history") connector = "";
 
-  console.log(Object.keys(debugInfo))
+  console.log(Object.keys(debugInfo));
+  let queryParams = "?errorURL=" + window.location.href;
+  Object.keys(debugInfo).map(key => {
+    console.log(debugInfo[key].toString())
+    queryParams = queryParams + "&" + key + "=" + debugInfo[key].toString();
+  });
+  console.log(queryParams);
   let debugURL =
     window.location.origin +
     config.publicPath +
     connector +
-    "debug?errorURL=" +
-    window.location.href +
-    "&txHash=" +
-    debugInfo.txhash +
-    "&callMethod=" +
-    debugInfo.callMethod +
-    "&error=" +
-    debugInfo.e;
+    "debug" +
+    queryParams;
   location.href = debugURL;
 }
 
@@ -253,8 +252,7 @@ function web3Callback(e, txhash, reloc) {
   if (e) {
     goDebug({
       txhash: txhash,
-      callMethod: "null",
-      e: e
+      error: e
     });
   } else {
     var getReceipt = function() {
@@ -262,9 +260,8 @@ function web3Callback(e, txhash, reloc) {
         window.web3.cmt.getTransactionReceipt(txhash, function(e, receipt) {
           if (e) {
             goDebug({
-              txhash: "null",
               callMethod: "getTransactionReceipt",
-              e: e
+              error: e
             });
           } else {
             if (receipt == null) setTimeout(getReceipt, 100);

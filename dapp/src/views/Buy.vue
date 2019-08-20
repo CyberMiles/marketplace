@@ -166,9 +166,8 @@ export default {
           window.web3.cmt.getAccounts(function(e, address) {
             if (e) {
               goDebug({
-                txhash: "null",
                 callMethod: "instance.getAccounts",
-                e: e
+                error: e
               });
             } else {
               var userAddress = address.toString();
@@ -179,9 +178,8 @@ export default {
               instance.getPricesCount(function(e, pricesCount) {
                 if (e) {
                   goDebug({
-                    txhash: "null",
                     callMethod: "instance.getPricesCount",
-                    e: e
+                    error: e
                   });
                 } else {
                   for (let i = 0; i < pricesCount; i++) {
@@ -231,9 +229,8 @@ export default {
               instance.info(function(e, info) {
                 if (e) {
                   goDebug({
-                    txhash: "null",
                     callMethod: "instance.info",
-                    e: e
+                    error: e
                   });
                 } else {
                   that.goodTitle = info[1];
@@ -255,9 +252,8 @@ export default {
                 function(e, USDbalance) {
                   if (e) {
                     goDebug({
-                      txhash: "null",
                       callMethod: "instanceUSD.balanceOf",
-                      e: e
+                      error: e
                     });
                   } else {
                     that.balance.USD = USDbalance;
@@ -267,9 +263,8 @@ export default {
               window.web3.cmt.getBalance(userAddress, function(e, CMTbalance) {
                 if (e) {
                   goDebug({
-                    txhash: "null",
                     callMethod: "getBalance",
-                    e: e
+                    error: e
                   });
                 } else {
                   that.balance.CMT = CMTbalance;
@@ -319,8 +314,7 @@ export default {
             if (e) {
               goDebug({
                 txhash: txhash,
-                callMethod: "null",
-                e: e
+                error: e
               });
             } else {
               that.$router.replace(`/complete/${that.contractAddr}/${txhash}`);
@@ -341,8 +335,7 @@ export default {
             if (error) {
               goDebug({
                 txhash: txhash,
-                callMethod: "null",
-                e: error
+                error: error
               });
             } else {
               that.instance.buyWithCRC20(
@@ -359,9 +352,8 @@ export default {
                 function(e, txhash) {
                   if (e) {
                     goDebug({
-                      txhash: "txhash",
-                      callMethod: "null",
-                      e: e
+                      txhash: txhash,
+                      error: e
                     });
                   } else {
                     that.$router.replace(

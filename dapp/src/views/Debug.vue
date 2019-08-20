@@ -13,8 +13,10 @@
       <span>Something went wrong!</span>
     </div>
     <div class="detected-error" v-if="networkMismatched">
-      Important: Network Mismatched!
-      <a :href="`/faq.html#1-a-` + mismatchType" class="fix-href">How to fix it?</a>
+      Important: Network Mismatched! (Mistmatch Type {{ mismatchType }} )
+      <a :href="`/faq.html#1-a-` + mismatchType" class="fix-href">
+        How to fix it?
+      </a>
     </div>
     <div class="error-info markdown-body">
       <vue-markdown v-bind:source="ErrorDesc"> </vue-markdown>

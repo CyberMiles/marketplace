@@ -66,9 +66,8 @@ export default {
         instance.info(function(e, r) {
           if (e) {
             goDebug({
-              txhash: "null",
               callMethod: "instance.info",
-              e: e
+              error: e
             });
           } else {
             that.order.seller = {
@@ -79,9 +78,8 @@ export default {
         instance.buyerInfo(function(e, b_r) {
           if (e) {
             goDebug({
-              txhash: "null",
               callMethod: "instance.buyerInfo",
-              e: e
+              error: e
             });
           } else {
             that.order.buyer = {
@@ -92,18 +90,16 @@ export default {
         instance.getMessagesCount(function(e, r) {
           if (e) {
             goDebug({
-              txhash: "null",
               callMethod: "instance.getMessagesCount",
-              e: e
+              error: e
             });
           } else {
             for (let i = 0; i < r; i++) {
               instance.showMessageBoard(i, function(e, msg) {
                 if (e) {
                   goDebug({
-                    txhash: "null",
                     callMethod: "instance.showMessageBoard",
-                    e: e
+                    error: e
                   });
                 } else {
                   that.messageBoard.push({

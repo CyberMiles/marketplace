@@ -210,9 +210,8 @@ export default {
         window.web3.cmt.getAccounts(function(e, address) {
           if (e) {
             goDebug({
-              txhash: "null",
               callMethod: "getAccounts",
-              e: e
+              error: e
             });
           } else {
             // This method should return much faster than network methods
@@ -225,9 +224,8 @@ export default {
         instance.info(function(e, r) {
           if (e) {
             goDebug({
-              txhash: "null",
               callMethod: "instance.info",
-              e: e
+              error: e
             });
           } else {
             if (r[0] == 2) that.order.status = "paid";
@@ -253,9 +251,8 @@ export default {
         instance.buyerInfo(function(e, b_r) {
           if (e) {
             goDebug({
-              txhash: "null",
               callMethod: "instance.buyerInfo",
-              e: e
+              error: e
             });
           } else {
             var unit = "";
@@ -284,9 +281,8 @@ export default {
         instance.secondaryBuyerInfo(function(e, s_r) {
           if (e) {
             goDebug({
-              txhash: "null",
               callMethod: "instance.secondaryBuyerInfo",
-              e: e
+              error: e
             });
           } else {
             that.order.buyer.closedReason = s_r[1];
@@ -295,18 +291,16 @@ export default {
         instance.getMessagesCount(function(e, r) {
           if (e) {
             goDebug({
-              txhash: "null",
               callMethod: "instance.getMessagesCount",
-              e: e
+              error: e
             });
           } else {
             for (let i = 0; i < r; i++) {
               instance.showMessageBoard(i, function(e, msg) {
                 if (e) {
                   goDebug({
-                    txhash: "null",
                     callMethod: "instance.showMessageBoard",
-                    e: e
+                    error: e
                   });
                 } else {
                   that.messageBoard.push({

@@ -220,7 +220,6 @@ export default {
             window.web3.cmt.getAccounts(function(e, address) {
               if (e) {
                 goDebug({
-                  txHash: "null",
                   callMethod: "getAccounts",
                   error: e
                 });
@@ -235,7 +234,6 @@ export default {
                 instance.info(function(e, r) {
                   if (e) {
                     goDebug({
-                      txHash: "null",
                       callMethod: "instance.info",
                       error: e
                     });
@@ -253,7 +251,6 @@ export default {
                 instance.getPricesCount(function(e, pricesCount) {
                   if (e) {
                     goDebug({
-                      txHash: "null",
                       callMethod: "instance.getPricesCount",
                       error: e
                     });
@@ -404,7 +401,6 @@ export default {
       window.web3.cmt.getAccounts(function(e, addr) {
         if (e) {
           goDebug({
-            txHash: "null",
             callMethod: "getAccounts",
             error: e
           });

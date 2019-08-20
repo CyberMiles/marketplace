@@ -67,9 +67,8 @@ export default {
         window.web3.cmt.getAccounts(function(e, address) {
           if (e) {
             goDebug({
-              txhash: "null",
               callMethod: "getAccounts",
-              e: e
+              error: e
             });
           } else {
             that.userAddress = address.toString();

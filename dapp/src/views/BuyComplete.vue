@@ -45,7 +45,7 @@ export default {
               goDebug({
                 txhash: "null",
                 callMethod: "getTransactionReceipt",
-                e: e
+                error: e
               });
             } else {
               if (receipt == null) setTimeout(getReceipt, 100);

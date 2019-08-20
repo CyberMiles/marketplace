@@ -40,8 +40,7 @@ export default {
             if (e) {
               goDebug({
                 txhash: that.$route.params.txHash,
-                callMethod: "null",
-                e: e
+                error: e
               });
             } else {
               if (receipt == null) setTimeout(getReceipt, 100);

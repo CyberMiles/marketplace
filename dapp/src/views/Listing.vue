@@ -86,7 +86,6 @@ export default {
         window.web3.cmt.getAccounts(function(e, address) {
           if (e) {
             goDebug({
-              txHash: "null",
               callMethod: "getAccounts",
               error: e
             });
@@ -99,7 +98,6 @@ export default {
             instance.info(function(e, r) {
               if (e) {
                 goDebug({
-                  txHash: "null",
                   callMethod: "instance.info",
                   error: e
                 });
@@ -123,7 +121,7 @@ export default {
         });
       } catch (e) {
         goDebug({
-          e: "Init Error."
+          error: "Init Error."
         });
       }
     },
