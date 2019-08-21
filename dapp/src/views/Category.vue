@@ -127,7 +127,7 @@ export default {
             if (
               obj.functionData.info[7] != 0 &&
               obj.functionData.info[6] != "" &&
-              obj.functionData.info[0] != 0 &&
+              obj.functionData.info[0] == 1 &&
               Global.blackAddrs
                 .map(o => o.toLowerCase())
                 .indexOf(obj.contractAddress.toLowerCase()) === -1 &&
@@ -137,18 +137,16 @@ export default {
             )
               return obj;
           });
-        console.log(sortedData);
+        sortedData = sortedData.slice(0, 5)
         sortedData.forEach(function(item) {
-          if (item.functionData.info[0] == 1) {
-            that.goodList.push({
-              blkNumber: item.blockNumber,
-              image: item.functionData.info[6].split(",")[0],
-              price: (parseInt(item.functionData.info[7]) / 100).toString(),
-              contractAddr: item.contractAddress,
-              title: item.functionData.info[1],
-              sold: item.functionData.info[0] == 1 ? false : true
-            });
-          }
+          that.goodList.push({
+            blkNumber: item.blockNumber,
+            image: item.functionData.info[6].split(",")[0],
+            price: (parseInt(item.functionData.info[7]) / 100).toString(),
+            contractAddr: item.contractAddress,
+            title: item.functionData.info[1],
+            sold: item.functionData.info[0] == 1 ? false : true
+          });
         });
         console.log(this.goodList);
       });
