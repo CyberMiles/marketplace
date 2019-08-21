@@ -18,7 +18,9 @@ console.log(Contracts);
 window.Contracts = Contracts;
 
 new Vue({
-  el: "#app",
+  el: "category-app",
   router,
-  render: h => h(CategoryList)
+  components: {
+    "category-app": CategoryList
+  }
 });

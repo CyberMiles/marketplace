@@ -27,7 +27,6 @@
           class="good-container stuff"
         ></div>
       </div>
-      <div class="end" v-if="goodList.length">~ No More ~</div>
     </div>
   </div>
 </template>
@@ -158,13 +157,13 @@ export default {
 
 <style lang="stylus">
 .catalog-goods-list
-  padding 0 (15/16)rem (60/16)rem
+  padding 0 (15/16)rem (20/16)rem
   @media screen and (min-width: 600px)
-    margin 0 0 (420/16)rem
-    padding 0 (60/16)rem
+    margin 0
+    padding 0 (15/16)rem
   @media screen and (min-width: 1200px)
-    margin 0 0 (420/16)rem
-    padding 0 (120/16)rem
+    margin 0
+    padding 0 (15/16)rem
   .tags
     margin (20/16)rem 0
     padding 0

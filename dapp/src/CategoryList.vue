@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <div class="pc-header">
+      <img src="./assets/logo.png" class="logo" />
+    </div>
+    <slot></slot>
     <Category/>
   </div>
 </template>
@@ -29,4 +33,9 @@ html
   &, *
     box-sizing border-box
     outline none
+  .pc-header
+    .logo
+      padding (10/16)rem 0
+      width 160px
+      min-height 48px
 </style>
