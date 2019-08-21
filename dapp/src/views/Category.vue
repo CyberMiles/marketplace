@@ -137,7 +137,7 @@ export default {
             )
               return obj;
           });
-        sortedData = sortedData.slice(0, 5)
+        sortedData = sortedData.slice(0, 6)
         sortedData.forEach(function(item) {
           that.goodList.push({
             blkNumber: item.blockNumber,
