@@ -34,7 +34,6 @@
 <script>
 // @ is an alias to /src
 import GoodsListItem from "@/components/GoodsListItemForCategory.vue";
-import LoadingMask from "@/components/LoadingMask.vue";
 import RespImg from "@/components/RespImg.vue";
 import axios from "axios";
 import Global from "@/global.js";
@@ -54,8 +53,7 @@ export default {
   },
   components: {
     GoodsListItem,
-    RespImg,
-    LoadingMask
+    RespImg
   },
   created() {
     this.initGoodList();
@@ -134,10 +132,22 @@ export default {
               Global.blackAddrs
                 .map(o => o.toLowerCase())
                 .indexOf(obj.functionData.info[8].toLowerCase()) === -1
-            )
-              return obj;
+            ) {
+              const whiteSenders = Global.categoryWhiteSenders[this.search];
+              if (whiteSenders) {
+                if (
+                  whiteSenders
+                    .map(o => o.toLowerCase())
+                    .indexOf(obj.creator.toLowerCase()) !== -1
+                ) {
+                  return obj;
+                }
+              } else {
+                return obj;
+              }
+            }
           });
-        sortedData = sortedData.slice(0, 6)
+        sortedData = sortedData.slice(0, 6);
         sortedData.forEach(function(item) {
           that.goodList.push({
             blkNumber: item.blockNumber,

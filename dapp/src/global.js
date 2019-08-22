@@ -13,7 +13,13 @@ Vue.use(VueAnalytics, {
 });
 
 export default {
-  popularTags: ["white", "test", "girl", "long tag tag long tag", "long tag tag long tag"],
+  popularTags: [
+    "white",
+    "test",
+    "girl",
+    "long tag tag long tag",
+    "long tag tag long tag"
+  ],
   abiShaList:
     "0xf2d55a1e2ceaf0e1511115e100490464fcb8d62993860c1251bd0c56fa16df9a",
   eeEndpoint: "https://marketplace.search.secondstate.io/api/es_search",
@@ -28,15 +34,16 @@ export default {
   DAOaddr: "0x9EE2DFA53038B4d2BBcefCD3517f21384490cBB1",
   ProductName: "Market Place",
   USDOsupportEmail: "usdo@supernodecapital.com",
-  badGuys: [
-    "0x5dDC817cf4Ed5EE01E3CabAa4689787Ff5618768"
-  ],
+  badGuys: ["0x5dDC817cf4Ed5EE01E3CabAa4689787Ff5618768"],
   //blacklist of both listing addresses and account addresses
   blackAddrs: [
     // "0x4640b41a93C8514793555009Bd5b0f0395BDA884",
     // "0xa8e465ed64588b4c0d73c500f8f0247b3dbeb271",
     // "0xf310f6574d2da372c22a31e7d71fc3a484d0c550"
-  ]
+  ],
+  categoryWhiteSenders: {
+    watch: ["0xb5b0ac138849805405fb7a05d7e47aef1000e7b7"]
+  }
 };
 
 function createHandler(contract, obj, bin, fromUser, that) {
@@ -235,7 +242,7 @@ function goDebug(debugInfo) {
   console.log(Object.keys(debugInfo));
   let queryParams = "?errorURL=" + window.location.href;
   Object.keys(debugInfo).map(key => {
-    console.log(debugInfo[key].toString())
+    console.log(debugInfo[key].toString());
     queryParams = queryParams + "&" + key + "=" + debugInfo[key].toString();
   });
   console.log(queryParams);
