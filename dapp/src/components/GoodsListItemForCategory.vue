@@ -25,14 +25,22 @@ export default {
   props: ["sold", "title", "contractAddr"],
   methods: {
     goListing() {
-      window.location.href =
-        window.location.protocol +
-        "//" +
-        window.location.host +
-        "/" +
-        refactorListingTitle(this.title) +
-        "/listing/" +
-        this.contractAddr;
+      this.$ga.event({
+        eventCategory: "list in categories",
+        eventAction: "click",
+        eventLabel: this.title,
+        eventValue: this.contractAddr
+      });
+      setTimeout(() => {
+        window.location.href =
+          window.location.protocol +
+          "//" +
+          window.location.host +
+          "/" +
+          refactorListingTitle(this.title) +
+          "/listing/" +
+          this.contractAddr;
+      }, 200);
     }
   }
 };
