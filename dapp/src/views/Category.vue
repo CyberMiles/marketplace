@@ -204,7 +204,7 @@ export default {
     .good-container
       good-margin = (15/16) rem
       height fit-content
-      margin-bottom (15/16)rem
+      margin-bottom (20/16)rem
       width w = "calc((100% - %s)/2)" % good-margin
       @media screen and (min-width: 600px)
         good-margin = (25/16) rem

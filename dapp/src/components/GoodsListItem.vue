@@ -82,11 +82,10 @@ export default {
         font-size (17/16)rem
         text-align center
   .short-title
-    line-height (18/16) rem
-    height (18/16) rem
-    font-size (16/16)rem
+    line-height (20/16) rem
+    height (40/16) rem
+    font-size (15/16)rem
     overflow hidden
-    text-overflow ellipsis
     -webkit-line-clamp 1
     display -webkit-box
     -webkit-box-orient vertical
