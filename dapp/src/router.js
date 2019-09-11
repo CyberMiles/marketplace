@@ -2,9 +2,11 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
 import CreatePage from "./views/Create.vue";
+import Create2Page from "./views/Create2.vue";
 import ListingPage from "./views/ForwardListing.vue";
 import SEOFriendlyListingPage from "./views/Listing.vue";
 import EditPage from "./views/Edit.vue";
+import Edit2Page from "./views/Edit2.vue";
 import BuyPage from "./views/Buy.vue";
 import CatalogPage from "./views/Catalog.vue";
 import ProfilePage from "./views/Profile.vue";
@@ -45,7 +47,16 @@ export default new Router({
       name: "create",
       component: CreatePage,
       meta: {
-        title: "Create Trading",
+        title: "New Listing for Sale",
+        transitionName: "slideY"
+      }
+    },
+    {
+      path: "/create2",
+      name: "create2",
+      component: Create2Page,
+      meta: {
+        title: "New Listing for Sale",
         transitionName: "slideY"
       }
     },
@@ -62,7 +73,7 @@ export default new Router({
       name: "listing",
       component: ListingPage,
       meta: {
-        title: "Market Place"
+        title: ":title"
       }
     },
     {
@@ -70,7 +81,7 @@ export default new Router({
       name: "SEOlisting",
       component: SEOFriendlyListingPage,
       meta: {
-        title: "Market Place"
+        title: ":title"
       }
     },
     {
@@ -94,7 +105,15 @@ export default new Router({
       name: "edit",
       component: EditPage,
       meta: {
-        title: "Edit"
+        title: "Edit Listing"
+      }
+    },
+    {
+      path: "/edit2/:contractAddr",
+      name: "edit2",
+      component: Edit2Page,
+      meta: {
+        title: "Edit Listing"
       }
     },
     {

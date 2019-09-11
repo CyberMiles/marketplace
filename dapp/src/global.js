@@ -393,8 +393,14 @@ function computePayment(item) {
 function web3Pass(that, targetUrl = null) {
   try {
     window.web3.cmt;
-    if (window.web3.currentProvider.host !== Global.HttpProvider) return true;
-    else throw "NoWeb3";
+    window.web3.version.getNetwork(function(e, currentNetId) {
+      if (!e) {
+        if (currentNetId == Global.chainId) return true;
+      }
+      throw "NoWeb3";
+    });
+    // if (window.web3.currentProvider.host !== Global.HttpProvider) return true;
+    // else throw "NoWeb3";
   } catch (e) {
     if (_isMobile())
       that
