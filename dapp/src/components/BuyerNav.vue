@@ -33,12 +33,24 @@ export default {
   },
   methods: {
     contact() {
+      this.$ga.event({
+        eventCategory: "Contact_seller",
+        eventAction: "Contact_seller",
+        eventLabel: "",
+        eventValue: ""
+      });
       if (web3Pass(this))
         this.$swal({
           text: `seller info:${this.sellerInfo}`
         });
     },
     goBuy() {
+      this.$ga.event({
+        eventCategory: "Buy",
+        eventAction: "Buy_now",
+        eventLabel: "",
+        eventValue: ""
+      });
       if (web3Pass(this, `/buy/${this.contractAddr}`))
         this.$router.push(`/buy/${this.contractAddr}`);
     }

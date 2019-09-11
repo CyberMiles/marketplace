@@ -48,7 +48,7 @@
           </div>
         </li>
       </ul>
-      <a :href="USDBuyLink" class="recharge" @click="loading = true">
+      <a :href="USDBuyLink" class="recharge" @click="recharge">
         Pay {{ USDunit }} with credit or debit card
       </a>
       <div class="form-group">
@@ -77,7 +77,7 @@
       </div>
       <a class="buy-btn" @click="buy"><span>Buy</span></a>
       <div style="text-align:center;margin-top:20px;">
-        <router-link :to="`/listing/${contractAddr}`">Cancel</router-link>
+        <router-link :to="`/listing/${contractAddr}`" @click.native="cancel">Cancel</router-link>
       </div>
       <div class="payment-tip markdown-body">
         <vue-markdown>### Buyers:
@@ -286,6 +286,12 @@ export default {
         };
     },
     buy() {
+      this.$ga.event({
+        eventCategory: "Buy",
+        eventAction: "Buy_product",
+        eventLabel: "",
+        eventValue: ""
+      });
       if (
         this.selectedCRC20.addr == this.USDaddr &&
         this.selectedCRC20.amount.toNumber() > this.balance.USD.toNumber()
@@ -317,6 +323,12 @@ export default {
                 error: e
               });
             } else {
+              this.$ga.event({
+                eventCategory: "Buy",
+                eventAction: "Buy_product_success",
+                eventLabel: "",
+                eventValue: ""
+              });
               that.$router.replace(`/complete/${that.contractAddr}/${txhash}`);
             }
           }
@@ -356,6 +368,12 @@ export default {
                       error: e
                     });
                   } else {
+                    this.$ga.event({
+                      eventCategory: "Buy",
+                      eventAction: "Buy_product_success",
+                      eventLabel: "",
+                      eventValue: ""
+                    });
                     that.$router.replace(
                       `/complete/${that.contractAddr}/${txhash}`
                     );
@@ -394,6 +412,23 @@ export default {
         }
       });
       return tokenCopy;
+    },
+    recharge: function() {
+      this.$ga.event({
+        eventCategory: "Buy",
+        eventAction: "Pay_USDO",
+        eventLabel: "",
+        eventValue: ""
+      });
+      this.loading = true;
+    },
+    cancel: function() {
+      this.$ga.event({
+        eventCategory: "Buy",
+        eventAction: "Cancel",
+        eventLabel: "",
+        eventValue: ""
+      });
     }
   }
 };
