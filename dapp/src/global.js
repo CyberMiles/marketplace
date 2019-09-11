@@ -395,7 +395,7 @@ function web3Pass(that, targetUrl = null) {
     window.web3.cmt;
     window.web3.version.getNetwork(function(e, currentNetId) {
       if (!e) {
-        if (currentNetId == Global.chainId) return true;
+        if (Number(currentNetId) == Global.chainId) return true;
       }
       throw "NoWeb3";
     });
