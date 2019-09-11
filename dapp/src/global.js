@@ -21,9 +21,9 @@ export default {
     "long tag tag long tag"
   ],
   abiShaList:
-    "0xf2d55a1e2ceaf0e1511115e100490464fcb8d62993860c1251bd0c56fa16df9a",
-  eeEndpoint: "https://marketplace.search.secondstate.io/api/es_search",
-  submitESEndpoint: "https://marketplace.search.secondstate.io",
+    "0x3f6b217f237143ae5b48a1867afec0ba8cc46f9904cd8ca6141292f1cb2efd4c",
+  eeEndpoint: "https://marketplace.search.secondstate.co/api/es_search",
+  submitESEndpoint: "https://marketplace.search.secondstate.co",
   USDaddr: "0x08bcb145e174e59e033d2d9c4bc4d0fe49a82613",
   USDunit: "USDO",
   USDBuyLink:
