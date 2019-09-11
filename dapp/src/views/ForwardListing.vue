@@ -15,6 +15,12 @@ export default {
     LoadingMask
   },
   created() {
+    // We will ignore the installed CMT wallet since this is read-only
+    var Web3 = require("web3-cmt");
+    window.web3 = new Web3(
+      new Web3.providers.HttpProvider(Global.HttpProvider)
+    );
+    /*
     try {
       window.web3.cmt;
     } catch (e) {
@@ -23,6 +29,7 @@ export default {
         new Web3.providers.HttpProvider(Global.HttpProvider)
       );
     }
+    */
     var contract_address = this.$route.params.contractAddr;
     var that = this;
     //set timeout to check web3, because sometimes once mounted, the web3 hasn't been injected

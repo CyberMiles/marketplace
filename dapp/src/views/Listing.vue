@@ -63,6 +63,12 @@ export default {
     };
   },
   created() {
+    // We will ignore the installed CMT wallet since this is read-only
+    var Web3 = require("web3-cmt");
+    window.web3 = new Web3(
+      new Web3.providers.HttpProvider(Global.HttpProvider)
+    );
+    /*
     try {
       window.web3.cmt;
     } catch (e) {
@@ -72,6 +78,7 @@ export default {
         new Web3.providers.HttpProvider(Global.HttpProvider)
       );
     }
+    */
     this.$ga.page("/listing");
     this.initProductInfo();
   },
