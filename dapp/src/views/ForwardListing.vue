@@ -17,16 +17,12 @@ export default {
   created() {
     try {
       window.web3.cmt;
-      window.injectedWeb3 = window.web3;
     } catch (e) {
-      // ignore here since the page will use a read-only web3 instance
-      // The injectedWeb3 is only used to determine whether the buy button should ask for wallet install.
+      var Web3 = require("web3-cmt");
+      window.web3 = new Web3(
+        new Web3.providers.HttpProvider(Global.HttpProvider)
+      );
     }
-    var Web3 = require("web3-cmt");
-    window.web3 = new Web3(
-      new Web3.providers.HttpProvider(Global.HttpProvider)
-    );
-
     var contract_address = this.$route.params.contractAddr;
     var that = this;
     //set timeout to check web3, because sometimes once mounted, the web3 hasn't been injected

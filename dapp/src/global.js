@@ -393,18 +393,7 @@ function computePayment(item) {
 function web3Pass(that, targetUrl = null) {
   try {
     window.web3.cmt;
-    // Cannot do async!
-    // window.web3.version.getNetwork(function(e, currentNetId) {
-    //   if (!e) {
-    //     if (Number(currentNetId) == Global.chainId) return true;
-    //   }
-    //   throw "NoWeb3";
-    // });
-    // if (window.web3.currentProvider.host !== Global.HttpProvider) return true;
-    // else throw "NoWeb3";
-
-    // Either there is a cached injectedWeb3, or the web3 is organic
-    if (window.injectedWeb3 || (window.web3.currentProvider.host !== Global.HttpProvider)) return true;
+    if (window.web3.currentProvider.host !== Global.HttpProvider) return true;
     else throw "NoWeb3";
   } catch (e) {
     if (_isMobile())
