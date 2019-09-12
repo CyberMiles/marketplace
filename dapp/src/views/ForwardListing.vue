@@ -35,10 +35,11 @@ export default {
         var instance = contract.at(contract_address);
         instance.info(function(e, r) {
           if (e) {
-            goDebug({
-              callMethod: "instance.info",
-              error: e
-            });
+            that.$router.replace(`/safelisting/${contract_address}`);
+            // goDebug({
+            //   callMethod: "instance.info",
+            //   error: e
+            // });
           } else {
             let title = r[1];
             document.title = `${title} — ${Global.ProductName}`;
