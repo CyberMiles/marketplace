@@ -96,10 +96,11 @@ export default {
             that.instance = instance;
             instance.info(function(e, r) {
               if (e) {
-                goDebug({
-                  callMethod: "instance.info",
-                  error: e
-                });
+                that.$router.replace(`/safelisting/${contract_address}`);
+                // goDebug({
+                //   callMethod: "instance.info",
+                //   error: e
+                // });
               } else {
                 that.ProductInfo = {
                   status: r[0],
