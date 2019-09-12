@@ -400,7 +400,11 @@ function web3Pass(that, targetUrl = null) {
     //   }
     //   throw "NoWeb3";
     // });
-    if (window.web3.currentProvider.host !== Global.HttpProvider) return true;
+    // if (window.web3.currentProvider.host !== Global.HttpProvider) return true;
+    // else throw "NoWeb3";
+
+    // Either there is a cached injectedWeb3, or the web3 is organic
+    if (window.injectedWeb3 || (window.web3.currentProvider.host !== Global.HttpProvider)) return true;
     else throw "NoWeb3";
   } catch (e) {
     if (_isMobile())
