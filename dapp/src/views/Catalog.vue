@@ -1,6 +1,11 @@
 <template>
   <div>
     <LoadingMask v-if="loading"></LoadingMask>
+    <div class="home">
+      <div class="pc-header">
+        <router-link to="/"><img src="./../assets/logo.png" class="logo" /></router-link>
+      </div>
+    </div>
     <div class="catalog-goods-list">
       <div class="search-field">
         <input
@@ -218,6 +223,13 @@ export default {
 </script>
 
 <style lang="stylus">
+.home {
+  margin-bottom: -1rem;
+  padding-bottom: 0 !important;
+  .logo {
+    padding-bottom: 0 !important;
+  }
+}
 .catalog-goods-list
   padding 0 (15/16)rem (60/16)rem
   @media screen and (min-width: 600px)
