@@ -21,7 +21,6 @@ Vue.directive("focus", {
   }
 });
 
-console.log(Contracts);
 window.Contracts = Contracts;
 
 router.beforeEach((to, from, next) => {
@@ -29,7 +28,13 @@ router.beforeEach((to, from, next) => {
     .slice()
     .reverse()
     .find(r => r.meta && r.meta.title);
-  if (nearestWithTitle) document.title = nearestWithTitle.meta.title;
+  if (nearestWithTitle) {
+    let title = nearestWithTitle.meta.title;
+    for (let k in to.params) {
+      title = title.replace(`{${k}}`, to.params[k]);
+    }
+    document.title = title;
+  }
   next();
 });
 

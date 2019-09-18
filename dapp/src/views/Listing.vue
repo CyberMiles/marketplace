@@ -126,7 +126,7 @@ export default {
       }
     },
     setMetaInfo() {
-      document.title = `${this.ProductInfo.title} — ${Global.ProductName}`;
+      document.title = `${this.ProductInfo.title} at ${this.ProductInfo.USDprice} USD — ${Global.ProductName}`;
 
       let keywords = this.ProductInfo.title;
       this.ProductInfo.tags.forEach(tag => {

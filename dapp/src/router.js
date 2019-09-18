@@ -130,7 +130,8 @@ export default new Router({
       name: "tag",
       component: CatalogPage,
       meta: {
-        transitionName: "slideX"
+        transitionName: "slideX",
+        title: "Buy and Sell {tag} on Market Place"
       }
     },
     {

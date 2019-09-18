@@ -1,5 +1,8 @@
 <template>
   <div class="about">
+    <router-link class="back-link" to="/">
+      <img src="../assets/imgs/back2.svg" />
+    </router-link>
     <div class="head1">How to complete a deal on {{ productName }}</div>
     <div class="head2">Zero commission fee</div>
     <img class="intro-tree" src="../assets/imgs/IntroTree.svg" />
@@ -25,6 +28,10 @@
 
 <style lang="stylus">
 .about
+  .back-link
+    position absolute
+    top 0.5rem
+    left 1rem
   .head1
     font-size (17/16)rem
     font-weight 500
