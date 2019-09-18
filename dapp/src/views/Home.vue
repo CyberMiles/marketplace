@@ -23,7 +23,7 @@
               <img src="../assets/imgs/clear-button.svg" />
             </span>
           </div>
-          <button @mousedown="goSearch" v-if="onSearch">Go</button>
+          <button @mousedown="goSearch" v-if="onSearch">Search</button>
 
           <span class="icon-search"></span>
         </div>

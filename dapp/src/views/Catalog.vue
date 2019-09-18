@@ -14,7 +14,7 @@
           v-model="searchTerm"
           v-on:keyup.enter="goSearch"
         />
-        <button @click="goSearch">Go</button>
+        <button @click="goSearch">Search</button>
       </div>
       <ul class="tags" v-if="tag !== undefined">
         <li v-for="popularTag in popularTags" :key="popularTag.key">
