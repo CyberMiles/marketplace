@@ -25,6 +25,7 @@ export default {
   props: ["sold", "title", "contractAddr"],
   methods: {
     goListing() {
+      window.scrollTo(0, 0);
       this.$router.push(
         "/" + refactorListingTitle(this.title) + "/listing/" + this.contractAddr
       );

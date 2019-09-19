@@ -145,6 +145,12 @@ export default {
     footerComponent: function() {
       return this.FooterNav;
     }
+  },
+  watch: {
+    // Called when the same route with same params is pushed
+    "$route.params.contractAddr": function() {
+      this.initProductInfo();
+    }
   }
 };
 </script>

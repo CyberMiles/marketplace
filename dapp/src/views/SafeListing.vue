@@ -2,6 +2,7 @@
   <div class="listing">
     <!-- <LoadingMask v-if="loading"></LoadingMask> -->
     <ListingInfo v-bind="{ ProductInfo: ProductInfo }" />
+    <ListingRelated v-bind="{ ProductInfo: ProductInfo }" />
     <div style="text-align:center;margin-bottom:60px;">
       <router-link to="/">Home</router-link>
       |
@@ -30,6 +31,7 @@
 <script>
 import Contracts from "@/contracts.js";
 import ListingInfo from "@/components/ListingInfo.vue";
+import ListingRelated from "@/components/ListingRelated.vue";
 import SellerNav from "@/components/SellerNav.vue";
 import BuyerNav from "@/components/BuyerNav.vue";
 // import LoadingMask from "@/components/LoadingMask.vue";
@@ -40,6 +42,7 @@ export default {
   name: "safelisting",
   components: {
     ListingInfo,
+    ListingRelated,
     SellerNav,
     BuyerNav
     // LoadingMask
@@ -125,6 +128,12 @@ export default {
   computed: {
     footerComponent: function() {
       return this.FooterNav;
+    }
+  },
+  watch: {
+    // Called when the same route with same params is pushed
+    "$route.params.contractAddr": function() {
+      this.initProductInfo();
     }
   }
 };

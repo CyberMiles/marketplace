@@ -121,12 +121,12 @@ export default {
   width 80%
   height (16/16)rem
 .listing-info
+  margin-bottom (2/16)rem
   .back-link
     position absolute
     z-index 1
     top 0.5rem
     left 1rem
-  margin-bottom (50/16)rem
   .main
     position relative
     background-color #f0f0f0
