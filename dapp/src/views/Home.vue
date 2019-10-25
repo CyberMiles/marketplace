@@ -39,8 +39,8 @@
       </div>
       <div>
         <ol>
-          <li>The buyer opens the purchase link shared by the seller on his or her mobile device or Chrome browser. See an example</li>
-          <li>The buyer can purchase with a credit card (see how) or with CMTs. Both require the CyberMiles mobile app OR the Venus wallet on the Chrome browser.</li>
+          <li>The buyer opens the purchase link shared by the seller on his or her mobile device or Chrome browser. <a href="https://admiring-easley-6b2f52.netlify.com/Cartier-Ballon-Bleu-De-Cartier-W69012Z4-100-replica/listing/0x2637567AD5e24cd13175D875C6108b00206D6b0D">See an example</a></li>
+          <li>The buyer can purchase with a credit card or with CMTs. Both require the <a href="https://app.cybermiles.io">CyberMiles mobile app</a> OR the <a href="https://chrome.google.com/webstore/detail/venus/hmiddckbbijmdkamphkgkelnjjdkicck?hl=en">Venus wallet</a> on the Chrome browser.</li>
           <li>The payment is held in escrow the seller cannot access it for 7 days.</li>
           <li>Once the buyer receives the product, he or she can release the escrow, or do nothing and allow the escrow to automatically release after 7 days.</li>
           <li>The buyer can also dispute the transaction within 7 days. The fund will be automatically locked until the OpenBay team can investigate and determine who should get the fund.</li>
@@ -60,6 +60,11 @@
           <li>You can exchange USDO to US dollars via bank transfers by contacting SuperNode Capital Services.</li>
         </ol>
         <p><i>Notice: Smart contracts created via the OpenBay.io web site can be moderated by OpenBay. You can, of course, create completely uncensorable contracts by deploying your own code using Second State’s developer tools. Here is how.</i></p>
+      </div>
+      <div>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
       </div>
       <!--
       <div class="cate-title">
