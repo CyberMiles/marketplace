@@ -31,6 +31,37 @@
           Sell on {{ DAppName }}
         </button>
       </div>
+      <div>
+        <p>The CyberMiles blockchain is the privacy-preserving and censorship-resistant platform for e-commerce. Through specialized smart contracts, you can list anything for sale. Buyers can transact securely with you through cryptocurrency or US Dollars. Here is how.</p>
+      </div>
+      <div class="cate-title">
+        <h2>Buyers</h2>
+      </div>
+      <div>
+        <ol>
+          <li>The buyer opens the purchase link shared by the seller on his or her mobile device or Chrome browser. See an example</li>
+          <li>The buyer can purchase with a credit card (see how) or with CMTs. Both require the CyberMiles mobile app OR the Venus wallet on the Chrome browser.</li>
+          <li>The payment is held in escrow the seller cannot access it for 7 days.</li>
+          <li>Once the buyer receives the product, he or she can release the escrow, or do nothing and allow the escrow to automatically release after 7 days.</li>
+          <li>The buyer can also dispute the transaction within 7 days. The fund will be automatically locked until the OpenBay team can investigate and determine who should get the fund.</li>
+        </ol>
+        <p>Enjoy!</p>
+      </div>
+      <div class="cate-title">
+        <h2>Sellers</h2>
+      </div>
+      <div>
+        <ol>
+          <li>Buyers must have at least 1 CMT in their CyberMiles App or Venus wallet address. You can get CMTs here.</li>
+          <li>Create a for-sale listing through this page on your mobile or Chrome browser. Upload pictures, descriptions, and prices in US Dollars and / or in CMTs.</li>
+          <li>Once you finished creating the listing, you will see a URL link that you can share. If you somehow lost this link, you can access it from this link.</li>
+          <li>Share this link with potential buyers. Ask them to get in touch when they put down the escrow payment in USD or CMT.</li>
+          <li>Ship the product, and ask the buyer to release the escrow. You will receive either CMT or USDO tokens in the account you used to create the listing.</li>
+          <li>You can exchange USDO to US dollars via bank transfers by contacting SuperNode Capital Services.</li>
+        </ol>
+        <p><i>Notice: Smart contracts created via the OpenBay.io web site can be moderated by OpenBay. You can, of course, create completely uncensorable contracts by deploying your own code using Second State’s developer tools. Here is how.</i></p>
+      </div>
+      <!--
       <div class="cate-title">
         <h2>Popular Tags</h2>
       </div>
@@ -151,6 +182,7 @@
           </GoodsListItem>
         </div>
       </div>
+      -->
     </div>
     <Footer></Footer>
   </div>
