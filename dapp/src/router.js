@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
+import Listings from "./views/Listings.vue";
 import CreatePage from "./views/Create.vue";
 import Create2Page from "./views/Create2.vue";
 import ListingPage from "./views/ForwardListing.vue";
@@ -37,6 +38,11 @@ export default new Router({
       meta: {
         title: `${Global.ProductName}`
       }
+    },
+    {
+      path: "/listings",
+      name: "listings",
+      component: Listings
     },
     {
       path: "/about",

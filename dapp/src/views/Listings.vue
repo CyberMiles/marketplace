@@ -31,48 +31,125 @@
           Sell on {{ DAppName }}
         </button>
       </div>
-      <div>
-        <p>The CyberMiles blockchain is the privacy-preserving and censorship-resistant platform for e-commerce. Through specialized smart contracts, you can list anything for sale. Buyers can transact securely with you through cryptocurrency or US Dollars. Here is how.</p>
+      <div class="cate-title">
+        <h2>Popular Tags</h2>
+      </div>
+      <ul class="tags">
+        <li v-for="tag in popularTags" :key="tag.key">
+          <router-link :to="`tag/` + tag" class="tag-link">{{
+            tag
+          }}</router-link>
+        </li>
+      </ul>
+      <div class="cate-title">
+        <h2>Latest</h2>
+        <router-link to="/all/unsold" class="more"
+          >View all ({{ latestGoodList.length }})></router-link
+        >
+      </div>
+      <div class="goods-list">
+        <div
+          v-for="good in latestGoodList.slice(0, maxDisplayItems)"
+          :key="good.key"
+          class="good-container"
+          :style="{ height: containerHeight + 'px' }"
+        >
+          <GoodsListItem
+            v-bind="{
+              contractAddr: good.contractAddr,
+              title: good.title
+            }"
+          >
+            <RespImg
+              v-bind:src="good.image"
+              alt=""
+              v-bind:division="itemsPerLine"
+            />
+            <template v-slot:price>
+              ${{ good.price }}
+            </template>
+          </GoodsListItem>
+        </div>
+        <div
+          v-for="i in Array.from(
+            {
+              length: maxDisplayItems - latestGoodList.length
+            },
+            (x, i) => i
+          )"
+          :key="parseInt(i)"
+          :style="{ height: containerHeight + 'px' }"
+          class="good-container"
+        >
+          <GoodsListItem
+            v-bind="{
+              contractAddr: null,
+              title: null
+            }"
+            v-if="latestGoodList.length === 0"
+          >
+            <RespImg v-bind:division="itemsPerLine" />
+            <template v-slot:price>
+              $
+            </template>
+          </GoodsListItem>
+        </div>
       </div>
       <div class="cate-title">
-        <h2>Buyers</h2>
+        <h2>Just Sold</h2>
+        <router-link to="/all/sold" class="more"
+          >View all ({{ soldGoodList.length }})></router-link
+        >
       </div>
-      <div>
-        <ol class="steps-list">
-          <li>On mobile device or Chrome browser, open the purchase link shared by the seller. <a href="https://admiring-easley-6b2f52.netlify.com/Cartier-Ballon-Bleu-De-Cartier-W69012Z4-100-replica/listing/0x2637567AD5e24cd13175D875C6108b00206D6b0D">See an example</a></li>
-          <li>You can purchase with a credit card or with CMTs. Both require the <a href="https://app.cybermiles.io">CyberMiles mobile app</a> OR the <a href="https://chrome.google.com/webstore/detail/venus/hmiddckbbijmdkamphkgkelnjjdkicck?hl=en">Venus wallet</a> on the Chrome browser.</li>
-          <li>The payment is held in escrow the seller cannot access it for 7 days.</li>
-          <li>Once you receive the product, you can release the escrow, or do nothing and allow the escrow to automatically release after 7 days.</li>
-          <li>You can also dispute the transaction within 7 days. The fund will be automatically locked until the OpenBay team can investigate and determine who should get the fund.</li>
-        </ol>
-      </div>
-      <div class="cate-title">
-        <h2>Sellers</h2>
-      </div>
-      <div>
-        <ol class="steps-list">
-          <li>You must have at least 1 CMT in <a href="https://app.cybermiles.io">CyberMiles mobile app</a> OR the <a href="https://chrome.google.com/webstore/detail/venus/hmiddckbbijmdkamphkgkelnjjdkicck?hl=en">Venus wallet</a> address. You can get CMTs here.</li>
-          <li>Create a for-sale listing through this page on your mobile or Chrome browser. Upload pictures, descriptions, and prices in US Dollars and / or in CMTs.</li>
-          <li>Once you finished creating the listing, you will see a link that you can share. See <a href="/sell-goods/listed">all your listings</a>.</li>
-          <li>Share this link with potential buyers. Ask them to get in touch when they put down the escrow payment in USD or CMT.</li>
-          <li>Ship the product, and ask the buyer to release the escrow. You will receive either CMT or USDO tokens in the account you used to create the listing.</li>
-          <li>You can <a href="/withdraw-usdo-guide">exchange USDO to US dollars</a> via bank transfers.</li>
-        </ol>
-        <p><i>Notice: Smart contracts created via the OpenBay.io web site can be moderated by OpenBay. You can, of course, create completely uncensorable contracts by deploying your own code using Second State’s developer tools. Here is how.</i></p>
-      </div>
-      <div>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
+      <div class="goods-list">
+        <div
+          v-for="good in soldGoodList.slice(0, this.maxDisplayItems)"
+          :key="good.key"
+          class="good-container"
+          :style="{ height: containerHeight + 'px' }"
+        >
+          <GoodsListItem
+            sold="true"
+            v-bind="{
+              contractAddr: good.contractAddr,
+              title: good.title
+            }"
+          >
+            <RespImg
+              v-bind:src="good.image"
+              alt=""
+              v-bind:division="itemsPerLine"
+            />
+            <template v-slot:price>
+              ${{ good.price }}
+            </template>
+          </GoodsListItem>
+        </div>
+        <div
+          v-for="i in Array.from(
+            {
+              length: maxDisplayItems - soldGoodList.length
+            },
+            (x, i) => i
+          )"
+          :key="parseInt(i)"
+          class="good-container"
+          :style="{ height: containerHeight + 'px' }"
+        >
+          <GoodsListItem
+            sold="true"
+            v-bind="{
+              contractAddr: null,
+              title: null
+            }"
+            v-if="soldGoodList.length === 0"
+          >
+            <RespImg v-bind:division="itemsPerLine" />
+            <template v-slot:price>
+              $
+            </template>
+          </GoodsListItem>
+        </div>
       </div>
     </div>
     <Footer></Footer>
@@ -94,21 +171,65 @@ export default {
   data() {
     return {
       loading: true,
+      goodList: [],
+      popularTags: Global.popularTags,
       searchTerm: "",
       onSearch: false,
       homePanelWidth: window.innerWidth
     };
   },
   components: {
-    Footer
+    Footer,
+    GoodsListItem,
+    RespImg
+    // LoadingMask
   },
   created() {
+    this.initGoodList();
     this.$ga.page("/");
   },
   mounted() {
     this.homePanelWidth = this.$refs.home.clientWidth;
   },
   methods: {
+    initGoodList() {
+      var that = this;
+      const queryMarketplaceABI = makeQuery([1, 2, 3, 4, 5]);
+      axios(queryOptions(queryMarketplaceABI)).then(r => {
+        console.log(r.data);
+        that.loading = false;
+        var sortedData = r.data
+          .sort(compare("blockNumber"))
+          .reverse()
+          .filter(obj => {
+            //remove those whose USD price is 0 or the img url is empty or ulisted or in BlackList
+            if (
+              obj.functionData.info[7] != 0 &&
+              obj.functionData.info[6] != "" &&
+              obj.functionData.info[0] != 0 &&
+              Global.blackAddrs
+                .map(o => o.toLowerCase())
+                .indexOf(obj.contractAddress.toLowerCase()) === -1 &&
+              Global.blackAddrs
+                .map(o => o.toLowerCase())
+                .indexOf(obj.functionData.info[8].toLowerCase()) === -1
+            )
+              return obj;
+          });
+        sortedData.forEach(function(item) {
+          that.goodList.push({
+            blkNumber: item.blockNumber,
+            image: item.functionData.info[6].split(",")[0],
+            price: (parseInt(item.functionData.info[7]) / 100).toString(),
+            contractAddr: item.contractAddress,
+            title: item.functionData.info[1],
+            sold: item.functionData.info[0] == 1 ? false : true
+          });
+        });
+        console.log(this.goodList);
+        console.log(sortedData);
+      });
+    },
     goSearch() {
       if (this.searchTerm.trim() == "" || this.searchTerm.trim() == "#") return;
       if (this.searchTerm.slice(0, 1) == "#")
@@ -128,6 +249,16 @@ export default {
     },
     DAppName: function() {
       return Global.ProductName;
+    },
+    latestGoodList: function() {
+      return this.goodList.filter(obj => {
+        return !obj.sold;
+      });
+    },
+    soldGoodList: function() {
+      return this.goodList.filter(obj => {
+        return obj.sold;
+      });
     },
     containerHeight: function() {
       let parentWidth = this.homePanelWidth;
@@ -308,8 +439,4 @@ export default {
       @media screen and (min-width: 1000px)
         good-margin = (80/16) rem
         width "calc((100% - %s)/5)" % good-margin
-        
-  .steps-list
-    li
-      padding-top 16px
 </style>
