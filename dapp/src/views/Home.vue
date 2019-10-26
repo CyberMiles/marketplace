@@ -38,7 +38,7 @@
         <h2>Buyers</h2>
       </div>
       <div>
-        <ol>
+        <ol class="steps-list">
           <li>On mobile device or Chrome browser, open the purchase link shared by the seller. <a href="https://admiring-easley-6b2f52.netlify.com/Cartier-Ballon-Bleu-De-Cartier-W69012Z4-100-replica/listing/0x2637567AD5e24cd13175D875C6108b00206D6b0D">See an example</a></li>
           <li>You can purchase with a credit card or with CMTs. Both require the <a href="https://app.cybermiles.io">CyberMiles mobile app</a> OR the <a href="https://chrome.google.com/webstore/detail/venus/hmiddckbbijmdkamphkgkelnjjdkicck?hl=en">Venus wallet</a> on the Chrome browser.</li>
           <li>The payment is held in escrow the seller cannot access it for 7 days.</li>
@@ -50,7 +50,7 @@
         <h2>Sellers</h2>
       </div>
       <div>
-        <ol>
+        <ol class="steps-list">
           <li>You must have at least 1 CMT in <a href="https://app.cybermiles.io">CyberMiles mobile app</a> OR the <a href="https://chrome.google.com/webstore/detail/venus/hmiddckbbijmdkamphkgkelnjjdkicck?hl=en">Venus wallet</a> address. You can get CMTs here.</li>
           <li>Create a for-sale listing through this page on your mobile or Chrome browser. Upload pictures, descriptions, and prices in US Dollars and / or in CMTs.</li>
           <li>Once you finished creating the listing, you will see a link that you can share. See <a href="/sell-goods/listed">all your listings</a>.</li>
@@ -61,6 +61,7 @@
         <p><i>Notice: Smart contracts created via the OpenBay.io web site can be moderated by OpenBay. You can, of course, create completely uncensorable contracts by deploying your own code using Second State’s developer tools. Here is how.</i></p>
       </div>
       <div>
+        <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
@@ -475,4 +476,8 @@ export default {
       @media screen and (min-width: 1000px)
         good-margin = (80/16) rem
         width "calc((100% - %s)/5)" % good-margin
+        
+  .steps-list
+    li
+      padding-top 16px
 </style>
