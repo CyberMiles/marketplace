@@ -31,7 +31,7 @@
           Sell on {{ DAppName }}
         </button>
       </div>
-      <div>
+      <div class="lead">
         <p>The CyberMiles blockchain is the privacy-preserving and censorship-resistant platform for e-commerce. Through specialized smart contracts, you can list anything for sale. Buyers can transact securely with you through cryptocurrency or US Dollars. Here is how.</p>
       </div>
       <div class="cate-title">
@@ -312,4 +312,6 @@ export default {
   .steps-list
     li
       padding-top 16px
+  .lead
+    font-size 125%
 </style>
