@@ -233,10 +233,10 @@ export default {
                     that.desc = r[2];
                     that.tags = r[3];
                     var imageUrls = r[6].split(",");
-                    if (imageUrls.length > 0) imageUrl01 = imageUrls[0];
-                    if (imageUrls.length > 1) imageUrl02 = imageUrls[1];
-                    if (imageUrls.length > 2) imageUrl03 = imageUrls[2];
-                    if (imageUrls.length > 3) imageUrl04 = imageUrls[3];
+                    if (imageUrls.length > 0) that.imageUrl01 = imageUrls[0];
+                    if (imageUrls.length > 1) that.imageUrl02 = imageUrls[1];
+                    if (imageUrls.length > 2) that.imageUrl03 = imageUrls[2];
+                    if (imageUrls.length > 3) that.imageUrl04 = imageUrls[3];
                     that.amount = (parseInt(r[7]) / 100).toString();
                     // seller: r[8].toString(),
                     that.contact = r[4];
@@ -284,16 +284,16 @@ export default {
 
       var imageUrls = "";
       if (imageUrl01) {
-          imageUrls = imageUrls + imageUrl01;
+          imageUrls = imageUrls + that.imageUrl01;
       }
       if (imageUrl02) {
-          imageUrls = imageUrls + "," + imageUrl02;
+          imageUrls = imageUrls + "," + that.imageUrl02;
       }
       if (imageUrl03) {
-          imageUrls = imageUrls + "," + imageUrl03;
+          imageUrls = imageUrls + "," + that.imageUrl03;
       }
       if (imageUrl04) {
-          imageUrls = imageUrls + "," + imageUrl04;
+          imageUrls = imageUrls + "," + that.imageUrl04;
       }
       // console.log(imageUrls);
       var amount2Addr = that.crc20;
@@ -330,7 +330,7 @@ export default {
     },
     createTrading() {
       var that = this;
-      if (this.images.length == 0) {
+      if (this.imageUrl01.length == 0 && this.imageUrl02.length == 0 && this.imageUrl03.length == 0 && this.imageUrl04.length == 0) {
         this.emptyPics = true;
         return;
       }
@@ -353,17 +353,17 @@ export default {
           that.processing = true;
 
           var imageUrls = "";
-          if (imageUrl01) {
-              imageUrls = imageUrls + imageUrl01;
+          if (that.imageUrl01) {
+              imageUrls = imageUrls + that.imageUrl01;
           }
-          if (imageUrl02) {
-              imageUrls = imageUrls + "," + imageUrl02;
+          if (that.imageUrl02) {
+              imageUrls = imageUrls + "," + that.imageUrl02;
           }
-          if (imageUrl03) {
-              imageUrls = imageUrls + "," + imageUrl03;
+          if (that.imageUrl03) {
+              imageUrls = imageUrls + "," + that.imageUrl03;
           }
-          if (imageUrl04) {
-              imageUrls = imageUrls + "," + imageUrl04;
+          if (that.imageUrl04) {
+              imageUrls = imageUrls + "," + that.imageUrl04;
           }
           var newItem = {
             title: that.title,
