@@ -109,6 +109,10 @@ export default {
                 ",c_fill,f_auto/"
             );
         }
+      } else if (this.src !== undefined) {
+        this.newSrcLowQ = this.src;
+        this.newSrc = this.src;
+        this.newSrc2x = this.src;
       }
     }
   }
