@@ -130,6 +130,7 @@ export default {
   .main
     position relative
     background-color #f0f0f0
+    overflow scroll
     img
       display block
       width 100vw
