@@ -5,7 +5,6 @@
     </a>
     <div
       class="main"
-      :style="{ max-height: headImgWidth + 'px' }"
       @click="showFullPic()"
       ref="header"
     >
