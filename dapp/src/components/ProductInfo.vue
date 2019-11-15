@@ -86,7 +86,8 @@
         />
       </div>
       <div class="form-group">
-        <label for="amount">Price(Postage included)</label>
+        <label>Please set a price either in USD or in CMT</label>
+        <label for="amount">Total USD Price(S&amp;H + tax included)</label>
         <div>
           <input
             type="number"
@@ -98,26 +99,29 @@
           <div class="price-unit-container">
             <span class="price-unit">{{ USDunit }}</span>
           </div>
-          <span class="price-tip">1 {{ USDunit }} ≈ 1 USD</span>
+          <span class="price-tip">1 {{ USDunit }} ≈ 1 USD <a target="_blank" href="/withdraw-usdo-guide">how to exchange</a></span>
         </div>
-        <small class="alert" v-if="emptyPrice">
-          Price must be set.
-        </small>
       </div>
-      <div class="form-group" v-if="edit">
-        <label for="CMTamount">Price2(optional)</label>
+      <div class="form-group">
+        <label for="CMTamount">Total CMT Price</label>
         <div>
           <input
             type="number"
             class="form-control"
             id="CMTamount"
-            min="0.0001"
+            min="1"
             v-model="CMTamount"
           />
           <div class="price-unit-container">
             <span class="price-unit">CMT</span>
           </div>
+          <span class="price-tip">Better privacy and anonymity</span>
         </div>
+      </div>
+      <div>
+        <small class="alert" v-if="emptyPrice">
+          Either the USD or CMT price must be set.
+        </small>
       </div>
       <div class="form-group">
         <label for="contact">Contact Info</label>
@@ -386,7 +390,7 @@ export default {
         this.emptyPics = true;
         return;
       }
-      if (this.amount == "" || this.amount == null) {
+      if (!(this.amount >0 || this.CMTamount >0)) {
         this.emptyPrice = true;
         return;
       }
@@ -412,6 +416,33 @@ export default {
           var checkUploadImg = function() {
             if (that.imageUrls.length == that.images.length) {
               var imageUrls = that.imageUrls.join(",");
+              
+              var amountrAddr = "0x0000000000000000000000000000000000000000";
+              var amount = 0;
+              var amount2Addr = amountAddr;
+              var amount2 = amount;
+              if (that.amount > 0 && that.CMTamount > 0) {
+                amountAddr = that.crc20;
+                amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
+                amount2Addr = "0x0000000000000000000000000000000000000000";
+                amount2 = window.web3.toWei(that.CMTamount);
+              } else if (that.amount > 0) {
+                amountAddr = that.crc20;
+                amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
+                amount2Addr = amountAddr;
+                amount2 = amount;
+              } else if (that.CMTamount > 0) {
+                amountrAddr = "0x0000000000000000000000000000000000000000";
+                amount = window.web3.toWei(that.CMTamount);
+                amount2Addr = amountAddr;
+                amount2 = amount;
+              } else {
+                // validated before
+                console.log("This is not supposed to happen");
+                that.emptyPrice = true;
+                return;
+              }
+
               var newItem = {
                 title: that.title,
                 desc: that.desc,
@@ -420,10 +451,10 @@ export default {
                 imageUrls: imageUrls,
                 contact: that.contact,
                 escrowPeriod: that.escrowPeriod,
-                crc20: that.crc20,
-                amount: parseInt(Math.round(parseFloat(that.amount) * 100)),
-                crc20_2: that.crc20,
-                amount_2: parseInt(Math.round(parseFloat(that.amount) * 100))
+                crc20: amountAddr,
+                amount: amount,
+                crc20_2: amount2Addr,
+                amount_2: amount2
               };
               var newContract = window.web3.cmt.contract(Contracts.Listing.abi);
               var bin = Contracts.Listing.bin;
@@ -465,9 +496,18 @@ export default {
     },
     amount: function() {
       if (
-        this.amount === undefined ||
-        this.amount === null ||
-        this.amount === ""
+        this.amount > 0 ||
+        this.CMTamount > 0
+      ) {
+        this.emptyPrice = true;
+      } else {
+        this.emptyPrice = false;
+      }
+    },
+    CMTamount: function() {
+      if (
+        this.amount > 0 ||
+        this.CMTamount > 0
       ) {
         this.emptyPrice = true;
       } else {
