@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>FAQ</title>
+</head>
+<body>
+  <div class="faq">
+    <header>
+      Frequent Asked Questions
+    </header>
+    <section id="1">
+        <h1>
+          <a href="#1-q">What is "Network Mismatched" error?</a>
+        </h1>
+
+        <p>There are many different independent chains in this world. Your wallet app
+          and the network it connects to altogehter decide with which chain you are interacting.
+          "Network Mismatched" error means the contract you are trying to interact with locates at a chain
+          mismatched with the chain your wallet is connecting to. Imagine that, you are in your
+          company's local area network, but you are trying to browser a file located at your university's
+          local area network, and then, get an error.
+        </p>
+      <div id="1-a">
+        <h2>
+          <a href="#1-a">How to fix it?</a>
+        </h2>
+        <div id="1-a-1" class="hide">
+          <h3>
+            <a href="#1-a-1" onclick="console.log(this)">Mismatch Type 1</a>
+          </h3>
+          <div>
+            <ul>
+              <li>
+                Switch the network to the MainNet: Left click the Venus button in the chrome extension bar ->
+                Click the top center button to unfold the list of all networks -> Choose Main CyberMiles Network
+              </li>
+              <img class="eg" src="imgs/venus-main.png" />
+            </ul>
+          </div>
+        </div>
+        <div id="1-a-2" class="hide">
+          <h3>
+            <a href="#1-a-2">Mismatch Type 2</a>
+          </h3>
+          <div>
+            <ol>
+              <li>
+                Disable the MetaMask and download the <a href="https://www.cybermiles.io/en-us/blockchain-infrastructure/venus/">Venus</a>.
+              </li>
+              <li>
+                Switch the network to the MainNet: Left click the Venus button in the chrome extension bar ->
+                Click the top center button to unfold the list of all networks -> Choose Main CyberMiles Network
+              </li>
+              <img class="eg" src="imgs/venus-main.png" />
+            </ol>
+          </div>
+        </div>
+        <div id="1-a-3" class="hide">
+          <h3>
+            <a href="#1-a-3">Mismatch Type 3</a>
+          </h3>
+          <div>
+            <ul>
+              <li>
+                Switch the network to the TestNet: Left click the Venus button in the chrome extension bar ->
+                Click the top center button to unfold the list of all networks -> Choose CMT Test Network
+              </li>
+              <img class="eg" src="imgs/venus-test.png" />
+            </ul>
+          </div>
+        </div>
+        <div id="1-a-4" class="hide">
+          <h3>
+            <a href="#1-a-4">Mismatch Type 4</a>
+          </h3>
+          <div>
+            <ol>
+              <li>
+                Disable the MetaMask and download the <a href="https://www.cybermiles.io/en-us/blockchain-infrastructure/venus/">Venus</a>.
+              </li>
+              <li>
+                Switch the network to the TestNet: Left click the Venus button in the chrome extension bar ->
+                Click the top center button to unfold the list of all networks -> Choose  CMT Test Network
+              </li>
+              <img class="eg" src="imgs/venus-test.png" />
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+ 
+</body>
+<style>
+body {
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.faq{
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 45px;
+}
+
+@media screen and (max-width: 767px){
+  .faq{
+    padding: 10px;
+  }
+}
+
+header {
+  height: 64px;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1 {
+  font-size: 1.4em;
+  color: #800000;
+  font-weight: 300;
+  padding-left: 1em;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #D6D6CE;
+  margin: 0 0 0.2em 0;
+}
+
+h2 {
+  font-size: 1.2em;
+  color: #800000;
+  font-weight: 600;
+  line-height: 1.4em;
+}
+
+h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1em;
+    color: #525252;
+    font-weight: 600;
+    line-height: 1.4em;
+}
+
+p, li {
+  margin-bottom: 1em;
+  line-height: 1.5em;
+}
+
+.hide{
+  display: none;
+}
+
+.eg, img{
+  max-width: 100%;
+}
+</style>
+<script>
+window.onload = function() {
+  if (location.hash.match("1-a-*")) {
+    document.getElementById(location.hash.slice(1)).classList.remove("hide");
+  } else {
+    document.querySelectorAll('[id^="1-a-"]').forEach(function(item){
+      item.classList.remove("hide");
+    });
+  }
+}
+</script>
+</html>
