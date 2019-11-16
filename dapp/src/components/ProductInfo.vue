@@ -349,23 +349,41 @@ export default {
         if (that.imageUrls.length == that.images.length) {
           var imageUrls = that.uploadedImgs.concat(that.imageUrls).join(",");
           // console.log(imageUrls);
-          var amount2Addr = that.crc20;
-          var amount2 = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
-          if (that.CMTamount > 0) {
+          
+          var amountrAddr = "0x0000000000000000000000000000000000000000";
+          var amount = 0;
+          var amount2Addr = amountAddr;
+          var amount2 = amount;
+          if (that.amount > 0 && that.CMTamount > 0) {
+            amountAddr = that.crc20;
+            amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
             amount2Addr = "0x0000000000000000000000000000000000000000";
             amount2 = window.web3.toWei(that.CMTamount);
+          } else if (that.amount > 0) {
+            amountAddr = that.crc20;
+            amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
+            amount2Addr = amountAddr;
+            amount2 = amount;
+          } else if (that.CMTamount > 0) {
+            amountrAddr = "0x0000000000000000000000000000000000000000";
+            amount = window.web3.toWei(that.CMTamount);
+            amount2Addr = amountAddr;
+            amount2 = amount;
+          } else {
+            that.emptyPrice = true;
+            return;
           }
-          // console.log(that.CMTamount, amount2Addr, parseInt(amount2));
+          
           that.editModeInfo.instance.updateListing(
             that.title,
             that.desc,
             that.tags,
             imageUrls,
             that.contact,
-            that.crc20,
-            parseInt(Math.round(parseFloat(that.amount) * 100)), // the OPB is 2 decimals,
+            amountAddr,
+            amount,
             amount2Addr,
-            parseInt(amount2),
+            amount2,
             "", //TODO: JSON_SHIPPING_COST. It should fetch from user input in the future.
             {
               gas: "99990000",
