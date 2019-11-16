@@ -40,7 +40,7 @@
       <div>
         <ol class="steps-list">
           <li>On mobile device or Chrome browser, open the purchase link shared by the seller. <a href="https://admiring-easley-6b2f52.netlify.com/Cartier-Ballon-Bleu-De-Cartier-W69012Z4-100-replica/listing/0x2637567AD5e24cd13175D875C6108b00206D6b0D">See an example</a></li>
-          <li>You can purchase with a credit card or with CMTs. Both require the <a href="https://app.cybermiles.io">CyberMiles mobile app</a> OR the <a href="https://chrome.google.com/webstore/detail/venus/hmiddckbbijmdkamphkgkelnjjdkicck?hl=en">Venus wallet</a> on the Chrome browser.</li>
+          <li>You can purchase with a credit card (or with CMTs, if the seller accepts CMTs, for better privacy). Both require the <a href="https://app.cybermiles.io">CyberMiles mobile app</a> OR the <a href="https://chrome.google.com/webstore/detail/venus/hmiddckbbijmdkamphkgkelnjjdkicck?hl=en">Venus wallet</a> on the Chrome browser.</li>
           <li>The payment is held in escrow the seller cannot access it for 7 days.</li>
           <li>Once you receive the product, you can release the escrow, or do nothing and allow the escrow to automatically release after 7 days.</li>
           <li>You can also dispute the transaction within 7 days. The fund will be automatically locked until the OpenBay team can investigate and determine who should get the fund.</li>
@@ -52,11 +52,11 @@
       <div>
         <ol class="steps-list">
           <li>You must have at least 1 CMT in <a href="https://app.cybermiles.io">CyberMiles mobile app</a> OR the <a href="https://chrome.google.com/webstore/detail/venus/hmiddckbbijmdkamphkgkelnjjdkicck?hl=en">Venus wallet</a> address. You can get CMTs here.</li>
-          <li>Create a for-sale listing through this page on your mobile or Chrome browser. Upload pictures, descriptions, and prices in US Dollars and / or in CMTs.</li>
+          <li>Create a for-sale listing through this page on your mobile or Chrome browser. Upload pictures, descriptions, and prices in US Dollars. You could also accept CMTs to give the buyer more privacy.</li>
           <li>Once you finished creating the listing, you will see a link that you can share. See <a href="/sell-goods/listed">all your listings</a>.</li>
           <li>Share this link with potential buyers. Ask them to get in touch when they put down the escrow payment in USD or CMT.</li>
           <li>Ship the product, and ask the buyer to release the escrow. You will receive either CMT or USDO tokens in the account you used to create the listing.</li>
-          <li>You can <a href="/withdraw-usdo-guide">exchange USDO to US dollars</a> via bank transfers.</li>
+          <li>You can <a href="/withdraw-usdo-guide">exchange USDO to US dollars</a> via bank transfers, or purchase BTCs / CMTs using your USDO for privacy.</li>
         </ol>
         <p><i>Notice: Smart contracts created via the OpenBay.io web site can be moderated by OpenBay. You can, of course, create completely uncensorable contracts by deploying your own code using Second State’s developer tools. Here is how.</i></p>
       </div>
