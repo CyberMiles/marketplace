@@ -32,7 +32,10 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/",
+      path: "/", redirect: "/default.html"
+    },
+    {
+      path: "/market",
       name: "home",
       component: Home,
       meta: {
