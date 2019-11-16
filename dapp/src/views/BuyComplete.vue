@@ -17,7 +17,7 @@
     <div class="text" v-if="status == 'processing'">Payment Processing</div>
     <div class="text" v-if="status == 'succeed'">Payment Completed</div>
     <div class="text" v-if="status == 'fail'">Payment Failed</div>
-    <router-link to="/">HomePage</router-link>
+    <router-link to="/market">HomePage</router-link>
     <router-link :to="`/order/buy/${orderId}`" v-if="status == 'succeed'"
       >Order Details</router-link
     >
