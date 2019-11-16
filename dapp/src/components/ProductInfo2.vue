@@ -75,7 +75,7 @@
         />
       </div>
       <div class="form-group">
-        <label>Please set a price either in USD or in CMT</label>
+        <p>Please set a price either in USD or in CMT</p>
         <label for="amount">Total USD Price(S&amp;H + tax included)</label>
         <div>
           <input
@@ -89,10 +89,13 @@
             <span class="price-unit">{{ USDunit }}</span>
           </div>
           <span class="price-tip">1 {{ USDunit }} ≈ 1 USD <a target="_blank" href="/withdraw-usdo-guide">how to exchange</a></span>
+          <small class="alert" v-if="emptyPrice">
+            Either the USD or CMT price must be set.
+          </small>
         </div>
       </div>
       <div class="form-group">
-        <label for="CMTamount">Total CMT Price</label>
+        <label for="CMTamount">Or total CMT Price</label>
         <div>
           <input
             type="number"
@@ -105,12 +108,10 @@
             <span class="price-unit">CMT</span>
           </div>
           <span class="price-tip">Better privacy and anonymity</span>
+          <small class="alert" v-if="emptyPrice">
+            Either the USD or CMT price must be set.
+          </small>
         </div>
-      </div>
-      <div>
-        <small class="alert" v-if="emptyPrice">
-          Either the USD or CMT price must be set.
-        </small>
       </div>
       <div class="form-group">
         <label for="contact">Contact Info</label>
