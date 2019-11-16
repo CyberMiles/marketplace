@@ -14,7 +14,7 @@
       ></router-link
     >
     <div class="text">Or, you can</div>
-    <router-link to="/">Browse Listings</router-link>
+    <router-link to="/market">Go to Home</router-link>
     <router-link to="/create">Create a New One</router-link>
   </div>
 </template>
