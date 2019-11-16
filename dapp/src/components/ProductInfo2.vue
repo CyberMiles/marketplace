@@ -75,7 +75,8 @@
         />
       </div>
       <div class="form-group">
-        <label for="amount">Price(Postage included)</label>
+        <label>Please set a price either in USD or in CMT</label>
+        <label for="amount">Total USD Price(S&amp;H + tax included)</label>
         <div>
           <input
             type="number"
@@ -87,26 +88,29 @@
           <div class="price-unit-container">
             <span class="price-unit">{{ USDunit }}</span>
           </div>
-          <span class="price-tip">1 {{ USDunit }} ≈ 1 USD</span>
+          <span class="price-tip">1 {{ USDunit }} ≈ 1 USD <a target="_blank" href="/withdraw-usdo-guide">how to exchange</a></span>
         </div>
-        <small class="alert" v-if="emptyPrice">
-          Price must be set.
-        </small>
       </div>
-      <div class="form-group" v-if="edit">
-        <label for="CMTamount">Price2(optional)</label>
+      <div class="form-group">
+        <label for="CMTamount">Total CMT Price</label>
         <div>
           <input
             type="number"
             class="form-control"
             id="CMTamount"
-            min="0.0001"
+            min="1"
             v-model="CMTamount"
           />
           <div class="price-unit-container">
             <span class="price-unit">CMT</span>
           </div>
+          <span class="price-tip">Better privacy and anonymity</span>
         </div>
+      </div>
+      <div>
+        <small class="alert" v-if="emptyPrice">
+          Either the USD or CMT price must be set.
+        </small>
       </div>
       <div class="form-group">
         <label for="contact">Contact Info</label>
@@ -296,23 +300,41 @@ export default {
           imageUrls = imageUrls + "," + that.imageUrl04;
       }
       // console.log(imageUrls);
-      var amount2Addr = that.crc20;
-      var amount2 = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
-      if (that.CMTamount > 0) {
+      
+      var amountAddr = "0x0000000000000000000000000000000000000000";
+      var amount = 0;
+      var amount2Addr = amountAddr;
+      var amount2 = amount;
+      if (that.amount > 0 && that.CMTamount > 0) {
+        amountAddr = that.crc20;
+        amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
         amount2Addr = "0x0000000000000000000000000000000000000000";
         amount2 = window.web3.toWei(that.CMTamount);
+      } else if (that.amount > 0) {
+        amountAddr = that.crc20;
+        amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
+        amount2Addr = amountAddr;
+        amount2 = amount;
+      } else if (that.CMTamount > 0) {
+        amountAddr = "0x0000000000000000000000000000000000000000";
+        amount = window.web3.toWei(that.CMTamount);
+        amount2Addr = amountAddr;
+        amount2 = amount;
+      } else {
+        that.emptyPrice = true;
+        return;
       }
-      // console.log(that.CMTamount, amount2Addr, parseInt(amount2));
+          
       that.editModeInfo.instance.updateListing(
         that.title,
         that.desc,
         that.tags,
         imageUrls,
         that.contact,
-        that.crc20,
-        parseInt(Math.round(parseFloat(that.amount) * 100)), // the OPB is 2 decimals,
+        amountAddr,
+        amount,
         amount2Addr,
-        parseInt(amount2),
+        amount2,
         "", //TODO: JSON_SHIPPING_COST. It should fetch from user input in the future.
         {
           gas: "99990000",
@@ -334,7 +356,7 @@ export default {
         this.emptyPics = true;
         return;
       }
-      if (this.amount == "" || this.amount == null) {
+      if (!(this.amount >0 || this.CMTamount >0)) {
         this.emptyPrice = true;
         return;
       }
@@ -365,6 +387,33 @@ export default {
           if (that.imageUrl04) {
               imageUrls = imageUrls + "," + that.imageUrl04;
           }
+          
+          var amountAddr = "0x0000000000000000000000000000000000000000";
+          var amount = 0;
+          var amount2Addr = amountAddr;
+          var amount2 = amount;
+          if (that.amount > 0 && that.CMTamount > 0) {
+            amountAddr = that.crc20;
+            amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
+            amount2Addr = "0x0000000000000000000000000000000000000000";
+            amount2 = window.web3.toWei(that.CMTamount);
+          } else if (that.amount > 0) {
+            amountAddr = that.crc20;
+            amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
+            amount2Addr = amountAddr;
+            amount2 = amount;
+          } else if (that.CMTamount > 0) {
+            amountAddr = "0x0000000000000000000000000000000000000000";
+            amount = window.web3.toWei(that.CMTamount);
+            amount2Addr = amountAddr;
+            amount2 = amount;
+          } else {
+            // validated before
+            console.log("This is not supposed to happen");
+            that.emptyPrice = true;
+            return;
+          }
+          
           var newItem = {
             title: that.title,
             desc: that.desc,
@@ -373,10 +422,10 @@ export default {
             imageUrls: imageUrls,
             contact: that.contact,
             escrowPeriod: that.escrowPeriod,
-            crc20: that.crc20,
-            amount: parseInt(Math.round(parseFloat(that.amount) * 100)),
-            crc20_2: that.crc20,
-            amount_2: parseInt(Math.round(parseFloat(that.amount) * 100))
+            crc20: amountAddr,
+            amount: amount,
+            crc20_2: amount2Addr,
+            amount_2: amount2
           };
           var newContract = window.web3.cmt.contract(Contracts.Listing.abi);
           var bin = Contracts.Listing.bin;
@@ -412,13 +461,22 @@ export default {
     },
     amount: function() {
       if (
-        this.amount === undefined ||
-        this.amount === null ||
-        this.amount === ""
+        this.amount > 0 ||
+        this.CMTamount > 0
       ) {
-        this.emptyPrice = true;
-      } else {
         this.emptyPrice = false;
+      } else {
+        this.emptyPrice = true;
+      }
+    },
+    CMTamount: function() {
+      if (
+        this.amount > 0 ||
+        this.CMTamount > 0
+      ) {
+        this.emptyPrice = false;
+      } else {
+        this.emptyPrice = true;
       }
     },
     contact: function() {
