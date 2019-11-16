@@ -350,7 +350,7 @@ export default {
           var imageUrls = that.uploadedImgs.concat(that.imageUrls).join(",");
           // console.log(imageUrls);
           
-          var amountrAddr = "0x0000000000000000000000000000000000000000";
+          var amountAddr = "0x0000000000000000000000000000000000000000";
           var amount = 0;
           var amount2Addr = amountAddr;
           var amount2 = amount;
@@ -435,7 +435,7 @@ export default {
             if (that.imageUrls.length == that.images.length) {
               var imageUrls = that.imageUrls.join(",");
               
-              var amountrAddr = "0x0000000000000000000000000000000000000000";
+              var amountAddr = "0x0000000000000000000000000000000000000000";
               var amount = 0;
               var amount2Addr = amountAddr;
               var amount2 = amount;
