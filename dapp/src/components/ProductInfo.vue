@@ -59,7 +59,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="tags">Tags(max. 5 tags)</label>
+        <label for="tags">Tags (max. 5 tags)</label>
         <input
           type="text"
           class="form-control"
@@ -87,7 +87,7 @@
       </div>
       <div class="form-group">
         <p>Please set a price either in USD or in CMT</p>
-        <label for="amount">Total USD Price(S&amp;H + tax included)</label>
+        <label for="amount">Total USD price (S&amp;H + tax included)</label>
         <div>
           <input
             type="number"
@@ -106,7 +106,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="CMTamount">Or total CMT Price</label>
+        <label for="CMTamount">Or total CMT price</label>
         <div>
           <input
             type="number"
@@ -133,7 +133,7 @@
           autocorrect="off"
           autocapitalize="off"
           id="contact"
-          placeholder="Leave your email(required) and/or other contact info like telegram The buyers will contact you with this info and send you the receiving address, etc."
+          placeholder="Leave your email (required) and/or other contact info like telegram The buyers will contact you with this info and send you the receiving address, etc."
           v-model="contact"
         />
         <small class="alert" v-if="contactIsEmpty">
