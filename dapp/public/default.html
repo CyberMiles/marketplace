@@ -4,16 +4,4 @@
   <body>
     <a href="/market">Go to marketplace</a>
   </body>
-  
-  <script>
-window.onload = function() {
-  if (location.hash.match("1-a-*")) {
-    document.getElementById(location.hash.slice(1)).classList.remove("hide");
-  } else {
-    document.querySelectorAll('[id^="1-a-"]').forEach(function(item){
-      item.classList.remove("hide");
-    });
-  }
-}
-  </script>
 </html>
