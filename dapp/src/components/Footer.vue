@@ -4,7 +4,7 @@
       <router-link
         class="entry"
         :class="showing === 'home' || !showing ? 'active' : ''"
-        to="/"
+        to="/market"
       >
         <span class="icon-home"></span>
         Home
