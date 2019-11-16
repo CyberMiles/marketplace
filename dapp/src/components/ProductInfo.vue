@@ -365,7 +365,7 @@ export default {
             amount2Addr = amountAddr;
             amount2 = amount;
           } else if (that.CMTamount > 0) {
-            amountrAddr = "0x0000000000000000000000000000000000000000";
+            amountAddr = "0x0000000000000000000000000000000000000000";
             amount = window.web3.toWei(that.CMTamount);
             amount2Addr = amountAddr;
             amount2 = amount;
@@ -450,7 +450,7 @@ export default {
                 amount2Addr = amountAddr;
                 amount2 = amount;
               } else if (that.CMTamount > 0) {
-                amountrAddr = "0x0000000000000000000000000000000000000000";
+                amountAddr = "0x0000000000000000000000000000000000000000";
                 amount = window.web3.toWei(that.CMTamount);
                 amount2Addr = amountAddr;
                 amount2 = amount;
