@@ -76,7 +76,7 @@
       </div>
       <div class="form-group">
         <p>Please set a price either in USD or in CMT</p>
-        <label for="amount">Total USD Price(S&amp;H + tax included)</label>
+        <label for="amount">Total USD Price (S&amp;H + tax included)</label>
         <div>
           <input
             type="number"
@@ -88,14 +88,14 @@
           <div class="price-unit-container">
             <span class="price-unit">{{ USDunit }}</span>
           </div>
-          <span class="price-tip">1 {{ USDunit }} ≈ 1 USD <a target="_blank" href="/withdraw-usdo-guide">how to exchange</a></span>
+          <span class="price-tip">1 {{ USDunit }} ≈ 1 USD. Buy with credit card. <a target="_blank" href="/withdraw-usdo-guide">how to exchange</a></span>
           <small class="alert" v-if="emptyPrice">
-            Either the USD or CMT price must be set.
+            A USD price is required.
           </small>
         </div>
       </div>
       <div class="form-group">
-        <label for="CMTamount">Or total CMT Price</label>
+        <label for="CMTamount">Alternative total CMT Price</label>
         <div>
           <input
             type="number"
@@ -107,10 +107,7 @@
           <div class="price-unit-container">
             <span class="price-unit">CMT</span>
           </div>
-          <span class="price-tip">Better privacy and anonymity</span>
-          <small class="alert" v-if="emptyPrice">
-            Either the USD or CMT price must be set.
-          </small>
+          <span class="price-tip">Better privacy and anonymity for buyers</span>
         </div>
       </div>
       <div class="form-group">
@@ -122,7 +119,7 @@
           autocorrect="off"
           autocapitalize="off"
           id="contact"
-          placeholder="Leave your email(required) and/or other contact info like telegram The buyers will contact you with this info and send you the receiving address, etc."
+          placeholder="Leave your email (required) and/or other contact info like telegram The buyers will contact you with this info and send you the receiving address, etc."
           v-model="contact"
         />
         <small class="alert" v-if="contactIsEmpty">
@@ -286,6 +283,10 @@ export default {
         this.contactIsEmpty = true;
         return;
       }
+      if (!(this.amount >0)) {
+        this.emptyPrice = true;
+        return;
+      }
 
       var imageUrls = "";
       if (imageUrl01) {
@@ -302,28 +303,13 @@ export default {
       }
       // console.log(imageUrls);
       
-      var amountAddr = "0x0000000000000000000000000000000000000000";
-      var amount = 0;
+      var amountAddr = that.crc20;
+      var amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
       var amount2Addr = amountAddr;
       var amount2 = amount;
-      if (that.amount > 0 && that.CMTamount > 0) {
-        amountAddr = that.crc20;
-        amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
+      if (that.CMTamount > 0) {
         amount2Addr = "0x0000000000000000000000000000000000000000";
         amount2 = window.web3.toWei(that.CMTamount);
-      } else if (that.amount > 0) {
-        amountAddr = that.crc20;
-        amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
-        amount2Addr = amountAddr;
-        amount2 = amount;
-      } else if (that.CMTamount > 0) {
-        amountAddr = "0x0000000000000000000000000000000000000000";
-        amount = window.web3.toWei(that.CMTamount);
-        amount2Addr = amountAddr;
-        amount2 = amount;
-      } else {
-        that.emptyPrice = true;
-        return;
       }
           
       that.editModeInfo.instance.updateListing(
@@ -357,7 +343,7 @@ export default {
         this.emptyPics = true;
         return;
       }
-      if (!(this.amount >0 || this.CMTamount >0)) {
+      if (!(this.amount >0)) {
         this.emptyPrice = true;
         return;
       }
@@ -389,30 +375,13 @@ export default {
               imageUrls = imageUrls + "," + that.imageUrl04;
           }
           
-          var amountAddr = "0x0000000000000000000000000000000000000000";
-          var amount = 0;
+          var amountAddr = that.crc20;
+          var amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
           var amount2Addr = amountAddr;
           var amount2 = amount;
-          if (that.amount > 0 && that.CMTamount > 0) {
-            amountAddr = that.crc20;
-            amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
+          if (that.CMTamount > 0) {
             amount2Addr = "0x0000000000000000000000000000000000000000";
             amount2 = window.web3.toWei(that.CMTamount);
-          } else if (that.amount > 0) {
-            amountAddr = that.crc20;
-            amount = parseInt(Math.round(parseFloat(that.amount) * 100)); // the OPB is 2 decimals. //Math.round() is to fix the problem: 19.99 * 100 = 1998.9999999999998
-            amount2Addr = amountAddr;
-            amount2 = amount;
-          } else if (that.CMTamount > 0) {
-            amountAddr = "0x0000000000000000000000000000000000000000";
-            amount = window.web3.toWei(that.CMTamount);
-            amount2Addr = amountAddr;
-            amount2 = amount;
-          } else {
-            // validated before
-            console.log("This is not supposed to happen");
-            that.emptyPrice = true;
-            return;
           }
           
           var newItem = {
@@ -461,20 +430,7 @@ export default {
       }
     },
     amount: function() {
-      if (
-        this.amount > 0 ||
-        this.CMTamount > 0
-      ) {
-        this.emptyPrice = false;
-      } else {
-        this.emptyPrice = true;
-      }
-    },
-    CMTamount: function() {
-      if (
-        this.amount > 0 ||
-        this.CMTamount > 0
-      ) {
+      if (this.amount > 0) {
         this.emptyPrice = false;
       } else {
         this.emptyPrice = true;
