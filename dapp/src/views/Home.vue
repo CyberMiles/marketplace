@@ -58,7 +58,7 @@
           <li>Ship the product, and ask the buyer to release the escrow. You will receive either CMT or USDO tokens in the account you used to create the listing.</li>
           <li>You can <a href="/withdraw-usdo-guide">exchange USDO to US dollars</a> via bank transfers, or purchase BTCs / CMTs using your USDO for privacy.</li>
         </ol>
-        <p><i>Notice: Smart contracts created via the OpenBay.io web site can be moderated by OpenBay. You can, of course, create completely uncensorable contracts by deploying your own code using Second State’s developer tools. Here is how.</i></p>
+        <p><i>Notice: Smart contracts created via the OpenBay.io web site can be moderated by OpenBay. You can, of course, create completely uncensorable contracts by deploying <a href="https://raw.githubusercontent.com/CyberMiles/marketplace/master/Listing.lity">your own</a> using Second State’s <a href="http://buidl.secondstate.io/cmt">developer tools.</a></i></p>
       </div>
       <div>
         <p>&nbsp;</p>
