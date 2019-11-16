@@ -517,9 +517,9 @@ export default {
         this.amount > 0 ||
         this.CMTamount > 0
       ) {
-        this.emptyPrice = true;
-      } else {
         this.emptyPrice = false;
+      } else {
+        this.emptyPrice = true;
       }
     },
     CMTamount: function() {
@@ -527,9 +527,9 @@ export default {
         this.amount > 0 ||
         this.CMTamount > 0
       ) {
-        this.emptyPrice = true;
-      } else {
         this.emptyPrice = false;
+      } else {
+        this.emptyPrice = true;
       }
     },
     contact: function() {
