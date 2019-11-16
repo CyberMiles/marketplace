@@ -34,6 +34,22 @@
       <div class="lead">
         <p>The CyberMiles blockchain is the privacy-preserving and censorship-resistant platform for e-commerce. Through specialized smart contracts, you can list anything for sale. Buyers can transact securely with you through cryptocurrency or US Dollars. Here is how.</p>
       </div>
+      
+      <div class="cate-title">
+        <h2>Sellers</h2>
+      </div>
+      <div>
+        <ol class="steps-list">
+          <li>You must have at least 1 CMT in <a href="https://app.cybermiles.io">CyberMiles mobile app</a> OR the <a href="https://chrome.google.com/webstore/detail/venus/hmiddckbbijmdkamphkgkelnjjdkicck?hl=en">Venus wallet</a> address. You can <a href="/categories/cmt.html">get CMTs here</a>.</li>
+          <li>Create a for-sale listing through this page on your mobile or Chrome browser. Upload pictures, descriptions, and prices in US Dollars. You could also choose to accept CMTs to give the buyer more privacy.</li>
+          <li>Once you finished creating the listing, you will see a link that you can share. See <a href="/sell-goods/listed">all your listings</a>.</li>
+          <li>Share this link with potential buyers. Ask them to get in touch when they put down the escrow payment in USD or CMT.</li>
+          <li>Ship the product, and ask the buyer to release the escrow. You will receive either CMT or USDO tokens in the account you used to create the listing.</li>
+          <li>You can <a href="/withdraw-usdo-guide">exchange USDO to US Dollars</a> via bank transfers, or purchase BTCs / CMTs using your USDO for privacy.</li>
+        </ol>
+        <p><i>Notice: Smart contracts created via the OpenBay.io web site can be moderated by OpenBay. You can, of course, create completely uncensorable contracts by deploying <a href="https://raw.githubusercontent.com/CyberMiles/marketplace/master/Listing.lity">your own</a> using Second State’s <a href="http://buidl.secondstate.io/cmt">developer tools.</a></i></p>
+      </div>
+      
       <div class="cate-title">
         <h2>Buyers</h2>
       </div>
@@ -46,20 +62,7 @@
           <li>You can also dispute the transaction within 7 days. The fund will be automatically locked until the OpenBay team can investigate and determine who should get the fund.</li>
         </ol>
       </div>
-      <div class="cate-title">
-        <h2>Sellers</h2>
-      </div>
-      <div>
-        <ol class="steps-list">
-          <li>You must have at least 1 CMT in <a href="https://app.cybermiles.io">CyberMiles mobile app</a> OR the <a href="https://chrome.google.com/webstore/detail/venus/hmiddckbbijmdkamphkgkelnjjdkicck?hl=en">Venus wallet</a> address. You can get CMTs here.</li>
-          <li>Create a for-sale listing through this page on your mobile or Chrome browser. Upload pictures, descriptions, and prices in US Dollars. You could also accept CMTs to give the buyer more privacy.</li>
-          <li>Once you finished creating the listing, you will see a link that you can share. See <a href="/sell-goods/listed">all your listings</a>.</li>
-          <li>Share this link with potential buyers. Ask them to get in touch when they put down the escrow payment in USD or CMT.</li>
-          <li>Ship the product, and ask the buyer to release the escrow. You will receive either CMT or USDO tokens in the account you used to create the listing.</li>
-          <li>You can <a href="/withdraw-usdo-guide">exchange USDO to US dollars</a> via bank transfers, or purchase BTCs / CMTs using your USDO for privacy.</li>
-        </ol>
-        <p><i>Notice: Smart contracts created via the OpenBay.io web site can be moderated by OpenBay. You can, of course, create completely uncensorable contracts by deploying <a href="https://raw.githubusercontent.com/CyberMiles/marketplace/master/Listing.lity">your own</a> using Second State’s <a href="http://buidl.secondstate.io/cmt">developer tools.</a></i></p>
-      </div>
+      
       <div>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
